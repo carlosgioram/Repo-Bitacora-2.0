@@ -1,0 +1,231 @@
+<div class="wait_panel" style="text-align: center; margin-top: 15%;">
+    <div class="cargando"></div>
+    <br>
+    <label class="control-label bbva02 negrita" style="font-size: 20px;">CARGANDO...</label>
+</div>
+<div id="super_panel">
+    <div class="clearfix">
+        <br>
+    </div>
+    <!-- Primer Panel contenedor de selectpicker y botones -->
+    <div class="panel panel-primary">
+        <div class="panel-body panel_body_auto">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <img style="float: left; width: 10px; height: 60px;" class="img-responsive img_bancomer_rayas">
+                    <p style="font-weight: bold; color: #4F81BD; font-size: 24px; padding-left: 20px;">
+                        <span id="span_modulo_titulo"></span>
+                    </p>
+                    <p style="color: #4F81BD; padding-left: 20px;" id="p_modulo_descripcion"></p>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="container-fluid" style="padding-top: 10px; padding-bottom: 15PX;">
+                <div class="row">
+                    <div class="">
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2 col-xl-2">
+                            <label for="select_nombreUsuario" class="control-label bbva02 negrita" style="width:100%;">Nombre</label>
+                            <select id="select_nombreUsuario" class="form-control bbva02 selectpicker" first-data="Nombre" first-val="- Selecciona un Nombre -">
+                            </select>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2 col-xl-2">
+                            <label for="select_emailUsuario" class="control-label bbva02 negrita" style="width:100%;">Email</label>
+                            <select id="select_emailUsuario" class="form-control bbva02 selectpicker" first-data="Email" first-val="- Selecciona un email -">
+                            </select>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2 col-xl-2">
+                            <label for="select_usuarioRedUsuario" class="control-label bbva02 negrita" style="width:100%;">Usuario Red</label>
+                            <select id="select_usuarioRedUsuario" class="form-control bbva02 selectpicker" first-data="UsuarioRed" first-val="- Selecciona un Usuario -">
+                            </select>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2 col-xl-2">
+                            <label for="select_puestoUsuario" class="control-label bbva02 negrita" style="width:100%;">Puesto</label>
+                            <select id="select_puestoUsuario" class="form-control bbva02 selectpicker" first-data="Puesto" first-val="- Selecciona un Puesto -"></select>
+                        </div>
+                        <div class="col-xs-3 col-sm-3 col-md-1 col-lg-1 col-xl-1">
+                            <label for="limpiarUsuario" class="control-label bbva02 negrita" style="width:100%;"></label>
+                            <button id="limpiarUsuario" class="btn btn-default btnNuevoDos glyphicon glyphicon-search" style="margin-top: 10px;"><span style="color:#fff;" > Limpiar</span></button>
+                        </div>
+                        <div class="col-xs-3 col-sm-3 col-md-1 col-lg-1 col-xl-1">
+                            <label for="buscarUsuario" class="control-label bbva02 negrita" style="width:100%;"></label>
+                            <button id="buscarUsuario" class="btn btn-default btnNuevoDos glyphicon glyphicon-search" style="margin-top: 10px;"><span style="color:#fff;" > Buscar</span></button>
+                        </div>
+                        <div class="col-xs-3 col-sm-3 col-md-1 col-lg-1 col-xl-1">
+                            <label for="crearUsuario" class="control-label bbva02 negrita" style="width:100%;"></label>
+                            <button id="crearUsuario" class="btn btn-default btnNuevoDos glyphicon glyphicon-user" style="margin-top: 10px;"><span style="color:#fff;"> Alta</span></button>
+                        </div>
+                        <div class="col-xs-3 col-sm-3 col-md-1 col-lg-1 col-xl-1">
+                            <label for="subirUsuario" class="control-label bbva02 negrita" style="width:100%;"></label>
+                            <button id="subirUsuario" class="btn btn-default btnNuevoDos glyphicon glyphicon-upload" style="margin-top: 10px;"><span style="color:#fff;"> Subir</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <!-- Segundo Panel Contenedor de Tabla de Busqueda de Reportes -->
+    <div class="panel panel-primary">
+        <div class="panel-body panel_body_auto">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 tablaEstilo subtablaEstilo" id="tablaUsuarios" >
+                    <table id="tabla_usuarios" name="Tabla Usuarios" data-show-export="false" class=" sinBordesleftAndRight tablePaddingCinco"  width="100%" cellspacing="0" border="0"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--MODAL AGREGAR Usuario-->
+<div id="modal_adminUsuarios" class="modal fade bs-example-modal-sm" tabindex="1040"  role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false" style="z-index:1;">
+ <div class="modal-dialog bbva02 nuevoTamanoModalAvisos">
+   <div class="modal-content">
+     <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal" onclick="UsuariosJS.cancelar()">&times;</button>
+       <h4 class="modal-title">
+         <div class="text-center" id="TituloModalAdminUsuarios"></div>
+       </h4>
+     </div>
+     <div class="modal-body">
+       <div class="row">
+         <form id="form_modal_adminUsuario" onsubmit="return false">
+                       <div class="col-md-12" style="display:none">
+                         <input type="text" class="form-control bbva02 inputsUsuarios" id="idUsuarioModal" aria-describedby="sizing-addon1" name="input_agregar_nombre_usuario"   style="padding-left: 10px;" >
+                       </div>
+           <div class= "col-md-12" id="datosUsuariosPersonales">
+             <div class="col-xs-12 col-sm-12  col-md-6">
+               <label for="nombreUsuarioModal" class="labelModalUsuarios" >Nombre:</label>
+               <input type="text" class="form-control bbva02 inputsUsuarios" id="nombreUsuarioModal" aria-describedby="sizing-addon1" name="input_agregar_nombre_usuario"   style="padding-left: 10px;" >
+               <div id="requeridedNombre" class="campoRequerided"></div>
+             </div>
+
+             <div class=" col-xs-12 col-sm-12  col-md-6">
+                               <label for="correoUsuarioModal" class="labelModalUsuarios">Correo:</label>
+               <input type="text" class="form-control bbva02 inputsUsuarios" id="correoUsuarioModal" aria-describedby="sizing-addon1" name="input_agregar_correo_usuario"  style="padding-left: 10px;" >
+               <div id="requeridedCorreo" class="campoRequerided"></div>
+
+             </div>
+           </div>
+           <div class= "col-md-12" id="datosUsuariosPermisos" style="padding-top: 10px">
+             <div class=" col-xs-12 col-sm-12  col-md-3">
+               <label for="redUsuarioModal" class="labelModalUsuarios">Usuario Red:</label>
+               <input type="text" class="form-control bbva02 inputsUsuarios" id="redUsuarioModal" aria-describedby="sizing-addon1" name="input_agregar_usario_red"  style="padding-left: 10px;" >
+               <div id="requeridedUsuarioRed" class="campoRequerided"></div>
+             </div>
+
+             <div class="col-xs-12 col-sm-12  col-md-3">
+               <label for="puestoUsuarioModal" class="labelModalUsuarios">Puesto:</label>
+               <select  title="Puesto" class="form-control bbva02 selectpicker" id="puestoUsuarioModal" style="height: 27px !important; color: #121212 !important; visibility: hidden;"  aria-describedby="sizing-addon1" name="input_agregar_puesto"  ></select>
+               <div id="requeridedPuesto" class="campoRequerided"></div>
+             </div>
+
+                           <div class="col-xs-12 col-sm-12  col-md-3">
+               <label for="crPuestoUsuarios" class="labelModalUsuarios">CR:</label>
+               <input type="text" class="form-control bbva02 inputsUsuarios" id="crPuestoUsuarios" aria-describedby="sizing-addon1" name="input_agregar_cr_usuario"   style="padding-left: 10px;" >
+             </div>
+
+                           <div class="col-xs-12 col-sm-12  col-md-3">
+               <label for="titularUsuarioModal" class="labelModalUsuarios">Tipo:</label>
+               <select  title="Titular" class="form-control bbva02 selectpicker" id="titularUsuarioModal" style="height: 27px !important; color: #121212 !important; visibility: hidden;"  aria-describedby="sizing-addon1" name="input_agregar_titukar"  >
+                                   <option value="0">Analista</option>
+                                   <option value="1">Coordinador</option>
+                               </select>
+
+             </div>
+
+           </div>
+           <div class="col-md-12" id="validarInformacion">
+                           <span class="glyphicon glyphicon-plus" id="mostarOcultarValidacion"></span> Mostrar validación
+           </div>
+           <div class="col-md-12" id="informacionPre" style="padding-top:10px; display:none" >
+             <div class="col-md-5" id="informacionValidar">
+                               <b>Datos Generales</b>
+               <br><b>Nombre:</b> <span id="nombreValidar"></span>
+               <br><b>Correo:</b> <span id="correoValidar"></span>
+               <br><b>Usuario Red:</b> <span id="usuarioValidar"></span>
+               <br><b>Puesto:</b> <span id="puestoValidar"></span>
+                               <br><b>CR:</b> <span id="crValidar"></span>
+             </div>
+             <div class="col-md-3">
+               <b>Módulos</b> <br>
+               <span id="modulosValidar"></span>
+             </div>
+                           <div class="col-md-4">
+               <b>Áreas</b> <br>
+               <span id="areasValidar"></span>
+             </div>
+           </div>
+           <!--div class="clearfix">
+             <br>
+           </div-->
+
+         </form>
+       </div>
+       <div class="clearfix"><br></div>
+     </div>
+     <div class="modal-footer">
+         <div class="row text-rigth" align="rigth">
+                        <div class="col-md-2 col-md-offset-8 ">
+             <button class="btn btn-default btnNuevoDos" onclick="UsuariosJS.cancelar();" ><span style="color:#fff"> Cancelar</span></button>
+           </div>
+           <div class="col-md-2">
+             <button class="btn btn-default btnNuevoDos"  type="submit" id="btnAgregarUsuarios" onclick="UsuariosJS.crearEditarUsuarioQuery();"><span style="color:#fff"> Agregar</span></button>
+           </div>
+         </div>
+     </div>
+   </div>
+ </div>
+</div>
+
+<!-- Modal Carga masiva de usuarios -->
+<div id="cargaMasivaUsuarios" class="modal fade bs-example-modal-sm" tabindex="1040"  role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false" style="z-index:1;">
+ <div class="modal-dialog bbva02 nuevoTamanoModalAvisos">
+   <div class="modal-content">
+     <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal" onclick="UsuariosJS.limpiarSubirArchivo()">&times;</button>
+       <h4 class="modal-title">
+         <div class="text-center" >Carga Masiva de Usuarios</div>
+       </h4>
+     </div>
+     <div class="modal-body">
+       <div class="row">
+                   <div class="col-md-12" style="padding-top:20px">
+                     <a href="https://drive.google.com/a/bbva.com/uc?authuser=0&id=1y3DmrJOt99LX-pcskAJUfxq9it7nRctQ&export=download" target="_blank">Descargar Layout</a>
+                   </div>
+         <div class="col-md-12" style="padding-top:20px">
+           <input type="file" id="cargaUsuariosMasivos" class="filestyle" data-btnClass="btn btnNuevoExamninar" data-buttonBefore="true" data-text="Carga Masiva" data-placeholder="Únicamente archivo csv" accept=".xlsx">
+         </div>
+         <div class="col-md-12" id="informacionArchivoUsuarios">
+         </div>
+       </div>
+       <div class="clearfix">
+       </div>
+     </div>
+     <div class="modal-footer">
+       <div class="row" align="rigth">
+         <div class="col-md-3">
+        </div>
+          <div class="col-md-3">
+             <button type="button" class="btn btn-default btnNuevoDos" title="Cargar Usuarios" id="cargaUsuarioBtn" disabled="disabled" onclick="UsuariosJS.cargarUsuariosBd();">Cargar</button>
+         </div>
+          <div class="col-md-3">
+             <button type="button" class="btn btn-default btnNuevoDos" title="Limpiar" onclick="UsuariosJS.limpiarSubirArchivo();">Limpiar</button>
+         </div>
+         <div class="col-md-3">
+           <button type="button" class="btn btn-default btnNuevoDos" data-dismiss="modal" onclick="UsuariosJS.limpiarSubirArchivo()">Cancelar</button>
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
+</div>
+
+<script>
+    MenuJS.openWaitMessage();
+    //MenuJS.openLilWaitMessage();
+    UsuariosJS.init();
+
+</script>

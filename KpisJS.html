@@ -1,0 +1,1930 @@
+<script>
+var suma={};
+
+var settingsGraficas = {
+    textStyle: {
+        fontSize: 12
+    },
+    legend: {
+        show: true,
+        textStyle: {
+            fontSize: 10,
+        }
+    },
+    x: 'center',
+    color: ['#004481', '#1464A5', '#5BBEFF', '#028484', '#5ac4c4', '#88ca9a', '#fab27f', '#f7893b'],
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'shadow' //line or shadow
+        }
+    },
+    barWidth: '50%',
+    label: {
+        normal: {
+            show: true,
+            fontSize: 9,
+            //position: 'insideRight'
+        }
+    },
+};
+var KpisJS = {
+    busqueda: {},
+
+
+    init: function () {
+        console.dir("KpisJS.init");
+        MenuJS.closeWaitMessage();
+        setTimeout(function () {
+            KpisJS.perfiladoPuesto(sessionStorage);
+        }, 500);
+        KpisJS.eventosInicial();
+    },
+
+    eventosInicial: function () {
+        $('.selectpicker').selectpicker({
+            showTick: true,
+            liveSearch: false,
+            style: 'form-control btn btn-Negocio',
+            size: 10,
+            actionsBox: true,
+            deselectAllText: 'Ninguno',
+            dropupAuto: true,
+            noneSelectedText: 'Seleccione',
+            selectAllText: 'Todos',
+        });
+        $(".datepicker").datepicker({
+            format: "yyyy-mm",
+            viewMode: "months",
+            minViewMode: "months",
+            language: "es",
+            autoclose: true,
+        });
+        //Calculando fecha Inicial y fecha final
+        var fecha = new Date();
+        var fechaInicial = fecha.getFullYear() + '-01';
+        var fechaFinal = fecha.getFullYear() + '-' + ((fecha.getMonth() + 1).toString().length == 1 ? '0' + (fecha.getMonth() + 1) : (fecha.getMonth() + 1));
+        $('.datepickerInicial').val(fechaInicial).change().datepicker('refresh');
+        $('.datepickerFinal').val(fechaFinal).change().datepicker('refresh');
+
+        /*Boton  buscar*/
+        $('.buscarGraficas').unbind('click').bind('click', function () {
+            KpisJS.buscarGraficas($(this).attr('id'), $(this).attr('graficas'));
+        })
+
+    },
+
+    buscarGraficas: function (idBuscar, elementos) {
+        //Esto llamará las funciones para crear las gráficas numeradas del 0 al número de elementos a actualizar
+        //Debemos mandar el id que recibe
+        var crearGrafica = idBuscar.replace('buscar_', 'crearGrafica');
+
+        for (var i = 0; i < elementos; i++) {
+            KpisJS[crearGrafica + i](idBuscar, i)
+        }
+    },
+
+    crearWhere: function (objeto, fechaNombre) {
+        var where = [];
+        /*if (objeto.area !== '' && objeto.area !== undefined) {
+            where.push('AREA = "' + objeto.area + '" ');
+        }*/
+
+        if (objeto.inicio !== '' && objeto.fin !== '') {
+            where.push(' (' + fechaNombre + ' BETWEEN "' + objeto.inicio + '"  AND "' + objeto.final + '" )');
+        }
+
+        if (objeto.viables) {
+          if (objeto.viables !== 'Ambos') {
+            if (objeto.viables === 'no_viables') {
+              where.push('(BR ="Rechazado" || BR = "")' );
+            } else {
+              where.push('(BR ="Aceptado" && BR != "")' );
+            }
+          }
+        }
+        return where;
+    },
+
+    crearObjeto: function (idBuscar) {
+        return objeto = {
+            id: idBuscar,
+            inicio: ($('#' + idBuscar + '_inicio').val() + '-01'),
+            final: ($('#' + idBuscar + '_final').val() + '-31'),
+            area: ($('#' + idBuscar + '_area').val() == undefined || $('#' + idBuscar + '_area').val() == '' ? '' : $('#' + idBuscar + '_area').val()),
+            viables: ($('#' + idBuscar + '_viables') ? ($('#' + idBuscar + '_viables').val() === '' ? 'Ambos' : $('#' + idBuscar + '_viables').val()) : 'Ambos')
+        }
+    },
+
+    perfiladoPuesto: function (sessionStorage) {
+        switch (sessionStorage.id_puesto) {
+            case '1':
+                /*Admin*/
+            case '2':
+                /*AFG*/
+            case '3':
+                /*Seguridad*/
+            case '5':
+                /*Viabilidad*/
+            case '6':
+                /*Auditoria*/
+            case '7':
+                /*Penal*/
+            case '9':
+                /*RCI*/
+            case '10':
+                /*Viable - Penal*/
+                $('.selectpickerArea').val('').change().selectpicker('refresh');
+                //$('.selectpickerArea').val('Penal').change().prop('disabled', true).selectpicker('refresh');
+                KpisJS.crearGraficadenuncia0('buscar_denuncia', 0); //crearGraficadenuncia0
+                KpisJS.crearGraficadenuncia1('buscar_denuncia', 1); //crearGraficadenuncia1
+                KpisJS.crearGraficadenuncia2('buscar_denuncia', 2); //crearGraficadenuncia2
+
+                KpisJS.crearGraficacasos0('buscar_casos', 0);
+                KpisJS.crearGraficacasos1('buscar_casos', 1);
+
+                //KpisJS.crearGraficareworks0('buscar_reworks', 0);
+                //KpisJS.crearGraficareworks1('buscar_reworks', 1);
+
+
+                KpisJS.crearGraficasla0('buscar_sla', 0);
+                KpisJS.crearGraficasla1('buscar_sla', 1);
+                KpisJS.crearGraficasla2('buscar_sla', 2);
+
+                //KpisJS.crearGraficabacklog0('buscar_backlog', 0);
+                //KpisJS.crearGraficabacklog1('buscar_backlog', 1);
+                //KpisJS.crearGraficabacklog2('buscar_backlog', 2);
+
+                KpisJS.crearGraficasimul0('buscar_simul', 0);
+                KpisJS.crearGraficasimul1('buscar_simul', 1);
+                //KpisJS.crearGraficasimul2('buscar_simul', 2);
+                //KpisJS.graficaCasosSimultaneos();//buscar_simul
+                //KpisJS.graficaFiniquitoFirmadas();
+                break;
+            /*
+            case '2':
+                / *AFG* /
+            case '3':
+                / *Seguridad* /
+            case '5':
+                / *Viabilidad* /
+            case '6':
+                / *Auditoria* /
+            case '7':
+                / *Penal* /
+                $('.selectpickerArea').val('Penal').change().prop('disabled', true).selectpicker('refresh');
+                $('#vistaFechaInicioRew').show();
+                $('#vistaFechaInicioSlas').show();
+                $('#vistaFechaInicioBacklog').show();
+                $('#vistaFechaInicioSimul').show();
+                //$('#vistaFechaInicioSatis').show();
+                $('#vistaFechaInicioReab').show();
+                $('#vistaFechaInicioCartas').show();
+                $('#vistaFechaInicioDenuncia').show();
+                //$('#vistaFechaInicioSemaforo').show();
+                var puesto = (alasql("SELECT nb_puesto FROM puesto WHERE id_puesto=" + sessionStorage.id_puesto));
+                console.dir(puesto[0].nb_puesto);
+                busqueda = (alasql("select estatus.[# Folio] as folio, estatus.Area, estatus.Estatus, estatus.Fecha, estatus.Usuario, estatus.Obervaciones, transformaciones.AG as carta, transformaciones.CD as denuncia from estatus inner join transformaciones on estatus.[# Folio]=transformaciones.CK where estatus.Area='" + puesto[0].nb_puesto + "'"));
+                break;
+           */
+        }
+        //console.dir('busqueda');
+        //console.dir(busqueda);
+    },
+
+    crearTabla: function (idTabla, arrayColumns, pagination, data) {
+        $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['es-MX']);
+        $.extend($.fn.bootstrapTable.defaults, {
+            toolbarAlign: 'left',
+            striped: true,
+            exportTypes: ['csv', 'excel'],
+            pagination: pagination,
+            pageSize: 50,
+            pageList: [10, 25, 50, 100, 200],
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return 'Mostrando ' + pageFrom + ' al ' + pageTo + ' de ' + totalRows + ' usuarios';
+            },
+            formatNoMatches: function () {
+                return '';
+            },
+        });
+        $('#' + idTabla).bootstrapTable({
+            columns: arrayColumns,
+            data: data,
+            onResetView: function () {
+                MenuJS.closeWaitMessage();
+                return false;
+            }
+        });
+    },
+
+    crearGraficadenuncia0: function (idBuscar, orden) {
+        var objeto = KpisJS.crearObjeto(idBuscar);
+        var where = (KpisJS.crearWhere(objeto, 'A')).join(' AND ');
+        where += ' && BA != "Rechazado" && BA != "Rechazado" && BH != "Rechazado" && BJ != "Rechazado" && BS != "Rechazado" && BW != "Rechazado"';
+        var res = alasql('SELECT COUNT(*) AS TOTAL FROM transformaciones WHERE ' + where + ' ');
+        var res1 = alasql('SELECT COUNT(*) AS TOTAL FROM transformaciones WHERE CE != "" AND  ' + where + ' ');
+        //var res2 = alasql('SELECT ROUND((TOTAL/(SELECT TOTAL FROM ?))*100, 2) as [value], "Denuncias" as [title], 1 as [order] FROM ? UNION SELECT 60 as [value], "Meta" as [title], 2 as [order] order by [order] ', [res, res1]);
+        var res2 = alasql('SELECT ROUND((TOTAL/(SELECT TOTAL FROM ?))*100, 2) as [value], "Denuncias" as [title], 1 as [order] FROM ? ', [res, res1]);
+
+        $('label[for="num_tot_casos"]').html(res[0].TOTAL);
+        $.each(res2, function (k, v) {
+                v.value = v.value == undefined ? 0 : v.value
+        });
+
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+
+        option = {
+            title: {
+                text: 'Denuncias',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            legend: settingsGraficas.legend,
+            tooltip: {
+                formatter: function (params) {
+                    //return params.value.title + ': ' + params.value.value + '%';
+                    return params.value.title + ': ' + res1[0].TOTAL;
+                },
+            },
+            dataset: {
+                source: res2,
+            },
+            series: [
+                {
+                    //name: 'Denuncias',
+                    type: 'gauge',
+                    clockwise: true,
+                    startAngle: 180,
+                    endAngle: 0,
+                    center: ['50%', '60%'],
+                    radius: '80%',
+                    pointer: {
+                        show: true,
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            width: 10,
+                            color: [[0.1, 'rgb(190,190,190)'], [0.2, 'rgb(190,190,190)'],[0.3, 'rgb(190,190,190)'], [0.7, '#004481'], [0.9, 'rgb(190,190,190)'],[1, 'rgb(190,190,190)']],
+                        },
+                    },
+
+                    splitLine: {
+                        show: false
+                    },
+                    detail: {
+                        formatter: '{value}%'
+                    },
+                }
+            ]
+        };
+        myChart.clear();
+        myChart.setOption(option);
+        myChart.on('click', function (params) {
+          HomeJS.buscarCasos('Denuncias', res2, params);
+        });
+
+    },
+
+    crearGraficadenuncia1: function (idBuscar, orden) {
+        var objeto = KpisJS.crearObjeto(idBuscar);
+        var where = KpisJS.crearWhere(objeto, 'A').join(' AND ');
+
+        var res = alasql('SELECT * FROM transformaciones WHERE ' + where + ' AND AR != "" ');
+        var res2 = alasql('SELECT AR as [product], COUNT(*) AS [No_Viables], 0 AS [Viables] FROM ? WHERE BR = "Rechazado" AND ' + where + ' GROUP BY AR', [res]);
+
+        var res3 = alasql('SELECT AR as [product],0 as [No_Viables], COUNT(*) AS [Viables] FROM ? WHERE  BR = "Aceptado" AND ' + where + ' GROUP BY AR', [res]);
+
+        var res3ymedio = alasql('SELECT AR as [product],0 as [No_Viables], COUNT(*) AS [Viables] FROM ? WHERE ' + where + ' GROUP BY AR', [res]);
+
+        var res4 = alasql('SELECT [product], [No_Viables], [Viables] from ? UNION SELECT [product], [No_Viables], [Viables] from ? UNION SELECT [product], [No_Viables], [Viables] from ? ', [res2, res3, res3ymedio]);
+
+        var res5 = alasql('SELECT product, sum(No_Viables) as [No Viables], sum(Viables) as [Viables] FROM ? where product != undefined group by product', [res4]);
+
+        $.each(res5, function (k, v) {
+            if(v.product != undefined){
+                v.product = (v.product).replace(/ /gi, "\n");
+            }
+        });
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+
+        option = {
+            title: {
+                text: 'Casuísticas (No Viables Vs Viables)',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            tooltip: settingsGraficas.tooltip,
+            //tooltip: {},
+            color: settingsGraficas.color,
+            barWidth: settingsGraficas.barWidth,
+            legend: {
+                show: settingsGraficas.legend.show,
+                textStyle: settingsGraficas.legend.textStyle,
+                top: '10%',
+                data: []
+            },
+
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value'
+            },
+            yAxis: {
+                type: 'category',
+                axisLabel: {
+                    rotate: 0,
+                    fontSize: 9,
+                },
+            },
+            dataset: {
+                dimensions: ['product', 'Viables', 'No Viables'],
+                source: res5,
+
+            },
+            series: [
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: {
+                        normal: {
+                            show: true,
+                            fontSize: 9,
+                            //position: 'insideRight'
+                        }
+                    },
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: {
+                        normal: {
+                            show: true,
+                            fontSize: 9,
+                            //position: 'insideRight'
+                        }
+                    },
+                    }
+                ]
+        };
+        myChart.clear();
+        myChart.setOption(option);
+        myChart.on('click', function (params) {
+          HomeJS.buscarCasos('Casuisticas', res5, params);
+        });
+
+    },
+
+    crearAreaVSCasuisticas: function (area, res, arrayCasuisticas, campoEstatus){
+        var objeto= {};
+
+        objeto.res0 = alasql('SELECT "'+area+'" as [product], COUNT(*) AS [Fraude Consumado > 3,000,000],  0 as [Fraude Consumado > 100,000],   0 as [Fraude Consumado < 100,000],   0 as [Tentativa de Fraude],   0 as [Consultas injustificadas]   FROM ? WHERE '+campoEstatus+' != "Terminado" AND AR="'+arrayCasuisticas[0]+'" ', [res]);
+
+        objeto.res1 = alasql('SELECT "'+area+'" as [product], 0 AS [Fraude Consumado > 3,000,000],  COUNT(*) AS [Fraude Consumado > 100,000],   0 as [Fraude Consumado < 100,000],   0 as [Tentativa de Fraude],   0 as [Consultas injustificadas]   FROM ? WHERE '+campoEstatus+' != "Terminado" AND AR="'+arrayCasuisticas[1]+'" ', [res]);
+
+        objeto.res2 = alasql('SELECT "'+area+'" as [product], 0 AS [Fraude Consumado > 3,000,000],  0 as [Fraude Consumado > 100,000],   COUNT(*) as [Fraude Consumado < 100,000],   0 as [Tentativa de Fraude],   0 as [Consultas injustificadas]   FROM ? WHERE '+campoEstatus+' != "Terminado" AND AR="'+arrayCasuisticas[2]+'" ', [res]);
+
+        objeto.res3 = alasql('SELECT "'+area+'" as [product], 0 AS [Fraude Consumado > 3,000,000],  0 as [Fraude Consumado > 100,000],   0 as [Fraude Consumado < 100,000],   COUNT(*) as [Tentativa de Fraude],   0 as [Consultas injustificadas]   FROM ? WHERE '+campoEstatus+' != "Terminado" AND AR="'+arrayCasuisticas[3]+'" ', [res]);
+
+        objeto.res4 = alasql('SELECT "'+area+'" as [product], 0 AS [Fraude Consumado > 3,000,000],  0 as [Fraude Consumado > 100,000],   0 as [Fraude Consumado < 100,000],   0 as [Tentativa de Fraude],   COUNT(*) as [Consultas injustificadas]   FROM ? WHERE '+campoEstatus+' != "Terminado" AND AR="'+arrayCasuisticas[4]+'" ', [res]);
+
+        var queryUnion = 'SELECT [product], [Fraude Consumado > 3,000,000], [Fraude Consumado > 100,000], [Fraude Consumado < 100,000], [Tentativa de Fraude], [Consultas injustificadas]  from ? '+
+            ' UNION SELECT [product], [Fraude Consumado > 3,000,000], [Fraude Consumado > 100,000], [Fraude Consumado < 100,000], [Tentativa de Fraude], [Consultas injustificadas]  from ? ' +
+            ' UNION SELECT [product], [Fraude Consumado > 3,000,000], [Fraude Consumado > 100,000], [Fraude Consumado < 100,000], [Tentativa de Fraude], [Consultas injustificadas]  from ? ' +
+            ' UNION SELECT [product], [Fraude Consumado > 3,000,000], [Fraude Consumado > 100,000], [Fraude Consumado < 100,000], [Tentativa de Fraude], [Consultas injustificadas]  from ? ' +
+            ' UNION SELECT [product], [Fraude Consumado > 3,000,000], [Fraude Consumado > 100,000], [Fraude Consumado < 100,000], [Tentativa de Fraude], [Consultas injustificadas]  from ? ';
+
+
+        objeto.res5 = alasql(queryUnion, [objeto.res0, objeto.res1, objeto.res2, objeto.res3, objeto.res4])
+
+        objeto.res6 = alasql('SELECT [product], SUM([Fraude Consumado > 3,000,000]) as [Fraude Consumado > 3,000,000], SUM([Fraude Consumado > 100,000]) as [Fraude Consumado > 100,000], SUM([Fraude Consumado < 100,000]) as [Fraude Consumado < 100,000], SUM([Tentativa de Fraude]) as [Tentativa de Fraude], SUM([Consultas injustificadas]) as [Consultas injustificadas]  from ? where product != undefined group by product ', [objeto.res5]);
+
+        return objeto.res6
+    },
+
+    crearGraficacasos1: function (idBuscar, orden) {
+        var objeto = KpisJS.crearObjeto(idBuscar);
+        var where = (KpisJS.crearWhere(objeto, ' A ')).join(' AND ');
+
+        var res = alasql('SELECT * FROM transformaciones WHERE ' + where + '  ');
+        var arrayCasuisticas = ['Fraude Consumado > 3,000,000', 'Fraude Consumado > 100,000', 'Fraude Consumado < 100,000', 'Tentativa de Fraude', 'Consultas Injustificadas'];
+        var objetoDatos = {
+            afg: KpisJS.crearAreaVSCasuisticas('AFG', res, arrayCasuisticas, 'BA' ),
+            Seguridad: KpisJS.crearAreaVSCasuisticas('Seguridad', res, arrayCasuisticas, 'BH' ),
+            RRLL: KpisJS.crearAreaVSCasuisticas('RRLL', res, arrayCasuisticas, 'BO' ),
+            Auditoria: KpisJS.crearAreaVSCasuisticas('Auditoría', res, arrayCasuisticas, 'BX' ),
+            Penal: KpisJS.crearAreaVSCasuisticas('Penal', res, arrayCasuisticas, 'CE' )
+        }
+        var areasVScasuisticas = alasql('SELECT [product], [Consultas injustificadas], [Tentativa de Fraude], [Fraude Consumado < 100,000], [Fraude Consumado > 100,000], [Fraude Consumado > 3,000,000] FROM ?' +
+                                 ' UNION SELECT [product], [Consultas injustificadas], [Tentativa de Fraude], [Fraude Consumado < 100,000], [Fraude Consumado > 100,000], [Fraude Consumado > 3,000,000] FROM ?' +
+                                 ' UNION SELECT [product], [Consultas injustificadas], [Tentativa de Fraude], [Fraude Consumado < 100,000], [Fraude Consumado > 100,000], [Fraude Consumado > 3,000,000] FROM ?' +
+                                 ' UNION SELECT [product], [Consultas injustificadas], [Tentativa de Fraude], [Fraude Consumado < 100,000], [Fraude Consumado > 100,000], [Fraude Consumado > 3,000,000] FROM ?' +
+                                 ' UNION SELECT [product], [Consultas injustificadas], [Tentativa de Fraude], [Fraude Consumado < 100,000], [Fraude Consumado > 100,000], [Fraude Consumado > 3,000,000] FROM ?',
+                                 [objetoDatos['afg'], objetoDatos['Seguridad'], objetoDatos['RRLL'], objetoDatos['Auditoria'], objetoDatos['Penal']]);
+
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+
+        // VERDADERA
+        var res1 = alasql('SELECT "Consultas Injustificadas" AS [product], count(*) AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Consultas Injustificadas" && BA!="" && BA!="Rechazado"', [res]);
+        var res2 = alasql('SELECT "Consultas Injustificadas" AS [product], 0 AS [AFG], count(*) AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Consultas Injustificadas" && BH!="" && BH!="Rechazado"', [res]);
+        var res3 = alasql('SELECT "Consultas Injustificadas" AS [product], 0 AS [AFG], 0 AS [Seguridad], count(*) AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Consultas Injustificadas" && BO!="" && BO!="Rechazado"', [res]);
+        var res4 = alasql('SELECT "Consultas Injustificadas" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], count(*) AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Consultas Injustificadas" && BW!="" && BW!="Rechazado"', [res]);
+        var res5 = alasql('SELECT "Consultas Injustificadas" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], count(*) AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Consultas Injustificadas" && CE!="" && CE!="Rechazado"', [res]);
+        var res51 = alasql('SELECT "Consultas Injustificadas" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], count(*) AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Consultas Injustificadas" && BJ!="" && BJ!="Rechazado"', [res]);
+        var res52 = alasql('SELECT "Consultas Injustificadas" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], count(*) AS [Viabilidad] FROM ? WHERE AR="Consultas Injustificadas" && BS!="" && BS!="Rechazado"', [res]);
+        /*
+        var res7 = alasql('SELECT "Tentativa de Fraude" AS [product], count(*) AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal] FROM ? WHERE AR="Tentativa de Fraude" && BA!="" && BA!="Terminado"', [res]);
+        var res8 = alasql('SELECT "Tentativa de Fraude" AS [product], 0 AS [AFG], count(*) AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal] FROM ? WHERE AR="Tentativa de Fraude" && BH!="" && BH!="Terminado"', [res]);
+        var res9 = alasql('SELECT "Tentativa de Fraude" AS [product], 0 AS [AFG], 0 AS [Seguridad], count(*) AS [RRLL], 0 AS [Auditoria], 0 AS [Penal] FROM ? WHERE AR="Tentativa de Fraude" && BO!="" && BO!="Terminado"', [res]);
+        var res10 = alasql('SELECT "Tentativa de Fraude" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], count(*) AS [Auditoria], 0 AS [Penal] FROM ? WHERE AR="Tentativa de Fraude" && BW!="" && BW!="Terminado"', [res]);
+        var res11 = alasql('SELECT "Tentativa de Fraude" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], count(*) AS [Penal] FROM ? WHERE AR="Tentativa de Fraude" && CE!="" && CE!="Terminado"', [res]);
+        */
+        var res12 = alasql('SELECT "Fraude Consumado < 100,000" AS [product], count(*) AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado < 100,000" && BA!="" && BA!="Rechazado"', [res]);
+        var res13 = alasql('SELECT "Fraude Consumado < 100,000" AS [product], 0 AS [AFG], count(*) AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado < 100,000" && BH!="" && BH!="Rechazado"', [res]);
+        var res14 = alasql('SELECT "Fraude Consumado < 100,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], count(*) AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado < 100,000" && BO!="" && BO!="Rechazado"', [res]);
+        var res15 = alasql('SELECT "Fraude Consumado < 100,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], count(*) AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado < 100,000" && BW!="" && BW!="Rechazado"', [res]);
+        var res16 = alasql('SELECT "Fraude Consumado < 100,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], count(*) AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado < 100,000" && CE!="" && CE!="Rechazado"', [res]);
+        var res161 = alasql('SELECT "Fraude Consumado < 100,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], count(*) AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado < 100,000" && BJ!="" && BJ!="Rechazado"', [res]);
+        var res162 = alasql('SELECT "Fraude Consumado < 100,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], count(*) AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado < 100,000" && BS!="" && BS!="Rechazado"', [res]);
+
+        var res17 = alasql('SELECT "Fraude Consumado > 100,000" AS [product], count(*) AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 100,000" && BA!="" && BA!="Rechazado"', [res]);
+        var res18 = alasql('SELECT "Fraude Consumado > 100,000" AS [product], 0 AS [AFG], count(*) AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 100,000" && BH!="" && BH!="Rechazado"', [res]);
+        var res19 = alasql('SELECT "Fraude Consumado > 100,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], count(*) AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 100,000" && BO!="" && BO!="Rechazado"', [res]);
+        var res20 = alasql('SELECT "Fraude Consumado > 100,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], count(*) AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 100,000" && BW!="" && BW!="Rechazado"', [res]);
+        var res21 = alasql('SELECT "Fraude Consumado > 100,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], count(*) AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 100,000" && CE!="" && CE!="Rechazado"', [res]);
+        var res211 = alasql('SELECT "Fraude Consumado > 100,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], count(*) AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 100,000" && BJ!="" && BJ!="Rechazado"', [res]);
+        var res212 = alasql('SELECT "Fraude Consumado > 100,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], count(*) AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 100,000" && BS!="" && BS!="Rechazado"', [res]);
+
+        var res22 = alasql('SELECT "Fraude Consumado > 3,000,000" AS [product], count(*) AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 3,000,000" && BA!="" && BA!="Rechazado"', [res]);
+        var res23 = alasql('SELECT "Fraude Consumado > 3,000,000" AS [product], 0 AS [AFG], count(*) AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 3,000,000" && BH!="" && BH!="Rechazado"', [res]);
+        var res24 = alasql('SELECT "Fraude Consumado > 3,000,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], count(*) AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 3,000,000" && BO!="" && BO!="Rechazado"', [res]);
+        var res25 = alasql('SELECT "Fraude Consumado > 3,000,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], count(*) AS [Auditoria], 0 AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 3,000,000" && BW!="" && BW!="Rechazado"', [res]);
+        var res26 = alasql('SELECT "Fraude Consumado > 3,000,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], count(*) AS [Penal], 0 AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 3,000,000" && CE!="" && CE!="Rechazado"', [res]);
+        var res261 = alasql('SELECT "Fraude Consumado > 3,000,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], count(*) AS [RCI], 0 AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 3,000,000" && BJ!="" && BJ!="Rechazado"', [res]);
+        var res262 = alasql('SELECT "Fraude Consumado > 3,000,000" AS [product], 0 AS [AFG], 0 AS [Seguridad], 0 AS [RRLL], 0 AS [Auditoria], 0 AS [Penal], 0 AS [RCI], count(*) AS [Viabilidad] FROM ? WHERE AR="Fraude Consumado > 3,000,000" && BS!="" && BS!="Rechazado"', [res]);
+
+
+        var res6 = alasql('SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?',
+                   [res1, res2, res3, res4, res5, res12, res13, res14, res15, res16, res17, res18, res19, res20, res21, res22, res23, res24, res25, res26, res51, res52, res161, res162, res211, res212, res261, res262]);
+
+         res7 = alasql('SELECT product, SUM(AFG) AS [AFG], SUM(Seguridad) AS [Seguridad], SUM(RRLL) AS [RRLL], SUM(RCI) AS [RCI], SUM(Viabilidad) AS [Viabilidad], SUM(Auditoria) AS [Auditoria], SUM(Penal) AS [Penal] FROM ? GROUP BY product',[res6]);
+         option = {
+            title: {
+                text: 'Casuistícas (Área VS Casuísticas)',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            tooltip: settingsGraficas.tooltip,
+            //tooltip: {},
+            color: settingsGraficas.color,
+            barWidth: settingsGraficas.barWidth,
+            legend: {
+                type: 'scroll',
+                orient: 'horizontal', //horizontal or vertical
+                right: 0,
+                top: '10%',
+                bottom: 20,
+                textStyle: settingsGraficas.legend.textStyle,
+                //data: ['Fraude\nConsumado > 300,000,000', 'Fraude Consumado > 100,000', 'Fraude Consumado < 100,000', 'Tentativa Fraude', 'Consultas injustificadas']
+            },
+            grid: {
+                //left: '3%',
+                //right: '5%',
+                bottom: '0%',
+                top: '25%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value'
+            },
+            yAxis: {
+                type: 'category',
+                axisLabel: {
+                    rotate: 0,
+                    fontSize: 9,
+                },
+            },
+            dataset: {
+                // Provide data.
+                //dimensions: ['product', 'Fraude\nConsumado\n> 3,000,000', 'Fraude\nConsumado\n> 100,000', 'Fraude\nConsumado\n< 100,000', 'Tentativa\nde\nFraude', 'Consultas\ninjustificadas'],
+                //source: objetoDatos.afg
+                source: res7 //ESTAES LA QUE MUESTRA RESULTADOS REALES
+                /*source: [{
+                  product: "Consultas Injustificadas",
+                  AFG: 20,
+                  Auditoria: 2,
+                  Penal: 12,
+                  RRLL: 14,
+                  Seguridad: 10
+                },{
+                  product: "Tentativa de Fraude",
+                  AFG: 20,
+                  Auditoria: 2,
+                  Penal: 12,
+                  RRLL: 14,
+                  Seguridad: 10
+                },{
+                  product: "Fraude Consumado < 100,000",
+                  AFG: 20,
+                  Auditoria: 2,
+                  Penal: 12,
+                  RRLL: 14,
+                  Seguridad: 10
+                },{
+                  product: "Fraude Consumado > 100,000",
+                  AFG: 20,
+                  Auditoria: 2,
+                  Penal: 12,
+                  RRLL: 14,
+                  Seguridad: 10
+                },{
+                  product: "Fraude Consumado > 3,000,000",
+                  AFG: 20,
+                  Auditoria: 2,
+                  Penal: 12,
+                  RRLL: 14,
+                  Seguridad: 10
+                }]*/
+            },
+
+            series: [
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: {
+                        normal: {
+                            show: true,
+                            fontSize: 9,
+                            //position: 'insideRight'
+                        }
+                    },
+                    },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: {
+                        normal: {
+                            show: true,
+                            fontSize: 9,
+                            //position: 'insideRight'
+                        }
+                    },
+                    },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: {
+                        normal: {
+                            show: true,
+                            fontSize: 9,
+                            //position: 'insideRight'
+                        }
+                    },
+                    },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: {
+                        normal: {
+                            show: true,
+                            fontSize: 9,
+                            //position: 'insideRight'
+                        }
+                    },
+                    },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: {
+                        normal: {
+                            show: true,
+                            fontSize: 9,
+                            //position: 'insideRight'
+                        }
+                    },
+                  },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: {
+                        normal: {
+                            show: true,
+                            fontSize: 9,
+                            //position: 'insideRight'
+                        }
+                    },
+                  },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: {
+                        normal: {
+                            show: true,
+                            fontSize: 9,
+                            //position: 'insideRight'
+                        }
+                    },
+                  }
+
+                ]
+        };
+        myChart.clear();
+        myChart.setOption(option);
+        myChart.on('click', function (params) {
+          HomeJS.buscarCasos('AreasVSCasuisticas', res7, params);
+        });
+    },
+
+sumaRes: function (res){
+  //console.dir('sumaRes');
+  //console.dir(res);
+  for (var i=0; i<res.length;i++) {
+    console.dir('for');
+    switch (res[i].product){
+      case 'Fraude100':
+        console.dir('>100');
+        console.dir(res[i]);
+        suma[0].presentacion=suma[0].presentacion+res[i].presentacion;
+        suma[0].ratificacion=suma[0].ratificacion+res[i].ratificacion;
+        suma[0].judicializacion=suma[0].judicializacion+res[i].judicializacion;
+        suma[0].intermedia=suma[0].intermedia+res[i].intermedia;
+        suma[0].sentencia=suma[0].sentencia+res[i].sentencia;
+        suma[0].juicio=suma[0].juicio+res[i].juicio;
+        suma[0].ejecucion=suma[0].ejecucion+res[i].ejecucion;
+      break;
+      case 'Fraude3':
+        console.dir('>3');
+        console.dir(res[i]);
+        suma[1].presentacion=suma[1].presentacion+res[i].presentacion;
+        suma[1].ratificacion=suma[1].ratificacion+res[i].ratificacion;
+        suma[1].judicializacion=suma[1].judicializacion+res[i].judicializacion;
+        suma[1].intermedia=suma[1].intermedia+res[i].intermedia;
+        suma[1].sentencia=suma[1].sentencia+res[i].sentencia;
+        suma[1].juicio=suma[1].juicio+res[i].juicio;
+        suma[1].ejecucion=suma[1].ejecucion+res[i].ejecucion;
+      break;
+      default:
+        console.dir('aqui no deberia de estar');
+    }
+  }
+},
+
+crearGraficadenuncia2: function (idBuscar, orden) {
+        var objeto_res= {};
+        var objeto = KpisJS.crearObjeto(idBuscar);
+        var where = (KpisJS.crearWhere(objeto, 'A')).join(' AND ');
+        var res = alasql('SELECT * FROM transformaciones WHERE ' + where + ' ');
+
+        var res1 = alasql('SELECT count(*) AS [value], "Presentación \\n de Denuncias" AS name FROM ? WHERE CI = "Presentación de Denuncias"', [res]);
+        var res2 = alasql('SELECT count(*) AS [value], "Ratificación \\n de Denuncias" AS name FROM ? WHERE CI = "Ratificación de Denuncias"', [res]);
+        var res3 = alasql('SELECT count(*) AS [value], "Audiencia Inicial \\n (judicialización)" AS name FROM ? WHERE CI = "Audiencia Inicial (judicialización)"', [res]);
+        var res4 = alasql('SELECT count(*) AS [value], "Audiencia \\n de Vinculación" AS name FROM ? WHERE CI = "Audiencia de Vinculación"', [res]);
+        var res5 = alasql('SELECT count(*) AS [value], "Audiencia \\n Intermedia" AS name FROM ? WHERE CI = "Audiencia Intermedia"', [res]);
+        var res6 = alasql('SELECT count(*) AS [value], "Sentencia" AS name FROM ? WHERE CI = "Sentencia"', [res]);
+        var res7 = alasql('SELECT count(*) AS [value], "Juicio Oral" AS name FROM ? WHERE CI = "Juicio Oral"', [res]);
+        var res8 = alasql('SELECT count(*) AS [value], "Ejecución de \\n la Sentencia" AS name FROM ? WHERE CI = "Ejecución de la Sentencia"', [res]);
+
+        var resOK = alasql('SELECT [value], [name] FROM ? ' +
+          'UNION SELECT [value], [name] FROM ? ' +
+          'UNION SELECT [value], [name] FROM ? ' +
+          'UNION SELECT [value], [name] FROM ? ' +
+          'UNION SELECT [value], [name] FROM ? ' +
+          'UNION SELECT [value], [name] FROM ? ' +
+          'UNION SELECT [value], [name] FROM ? ' +
+          'UNION SELECT [value], [name] FROM ? ', [res1, res2, res3, res4, res5, res6, res7, res8]);
+
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+
+        option =  {
+    title: {
+                text: 'No. Casos (Etapa Procesal Vs Tipología)',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+    tooltip : {},
+    calculable : true,
+    color: settingsGraficas.color,
+    series : [
+        {
+            name:'Etapa Procesal',
+            type:'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data: resOK // ESTE CONTIENE LA DATA REAL
+            /*data:[
+                {value:335, name:'Presentación \n de Denuncias'},
+                {value:234, name:'Ratificación \n de Denuncias'},
+                {value:310, name:'Audiencia Inicial \n (judicialización)'},
+                {value:135, name:'Ratificación \n de Denuncias'},
+                {value:148, name:'Audiencia \n de Vinculación'},
+                {value:158, name:'Audiencia \n Intermedia'},
+                {value:158, name:'Sentencia'},
+                {value:18, name:'Juicio Oral'},
+                {value:158, name:'Ejecución \n de la Sentencia'}
+            ]*/
+        }
+    ]
+}
+
+        myChart.clear();
+        myChart.setOption(option);
+        myChart.on('click', function (params) {
+          HomeJS.buscarCasos('Etapa Procesal', resOK, params);
+        });
+    },
+
+
+    crearGraficacasos0: function (idBuscar, orden) {
+        var objeto = KpisJS.crearObjeto(idBuscar);
+        var where = (KpisJS.crearWhere(objeto, 'A')).join(' AND ');
+/*
+        var res = alasql('SELECT* FROM estatus WHERE ' + where + ' ');
+
+        var res1 = alasql('SELECT  Estatus as [product], COUNT(*) AS [AFG], 0 as Seguridad, 0 as RRLL, 0 as Auditoria, 0 as Penal FROM ? WHERE Area = "AFG"  GROUP BY Estatus', [res]);
+        var res2 = alasql('SELECT  Estatus as [product],0 as AFG,  COUNT(*) AS [Seguridad], 0 as RRLL, 0 as Auditoria, 0 as Penal FROM ? WHERE Area = "Seguridad"  GROUP BY Estatus', [res]);
+        var res3 = alasql('SELECT  Estatus as [product],0 as AFG,  0 AS Seguridad, COUNT(*) AS [RRLL], 0 as Auditoria, 0 as Penal FROM ? WHERE Area = "RRLL"  GROUP BY Estatus', [res]);
+        var res4 = alasql('SELECT  Estatus as [product],0 as AFG,  0 AS Seguridad,0 AS RRLL, COUNT(*) AS [Auditoria], 0 as Penal FROM ? WHERE Area = "Auditoria" GROUP BY Estatus', [res]);
+        var res5 = alasql('SELECT  Estatus as [product],0 as AFG,  0 AS Seguridad,0 AS RRLL, 0 as Auditoria, COUNT(*) AS [Penal] FROM ? WHERE Area = "Penal"  GROUP BY Estatus', [res]);
+
+        var query = 'SELECT product, AFG, Seguridad, RRLL, Auditoria, Penal from ?' +
+            ' UNION SELECT product, AFG, Seguridad, RRLL, Auditoria, Penal from ?' +
+            ' UNION SELECT product, AFG, Seguridad, RRLL, Auditoria, Penal from ?' +
+            ' UNION SELECT product, AFG, Seguridad, RRLL, Auditoria, Penal from ?' +
+            ' UNION SELECT product, AFG, Seguridad, RRLL, Auditoria, Penal from ?';
+
+        var res8 = alasql(query, [res1, res2, res3, res4, res5]);
+        var res9 = alasql('SELECT product, SUM(AFG) as AFG, SUM(Seguridad) as Seguridad, SUM(RRLL) as RRLL, SUM(Auditoria) as Auditoria, SUM(Penal) as Penal from ? where product != undefined group by product', [res8]);
+
+       console.log(res9);
+       */
+       console.log(where)
+       var res = alasql('SELECT * FROM transformaciones WHERE' + where);
+
+       var resAll = alasql('SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Pendiente" as [product], COUNT(*) AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BA="Pendiente") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "En proceso" as [product], COUNT(*) AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BA="Asignado" || BA="En proceso") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Terminado" as [product], COUNT(*) AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BA="Terminado")' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Pendiente" as [product], 0 AS [AFG], COUNT(*) as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BH="Pendiente") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "En proceso" as [product], 0 AS [AFG], COUNT(*) as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BH="Asignado" || BH="En proceso") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Terminado" as [product], 0 AS [AFG], COUNT(*) as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BH="Terminado")' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Pendiente" as [product], 0 AS [AFG], 0 as Seguridad, COUNT(*) AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BJ="Pendiente") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "En proceso" as [product], 0 AS [AFG], 0 as Seguridad, COUNT(*) AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BJ="Asignado" || BJ="En proceso") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Terminado" as [product], 0 AS [AFG], 0 as Seguridad, COUNT(*) AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BJ="Terminado")' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Pendiente" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, COUNT(*) as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BO="Pendiente") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "En proceso" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, COUNT(*) as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BO="Asignado" || BO="En proceso") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Terminado" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, COUNT(*) as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BO="Terminado")' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Pendiente" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, COUNT(*) AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BS="Pendiente") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "En proceso" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, COUNT(*) AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BS="Asignado" || BS="En proceso") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Terminado" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, COUNT(*) AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BS="Terminado")' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Pendiente" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], COUNT(*) as Auditoria, 0 as Penal FROM ? WHERE BW="Pendiente") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "En proceso" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], COUNT(*) as Auditoria, 0 as Penal FROM ? WHERE BW="Asignado" || BW="En proceso") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Terminado" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], COUNT(*) as Auditoria, 0 as Penal FROM ? WHERE BW="Terminado")' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Pendiente" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, COUNT(*) as Penal FROM ? WHERE CE="Pendiente") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "En proceso" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, COUNT(*) as Penal FROM ? WHERE CE="Asignado" || CE="En proceso") ' +
+                     'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
+                          '(SELECT  "Terminado" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, COUNT(*) as Penal FROM ? WHERE CE="Terminado")',
+                     [res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res]);
+
+       resOK = alasql('SELECT product, SUM([AFG]) as [AFG], SUM([Seguridad]) as [Seguridad], SUM([RCI]) as [RCI], SUM([RRLL]) AS [RRLL], SUM([Viabilidad]) AS [Viabilidad], SUM([Auditoria]) AS [Auditoria], SUM([Penal]) AS [Penal] from ? group by product', [resAll]);
+       console.log(resOK)
+
+       var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+       var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+
+        option = {
+            title: {
+                text: 'No. Casos (Área VS Estatus)',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            //tooltip: settingsGraficas.tooltip,
+            color: settingsGraficas.color,
+            legend: {
+                type: 'scroll',
+                orient: 'horizontal', //horizontal or vertical
+                right: 0,
+                top: '10%',
+                bottom: 20,
+                textStyle: settingsGraficas.legend.textStyle,
+                //data: ['Fraude\nConsumado > 300,000,000', 'Fraude Consumado > 100,000', 'Fraude Consumado < 100,000', 'Tentativa Fraude', 'Consultas injustificadas']
+            },
+            animation: true,
+            tooltip: {},
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+
+            dataset: {
+                // Provide data.
+                dimensions: ['product', 'AFG', 'Seguridad', 'RCI', 'RRLL', 'Viabilidad', 'Auditoria', 'Penal'],
+                source: resOK,
+            },
+            // Declare X axis, which is a category axis, mapping
+            // to the first column by default.
+            xAxis: {
+                axisLabel: {
+                    rotate: 15,
+                    fontSize: 10,
+                },
+                type: 'category',
+            },
+            // Declare Y axis, which is a value axis.
+            yAxis: {},
+            // Declare several series, each of them mapped to a
+            // column of the dataset by default.
+            series: [
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                }
+            ],
+
+        }
+        myChart.clear();
+        myChart.setOption(option);
+        myChart.on('click', function (params) {
+          HomeJS.buscarCasos('AreasVSEstatus', resOK, params);
+        });
+    },
+
+    crearGraficareworks0: function (idBuscar, orden) {
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+
+        option = {
+            title: {
+                text: 'Reworks (Casos rechazados por área)',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            tooltip: settingsGraficas.tooltip,
+            //tooltip: {},
+            color: settingsGraficas.color,
+            legend: {
+                show: true,
+                textStyle: {
+                    fontSize: 9,
+                }
+            },
+            legend: {
+                type: 'scroll',
+                orient: 'horizontal', //horizontal or vertical
+                right: 0,
+                top: '10%',
+                bottom: 20,
+                textStyle: settingsGraficas.legend.textStyle,
+                //data: ['Fraude\nConsumado > 300,000,000', 'Fraude Consumado > 100,000', 'Fraude Consumado < 100,000', 'Tentativa Fraude', 'Consultas injustificadas']
+            },
+            grid: {
+                //left: '3%',
+                //right: '5%',
+                bottom: '0%',
+                top: '25%',
+                containLabel: true
+            },
+            animation: true,
+            xAxis: {
+                axisLabel: {
+                    rotate: 15,
+                    fontSize: 10,
+                },
+                type: 'category',
+            },
+            yAxis: {},
+            dataset: {
+                // Provide data.
+                dimensions: ['product', 'Rechazado', 'Abiertos', 'Cerrados'],
+                source: [
+                    {
+                        product: 'Aclaraciones',
+                        'Rechazado': 93,
+                        'Abiertos': 30,
+                        'Cerrados': 63,
+            },
+                    {
+                        product: 'AFG',
+                        'Rechazado': 93,
+                        'Abiertos': 30,
+                        'Cerrados': 63,
+            },
+                    {
+                        product: 'Seguridad',
+                        'Rechazado': 93,
+                        'Abiertos': 30,
+                        'Cerrados': 63,
+            },
+                    {
+                        product: 'RRLL',
+                        'Rechazado': 93,
+                        'Abiertos': 30,
+                        'Cerrados': 63,
+            },
+                    {
+                        product: 'Viabilidad',
+                        'Rechazado': 93,
+                        'Abiertos': 30,
+                        'Cerrados': 63,
+            },
+                    {
+                        product: 'Auditoria',
+                        'Rechazado': 73,
+                        'Abiertos': 30,
+                        'Cerrados': 43,
+            },
+                    {
+                        product: 'Penal',
+                        'Rechazado': 83,
+                        'Abiertos': 30,
+                        'Cerrados': 53,
+            }
+        ]
+            },
+
+
+            series: [
+                {
+                    type: 'bar',
+                    //stack: 'one',
+                    label: settingsGraficas.label
+                },
+                {
+                    type: 'line',
+                    //stack: 'one',
+                    //label: settingsGraficas.label
+                },
+                {
+                    type: 'line',
+                    //stack: 'one',
+                    //label: settingsGraficas.label
+                }
+        ],
+
+        }
+        myChart.clear();
+        myChart.setOption(option);
+    },
+
+    crearGraficareworks1: function (idBuscar, orden) {
+        var arrayColumns = [
+            {
+                field: 'Fecha',
+                title: 'Fecha',
+                align: 'center',
+                valign: 'middle',
+                visible: true
+            },
+            {
+                field: 'folio',
+                title: 'Folio Caso',
+                align: 'center',
+                valign: 'middle'
+            },
+            {
+                field: 'area',
+                title: 'Área',
+                align: 'center',
+                valign: 'middle',
+                visible: false
+            },
+            {
+                field: 'Rechazos',
+                title: 'Rechazos',
+                align: 'center',
+                valign: 'middle'
+            },
+
+          ];
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        $('#' + idGrafica).bootstrapTable('destroy');
+        KpisJS.crearTabla(idGrafica, arrayColumns, false);
+
+        //Calculando los datos de la tabla
+        //Los objetos traerán los datos de los selects y formaran un where para la consulta a alasql
+        var objeto = KpisJS.crearObjeto(idBuscar);
+        var where = (KpisJS.crearWhere(objeto, 'Fecha')).join(' AND ');
+
+        var res = alasql('SELECT* FROM estatus WHERE ' + where + ' ');
+        //console.table(res);
+        var res1 = alasql('SELECT Fecha, [# Folio] as [folio],  COUNT(*) AS [Rechazos] FROM ? WHERE Estatus = "Rechazado"  GROUP BY [# Folio], Fecha order by Rechazos DESC', [res]);
+        //console.table(res1);
+        $('#' + idGrafica).bootstrapTable('load', res1);
+    },
+
+    crearGraficasla1: function (idBuscar, orden) {
+        var objeto = KpisJS.crearObjeto(idBuscar);
+        var where = (KpisJS.crearWhere(objeto, 'A')).join(' AND ');
+
+        var res = alasql('SELECT * FROM transformaciones WHERE ' + where + ' ');
+        //var res = alasql('SELECT * FROM transformaciones');
+        var datos = {
+            product    : 'Días',
+            AFG        : 0,
+            Seguridad  : 0,
+            RCI        : 0,
+            RRLL       : 0,
+            Viabilidad : 0,
+            Auditoria  : 0,
+            Penal      : 0
+          },
+          dias = 0;
+        res.forEach((dato) => {
+          if (dato.BA === 'Terminado') {
+            dias = MomentJS.obtenerDiferenciaFechas(dato.AX, dato.AZ).diasLaborales;
+            dias = dias === 0 ? 1 : dias;
+            datos.AFG = datos.AFG === 0 ? dias : Number(((datos.AFG + dias) / 2).toFixed());
+          }
+          if (dato.BH === 'Terminado') {
+            dias = MomentJS.obtenerDiferenciaFechas(dato.BE, dato.BG).diasLaborales;
+            dias = dias === 0 ? 1 : dias;
+            datos.Seguridad = datos.Seguridad !== 0 ? Number(((datos.Seguridad + dias) / 2).toFixed()) : dias;
+          }
+          if (dato.BJ === 'Terminado') {
+            dias = MomentJS.obtenerDiferenciaFechas(dato.BI, dato.BK).diasLaborales;
+            dias = dias === 0 ? 1 : dias;
+            datos.RCI = datos.RCI !== 0 ? Number(((datos.RCI + dias) / 2).toFixed()) : dias
+          }
+          if (dato.BO === 'Terminado') {
+            dias = MomentJS.obtenerDiferenciaFechas(dato.BG, dato.BN).diasLaborales;
+            dias = dias === 0 ? 1 : dias;
+            datos.RRLL = datos.RRLL !== 0 ? Number(((datos.RRLL + dias) / 2).toFixed()) : dias;
+          }
+          if (dato.BS === 'Terminado') {
+            dias = MomentJS.obtenerDiferenciaFechas(dato.BP, dato.BQ).diasLaborales;
+            dias = dias === 0 ? 1 : dias;
+            datos.Viabilidad = datos.Viabilidad !== 0 ? Number(((datos.Viabilidad + dias) / 2).toFixed()) : dias;
+          }
+          if (dato.BW === 'Terminado') {
+            dias = MomentJS.obtenerDiferenciaFechas(dato.BU, dato.BX).diasLaborales;
+            dias = dias === 0 ? 1 : dias;
+            datos.Auditoria = datos.Auditoria !== 0 ? Number(((datos.Auditoria + dias) / 2).toFixed()) : dias;
+          }
+          if (dato.CE !== '' && dato.CE !== ' ') {
+            dias = MomentJS.obtenerDiferenciaFechas(dato.BX, dato.CD).diasLaborales;
+            dias = dias === 0 ? 1 : dias;
+            datos.Penal = datos.Penal !== 0 ? Number(((datos.Penal + dias) / 2).toFixed()) : dias;
+          }
+        });
+
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+
+
+        option = {
+            title: {
+                text: 'SLA (Días Promedio VS Área)',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            //tooltip: settingsGraficas.tooltip,
+            tooltip: {},
+            color: settingsGraficas.color,
+            barWidth: '80%',
+            legend: {
+                type: 'scroll',
+                orient: 'horizontal', //horizontal or vertical
+                right: 0,
+                top: '10%',
+                bottom: 20,
+                textStyle: settingsGraficas.legend.textStyle,
+                //data: ['Fraude\nConsumado > 300,000,000', 'Fraude Consumado > 100,000', 'Fraude Consumado < 100,000', 'Tentativa Fraude', 'Consultas injustificadas']
+            },
+            grid: {
+                //left: '3%',
+                //right: '5%',
+                bottom: '0%',
+                top: '25%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value'
+            },
+            yAxis: {
+                type: 'category',
+                axisLabel: {
+                    rotate: 0,
+                    fontSize: 9,
+                },
+            },
+            dataset: {
+                // Provide data.
+                //dimensions: ['product', 'AFG', 'Seguridad', 'RRLL', 'Viabilidad', 'Auditoria', 'Penal'],
+                dimensions: ['product', 'AFG', 'Seguridad', 'RCI', 'RRLL', 'Viabilidad', 'Auditoria', 'Penal'],
+                /*source: [
+                    {
+                        product: 'Días',
+                        'AFG': 5,
+                        'Seguridad': 2,
+                        'RRLL': 3,
+                        'Viabilidad': 5,
+                        'Auditoria': 7,
+                        'Penal': 10
+                    },
+
+                ]*/
+                source: [datos],
+            },
+            series: [
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                }
+            ],
+        };
+        myChart.clear();
+        myChart.setOption(option);
+        myChart.on('click', function () {
+          //HomeJS.buscarCasos('SLA');
+        });
+        myChart.on('mousemove', function (params) {
+          myChart.getZr().setCursorStyle('default');
+        });
+    },
+
+    crearGraficasla0: function (idBuscar, orden) {
+        var objeto = KpisJS.crearObjeto(idBuscar);
+        var where = (KpisJS.crearWhere(objeto, 'A')).join(' AND ');
+
+        var res = alasql('SELECT * FROM transformaciones WHERE ' + where + ' ');
+        // Base
+        nivelesDServicio = [];
+        // Contenido
+        resAFG = alasql('SELECT CK AS [Folio], AR AS [tipologia], AX AS [Inicio], AZ AS [Fin], "AFG" AS [product] FROM ? WHERE BA!=""', [res]);
+        resSeguridad = alasql('SELECT CK AS [Folio], AR AS [tipologia], BE AS [Inicio], BG AS [Fin], "Seguridad" AS [product] FROM ? WHERE BH!=""', [res]);
+        resRCI = alasql('SELECT CK AS [Folio], AR AS [tipologia], BI AS [Inicio], BK AS [Fin], "RCI" AS [product] FROM ? WHERE BJ!=""', [res]);
+        resRRLL = alasql('SELECT CK AS [Folio], AR AS [tipologia], BG AS [Inicio], BN AS [Fin], "RRLL" AS [product] FROM ? WHERE BO!=""', [res]);
+        resViabilidad = alasql('SELECT CK AS [Folio], AR AS [tipologia], BP AS [Inicio], BQ AS [Fin], "Viabilidad" AS [product] FROM ? WHERE BS!=""', [res]);
+        resAuditoria = alasql('SELECT CK AS [Folio], AR AS [tipologia], BU AS [Inicio], BX AS [Fin], "Auditoría" AS [product] FROM ? WHERE BW!=""', [res]);
+        resPenal = alasql('SELECT CK AS [Folio], AR AS [tipologia], BX AS [Inicio], CD AS [Fin], "Penal" AS [product] FROM ? WHERE CE!=""', [res]);
+        res = alasql('SELECT [Folio], [product], [tipologia], [Inicio], [Fin] FROM ?' +
+            ' UNION SELECT [Folio], [product], [tipologia], [Inicio], [Fin] FROM ?' +
+            ' UNION SELECT [Folio], [product], [tipologia], [Inicio], [Fin] FROM ?' +
+            ' UNION SELECT [Folio], [product], [tipologia], [Inicio], [Fin] FROM ?' +
+            ' UNION SELECT [Folio], [product], [tipologia], [Inicio], [Fin] FROM ?' +
+            ' UNION SELECT [Folio], [product], [tipologia], [Inicio], [Fin] FROM ?' +
+            ' UNION SELECT [Folio], [product], [tipologia], [Inicio], [Fin] FROM ?',
+            [resAFG, resSeguridad, resRRLL, resViabilidad, resAuditoria, resPenal, resRCI]);
+        res.forEach((dato) => {
+          dato.product = dato.product === 'Auditoría' ? 'Auditoria' : dato.product;
+          if (dato.tipologia === '') {
+            return;
+          }
+          var id_area = alasql('SELECT ROW id_area FROM area WHERE nb_area="' + dato.product + '"')[0];
+          var tiempo = alasql('SELECT ROW tmp_backlog FROM area_tmp WHERE id_area=' + id_area + ' AND tipologia="' + dato.tipologia + '"')[0];
+          dato.Fin = dato.Fin === '' ? moment().format('YYYY-MM-DD') : dato.Fin;
+          var falta = MomentJS.obtenerDiferenciaFechas(dato.Inicio, dato.Fin).diasLaborales;
+          if (falta < parseInt(tiempo - (tiempo * 0.2))) {
+            nivelesDServicio.push({
+              'product'         : dato.product,
+              'En tiempo'       : 1,
+              'Por vencer'      : 0,
+              'Fuera de tiempo' : 0
+            });
+          } else if (falta < tiempo) {
+            nivelesDServicio.push({
+              'product'         : dato.product,
+              'En tiempo'       : 0,
+              'Por vencer'      : 1,
+              'Fuera de tiempo' : 0
+            });
+          } else {
+            nivelesDServicio.push({
+              'product'         : dato.product,
+              'En tiempo'       : 0,
+              'Por vencer'      : 0,
+              'Fuera de tiempo' : 1
+            });
+          }
+        });
+        // Obtenermos los productos por área en la qeu está
+        var resOK = alasql('SELECT product, SUM([En tiempo]) as [En tiempo], SUM([Por vencer]) as [Por vencer], SUM([Fuera de tiempo]) as [Fuera de tiempo] from ? group by product', [nivelesDServicio]);
+        // Obtenemos los productos en base a la última área en que ha avanzado
+        // var resOK = alasql('SELECT area AS product, CASE WHEN nivelServicio="En tiempo" THEN COUNT(nivelServicio) ELSE 0 END AS [En tiempo], CASE WHEN nivelServicio="Por vencer" THEN COUNT(nivelServicio) ELSE 0 END AS [Por vencer], CASE WHEN nivelServicio="Fuera de tiempo" THEN COUNT(nivelServicio) ELSE 0 END AS [Fuera de tiempo] from slas GROUP BY nivelServicio, area');
+
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+
+        option = {
+            title: {
+              text: 'SLA (Retraso)',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            //tooltip: settingsGraficas.tooltip,
+            color: settingsGraficas.color,
+            legend: {
+                type: 'scroll',
+                orient: 'horizontal', //horizontal or vertical
+                right: 0,
+                top: '10%',
+                bottom: 20,
+                textStyle: settingsGraficas.legend.textStyle,
+                //data: ['Fraude\nConsumado > 300,000,000', 'Fraude Consumado > 100,000', 'Fraude Consumado < 100,000', 'Tentativa Fraude', 'Consultas injustificadas']
+            },
+            animation: true,
+            tooltip: {},
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+
+            dataset: {
+                // Provide data.
+                dimensions: ['product','En tiempo', 'Por vencer', 'Fuera de tiempo'],
+                source: resOK, //Data REAL
+                /*source: [{'product': 'AFG',
+                  'En tiempo': 20,
+                  'Por vencer': 3,
+                  'Fuera de tiempo': 1
+                },
+                {'product': 'Seguridad',
+                  'En tiempo': 5,
+                  'Por vencer': 15,
+                  'Fuera de tiempo': 0
+                },
+                {'product': 'RRLL',
+                  'En tiempo': 15,
+                  'Por vencer': 23,
+                  'Fuera de tiempo': 8
+                },
+                {'product': 'Auditoría',
+                  'En tiempo': 12,
+                  'Por vencer': 13,
+                  'Fuera de tiempo': 0
+                },
+                {'product': 'Penal',
+                  'En tiempo': 2,
+                  'Por vencer': 0,
+                  'Fuera de tiempo': 0
+                }],*/
+            },
+            // Declare X axis, which is a category axis, mapping
+            // to the first column by default.
+            xAxis: {
+                axisLabel: {
+                    rotate: 0,
+                    fontSize: 10,
+                },
+                type: 'category',
+            },
+            // Declare Y axis, which is a value axis.
+            yAxis: {},
+            // Declare several series, each of them mapped to a
+            // column of the dataset by default.
+            series: [
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                    itemStyle: {normal: {color:'rgb(134,200,45)', label:{show:true}}},
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                    itemStyle: {normal: {color:'rgb(253,189,44)', label:{show:true}}},
+                },
+                {
+                    type: 'bar',
+                    stack: 'one',
+                    label: settingsGraficas.label,
+                    itemStyle: {normal: {color:'rgb(254,0,0)', label:{show:true}}},
+                }
+            ],
+
+        }
+        myChart.clear();
+        myChart.setOption(option);
+        myChart.on('click', function (params) {
+          HomeJS.buscarCasos('SLARetraso', resOK, params);
+        });
+    },
+
+    crearGraficasla2: function (idBuscar, orden) {
+        var arrayColumns = [
+            {
+                field: 'nivelServicio',
+                title: 'Nivel de servicio',
+                align: 'center',
+                valign: 'middle',
+                visible: true
+            },
+            {
+                field: 'folio',
+                title: 'Folio Caso',
+                align: 'center',
+                valign: 'middle'
+            },
+            {
+                field: 'area',
+                title: 'Área',
+                align: 'center',
+                valign: 'middle'
+            },
+            {
+                field: 'dias_proceso',
+                title: 'Días de proceso',
+                align: 'center',
+                valign: 'middle'
+            },
+
+          ];
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        $('#' + idGrafica).bootstrapTable('destroy');
+        //KpisJS.crearTabla(idGrafica, arrayColumns, false);
+        //Los objetos traerán los datos de los selects y formaran un where para la consulta a alasql
+        var objeto = KpisJS.crearObjeto(idBuscar);
+        var where = (KpisJS.crearWhere(objeto, 'Fecha')).join(' AND ');
+
+        var res = alasql('SELECT TOP 5 nivelServicio, folio, area, dias AS dias_proceso FROM slas JOIN transformaciones ON slas.folio = transformaciones.CK WHERE nivelServicio="Fuera de tiempo" ORDER BY dias DESC');
+        //var res = alasql('SELECT TOP 5 nivelServicio, folio, area, dias AS dias_proceso FROM slas JOIN transformaciones ON slas.folio = transformaciones.CK WHERE nivelServicio="En tiempo" ORDER BY dias DESC');
+
+        var resOK = alasql('SELECT * FROM ? WHERE ' + where, [res]);
+
+        KpisJS.crearTabla(idGrafica, arrayColumns, false, res);
+
+    },
+
+    crearGraficabacklog0: function (idBuscar, orden) {
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+        option = {
+            title: {
+                text: 'SLA (No casos por área)',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            tooltip: settingsGraficas.tooltip,
+            //tooltip: {},
+            color: settingsGraficas.color,
+            legend: {
+                show: true,
+                textStyle: {
+                    fontSize: 9,
+                }
+            },
+            legend: {
+                type: 'scroll',
+                orient: 'horizontal', //horizontal or vertical
+                right: 0,
+                top: '10%',
+                bottom: 20,
+                textStyle: settingsGraficas.legend.textStyle,
+                //data: ['Fraude\nConsumado > 300,000,000', 'Fraude Consumado > 100,000', 'Fraude Consumado < 100,000', 'Tentativa Fraude', 'Consultas injustificadas']
+            },
+            grid: {
+                //left: '3%',
+                //right: '5%',
+                bottom: '0%',
+                top: '25%',
+                containLabel: true
+            },
+            animation: true,
+            xAxis: {
+                axisLabel: {
+                    rotate: 15,
+                    fontSize: 10,
+                },
+                type: 'category',
+            },
+            yAxis: {},
+            dataset: {
+                // Provide data.
+                dimensions: ['product', 'SLA'],
+                source: [
+                    {
+                        product: 'Aclaraciones',
+                        'SLA': 93,
+            },
+                    {
+                        product: 'AFG',
+                        'SLA': 30,
+            },
+                    {
+                        product: 'Seguridad',
+                        'SLA': 63,
+            },
+                    {
+                        product: 'RRLL',
+                        'SLA': 43,
+            },
+                    {
+                        product: 'Viabilidad',
+                        'SLA': 63,
+            },
+                    {
+                        product: 'Auditoria',
+                        'SLA': 63,
+            },
+                    {
+                        product: 'Penal',
+                        'SLA': 63,
+            }
+        ]
+            },
+
+
+            series: [
+                {
+                    type: 'bar',
+                    //stack: 'one',
+                    label: settingsGraficas.label
+                }
+        ],
+
+        }
+        myChart.clear();
+        myChart.setOption(option);
+    },
+
+    crearGraficabacklog1: function (idBuscar, orden) {
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+        option = {
+            title: {
+                text: 'SLA General',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            legend: settingsGraficas.legend,
+            tooltip: {
+                formatter: function (params) {
+                    return params.value.title + ': ' + params.value.value + '%';
+                },
+            },
+            dataset: {
+                source: [
+                    {
+                        value: 35,
+                        title: 'Fuera',
+                        order: 1
+                    }
+                ]
+            },
+            series: [
+                {
+                    //name: 'Denuncias',
+                    type: 'gauge',
+                    clockwise: true,
+                    startAngle: 180,
+                    endAngle: 0,
+                    center: ['50%', '60%'],
+                    radius: '80%',
+                    pointer: {
+                        show: true,
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            width: 15,
+                            color: [[0.3, '#5BBEFF'], [0.7, '#1464A5'], [1, '#004481']],
+                        },
+                    },
+
+                    splitLine: {
+                        show: false
+                    },
+                    detail: {
+                        formatter: '{value}%'
+                    },
+                }
+            ]
+        };
+        myChart.clear();
+
+        myChart.setOption(option);
+
+    },
+
+    crearGraficabacklog2: function (idBuscar, orden) {
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+        option = {
+            title: {
+                text: 'SLA por área',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            legend: settingsGraficas.legend,
+            tooltip: {
+                formatter: function (params) {
+                    return params.value.title + ': ' + params.value.value + '%';
+                },
+            },
+            dataset: {
+                source: [
+                    {
+                        value: 45,
+                        title: 'Fuera',
+                        order: 1
+                    }
+                ]
+            },
+            series: [
+                {
+                    //name: 'Denuncias',
+                    type: 'gauge',
+                    clockwise: true,
+                    startAngle: 180,
+                    endAngle: 0,
+                    center: ['50%', '60%'],
+                    radius: '80%',
+                    pointer: {
+                        show: true,
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            width: 15,
+                            color: [[0.3, '#5BBEFF'], [0.7, '#1464A5'], [1, '#004481']],
+                        },
+                    },
+
+                    splitLine: {
+                        show: false
+                    },
+                    detail: {
+                        formatter: '{value}%'
+                    },
+                }
+            ]
+        };
+        myChart.clear();
+        myChart.setOption(option);
+
+    },
+
+    crearGraficasimul2: function (idBuscar, orden) {
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+
+        option = {
+            title: {
+                text: 'Reworks (Casos rechazados por área)',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            tooltip: settingsGraficas.tooltip,
+            //tooltip: {},
+            color: settingsGraficas.color,
+            legend: {
+                show: true,
+                textStyle: {
+                    fontSize: 9,
+                }
+            },
+            legend: {
+                type: 'scroll',
+                orient: 'horizontal', //horizontal or vertical
+                right: 0,
+                top: '10%',
+                bottom: 20,
+                textStyle: settingsGraficas.legend.textStyle,
+                //data: ['Fraude\nConsumado > 300,000,000', 'Fraude Consumado > 100,000', 'Fraude Consumado < 100,000', 'Tentativa Fraude', 'Consultas injustificadas']
+            },
+            grid: {
+                //left: '3%',
+                //right: '5%',
+                bottom: '0%',
+                top: '25%',
+                containLabel: true
+            },
+            animation: true,
+            xAxis: {
+                axisLabel: {
+                    rotate: 15,
+                    fontSize: 10,
+                },
+                type: 'category',
+            },
+            yAxis: {},
+            dataset: {
+                // Provide data.
+                dimensions: ['product', 'Casos', 'Tiempo Promedio'],
+                source: [
+                    {
+                        product: 'Ivan Justo',
+                        'Casos': 93,
+                        'Tiempo Promedio': 30
+            },
+                    {
+                        product: 'JL',
+                        'Casos': 93,
+                        'Tiempo Promedio': 30
+            },
+                    {
+                        product: 'Lore',
+                        'Casos': 93,
+                        'Tiempo Promedio': 30
+            }
+        ]
+            },
+
+
+            series: [
+                {
+                    type: 'bar',
+                    //stack: 'one',
+                    label: settingsGraficas.label
+                },
+                {
+                    type: 'line',
+                    //stack: 'one',
+                    //label: settingsGraficas.label
+                },
+        ],
+
+        }
+        myChart.clear();
+        myChart.setOption(option);
+    },
+
+    crearGraficasimul1: function (idBuscar, orden) {
+        var objeto = KpisJS.crearObjeto(idBuscar);
+        var where = (KpisJS.crearWhere(objeto, 'A')).join(' AND ');
+        var res = alasql('SELECT COUNT(*) AS TOTAL FROM transformaciones WHERE ' + where + ' ');
+        var res1 = alasql('SELECT COUNT(*) AS TOTAL FROM transformaciones WHERE AC != "" AND  ' + where + ' ');
+        var res2 = alasql('SELECT ROUND((TOTAL/(SELECT TOTAL FROM ?))*100, 2) as [value], "Cartas Firmadas" as [title], 1 as [order] FROM ? ', [res, res1]);
+
+        $.each(res2, function (k, v) {
+                v.value = v.value == undefined ? 0 : v.value
+        });
+
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+        option = {
+            title: {
+                text: 'Cartas Finiquito Firmadas',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            legend: settingsGraficas.legend,
+            tooltip: {
+                formatter: function (params) {
+                    return params.value.title + ': ' + res1[0].TOTAL;
+                },
+            },
+            dataset: {
+                source: res2,
+            },
+            series: [
+                {
+                    //name: 'Fini',
+                    type: 'gauge',
+                    clockwise: true,
+                    startAngle: 180,
+                    endAngle: 0,
+                    center: ['50%', '60%'],
+                    radius: '80%',
+                    pointer: {
+                        show: true,
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            width: 15,
+                            color: [[0.3, '#5BBEFF'], [0.7, '#1464A5'], [1, '#004481']],
+                        },
+                    },
+
+                    splitLine: {
+                        show: false
+                    },
+                    detail: {
+                        formatter: '{value}%'
+                    },
+                }
+            ]
+        };
+        myChart.clear();
+        myChart.setOption(option);
+        myChart.on('click', function (params) {
+          // HomeJS.buscarCasos('CartasFiniquito', res2, params);
+        });
+
+    },
+
+crearGraficasimul0: function (idBuscar, orden) {
+        var objeto = KpisJS.crearObjeto(idBuscar);
+        var where = (KpisJS.crearWhere(objeto, 'A')).join(' AND ');
+        var res = alasql('SELECT COUNT(*) AS TOTAL FROM transformaciones WHERE ' + where + ' ');
+        var res1 = alasql('SELECT COUNT(*) AS TOTAL FROM transformaciones WHERE CI === "Ejecución de la Sentencia" AND  ' + where + ' ');
+        var res2 = alasql('SELECT ROUND((TOTAL/(SELECT TOTAL FROM ?))*100, 2) as [value], "Sentencias Obtenidas" as [title], 1 as [order] FROM ? ', [res, res1]);
+        var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
+        var myChart = echarts.init(document.getElementById(idGrafica), null, {
+            renderer: 'canvas'
+        });
+        option = {
+            title: {
+                text: 'Sentencias obtenidas',
+                textStyle: settingsGraficas.textStyle,
+                x: settingsGraficas.x
+            },
+            legend: settingsGraficas.legend,
+            tooltip: {
+                formatter: function (params) {
+                    return params.value.title + ': ' + res1[0].TOTAL;
+                },
+            },
+            dataset: {
+                source: res2,
+            },
+            series: [
+                {
+                    //name: 'Fini',
+                    type: 'gauge',
+                    clockwise: true,
+                    startAngle: 180,
+                    endAngle: 0,
+                    center: ['50%', '60%'],
+                    radius: '80%',
+                    pointer: {
+                        show: true,
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            width: 15,
+                            color: [[0.3, '#88ca9a'], [0.7, '#5ac4c4'], [1, '#028484']],
+                        },
+                    },
+
+                    splitLine: {
+                        show: false
+                    },
+                    detail: {
+                        formatter: '{value}%'
+                    },
+                }
+            ]
+        };
+        myChart.clear();
+        myChart.setOption(option);
+
+        myChart.on('click', function (params) {
+          HomeJS.buscarCasos('NumSentencias', res2, params);
+        });
+
+    },
+
+
+}
+</script>

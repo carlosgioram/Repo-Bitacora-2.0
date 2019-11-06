@@ -1,0 +1,41 @@
+<script>
+  FormularioJS.modal = {
+    AFG: {
+      buscarCasoSimilar: function (indice) {
+        indice = indice ? indice : FormularioJS.active;
+        var casos = alasql('SELECT * REMOVE indice, CK FROM transformaciones WHERE indice = ' + indice);
+        MenuJS.openLilWaitMessage();
+
+        FormularioJS.sprdsheet.conFiltro('Clientes', 7, '').then(function () {
+        MenuJS.closeLilWaitMessage();
+          var similares = [];
+          casos.forEach((caso) => {
+            alasql('SELECT DISTINCT CK FROM transformaciones WHERE F = "' + caso['F'] + '" OR G = "' + caso['G'] + '" OR H = "' + caso['H'] + '" OR I = "' + caso['I'] + '" OR K = "' + caso['K'] + '" OR L = "' + caso['L'] + '"')
+              .forEach((similar) => similares.push(similar['CK']));
+          });
+          var caso = alasql('SELECT * FROM  transformaciones WHERE indice=' + indice);
+          bootbox.dialog({
+            title: 'Seleccionar Casos Similares',
+            message: 'Casos similares para ' + caso.CK + '<br /><select id="casosSimilares" multiselect;><option>' + similares.join('</option><option>') + '</option></select>',
+            size: 'large',
+                buttons: {
+                  rechazo: {
+                    label: "Seleccionar casos",
+                    className: 'btn-danger',
+                    callback: function () {
+                      var casosSeleccionados = $('#casosSimilares').val();
+                      $('#caso').val(casosSeleccionados);
+                    }
+                  },
+                  cancelar: {
+                    label: "cerrar",
+                    className: 'btn-info',
+                  }
+                }
+          });
+          console.log(similares);
+        });
+      }
+    }
+  }
+</script>

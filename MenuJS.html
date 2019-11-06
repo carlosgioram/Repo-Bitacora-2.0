@@ -1,0 +1,161 @@
+<script>
+
+var MenuJS = {
+
+   arrayMenuTipos : [],
+   arrayMenuAdmi : [],
+   arrayIncompletos : [],
+   menuAdministracion : "",
+
+  init : function() {
+
+   //console.log("Constructor MenuJS");
+    $('#my-head > span.mh-btns-right').html('');
+    //GestionFaltantesJS.error("EL USUSARIO NO EXISTE");
+   /*google.script.run.withSuccessHandler(MenuJS.procesarDatosUsuario).
+       withFailureHandler(JS_Base_Generic.setFailure).getBasicMenu("SELECT * FROM TQAE003_EXP_USUARIO WHERE correo = '"+sessionStorage.NB_CORREO+"'");
+       */
+      MenuJS.nuevoMenu();
+  },
+
+  nuevoMenu: function () {
+    var superJsonMenu = '';
+
+    // AGREGAMOS EL MENU
+    var modulosN1 = alasql('SELECT * FROM (SELECT * FROM usuarios JOIN modulo_puesto USING id_puesto JOIN modulo USING id_modulo) WHERE email = "' + sessionStorage.NB_CORREO + '" AND Activo=1 AND nivel=1'),
+      modulosN2 = alasql('SELECT * FROM (SELECT * FROM usuarios JOIN modulo_puesto USING id_puesto JOIN modulo USING id_modulo) WHERE email = "' + sessionStorage.NB_CORREO + '" AND Activo=1 AND nivel=2');
+    var modulos = {
+      "1": '{"nombreMenu": "Búsqueda de casos", "nombreComponente": "Casos", "href": "xxx", "icono": "icono_bbva_azul_1_ticket_icon"}',
+      "2": '{"nombreMenu": "Nuevo Caso", "nombreComponente": "Formulario", "href": "xxx", "icono": "icono_bbva_azul_3_document_icon"}',
+      "3": ['{"nombreMenu": "Administración", "nombreComponente": "", "link": [', '], "icono": "icono_bbva_azul_3_settings_icon"}'],
+      "4": '{"nombreMenu": "Usuarios", "nombreComponente": "Usuarios", "href": "xxx", "icono": "icono_bbva_azul_3_team_icon"}',
+      "5": '{"nombreMenu": "KPIs", "nombreComponente": "Kpis", "href": "xxx", "icono": "icono_bbva_azul_3_graphics_icon"}',
+      "6": '{"nombreMenu": "Manuales", "nombreComponente": "Descargables", "href": "xxx", "icono": "icono_bbva_azul_3_download_icon"}',
+    };
+    superJsonMenu = modulosN1.map((modulo) => modulo ? modulos[modulo.id_modulo] : '').toString() + ',' + modulosN2.map((modulo) => modulos ? modulos[modulo.id_modulo_padre][0] + modulos[modulo.id_modulo] + modulos[modulo.id_modulo_padre][1] : '').toString();
+
+    //console.log('superJsonMenu', superJsonMenu)
+    //superJsonMenu = opciones[0] + ',' + opciones[1] + ',' + opciones[2];
+    MenuJS.menuByJson(superJsonMenu.replace(/^,|,$/, ''));
+  },
+
+    menuByJson: function(tipos){
+        // console.dir('holaaaaa');
+        var jsonInicial = '{"objetoMenu": [{"nombreMenu": "Inicio","nombreComponente": "Home","link": "","id-link": "li-avisos","icono": "icono_bbva_h_azul_3_home_icon"},'
+        var comaIntermedia = "";
+        var jsonFinal = ']}';
+
+
+        var superJSON = jsonInicial + tipos + comaIntermedia + jsonFinal;
+        //console.dir(superJSON);
+        var obj =  JSON.parse(superJSON);
+        // console.dir(obj);
+        BaseGenericJS.recorridoPrincipal(obj);
+        BaseGenericJS.getContent("Home", $(this).attr('linkN2'), $(this).attr('id_link'));
+
+        // Identificando usuario
+        var correo = sessionStorage.NB_CORREO;
+        //correo = "santiago.verda.contractor@bbva.com"
+        var usuario = alasql('SELECT ROW * FROM usuarios WHERE email = "' + correo + '"');
+
+        sessionStorage.nombre = usuario[2];
+        sessionStorage.m_usuario = usuario[0];
+        sessionStorage.id_puesto = usuario[3];
+        sessionStorage.titular = usuario[5];
+
+        $("#contenedorMain").fadeIn();
+        $(".wait_panel_menu").hide();
+
+        MenuJS.addEventosMenu();
+
+  },
+
+  openWaitMessage : function(mensaje){
+      $(".wait_panel").fadeIn();
+      $("#super_panel").hide();
+      GenericJS.paddingBody();
+  },
+
+  closeWaitMessage : function (){
+      $(".wait_panel").hide();
+      $("#super_panel").fadeIn();
+      setTimeout(function() {$('.mm-page__blocker').click();}, 100);
+      GenericJS.paddingBody();
+  },
+
+  openLilWaitMessage : function(){
+      $('#inner-content > div.wait_panel > label').html('').html("CARGANDO...");
+      $("#waitMessage").modal('show');
+      $('#datetimepicker6').fadeOut();
+      $('#datetimepicker7').fadeOut();
+      $(window).scrollTop(0)
+      GenericJS.paddingBody();
+  },
+
+  closeLilWaitMessage : function (){
+      $("#waitMessage").modal('hide');
+      $('#datetimepicker6').fadeIn();
+      $('#datetimepicker7').fadeIn();
+      setTimeout(GenericJS.paddingBody(), 300);
+  },
+
+  addEventosMenu: function(){
+      $('.mm-page__blocker').on( "click", function() {
+            $('.mm-wrapper_sidebar-collapsed-60').removeClass(' mm-wrapper_opened mm-wrapper_background ');
+            setTimeout(function(){
+                $('.mm-wrapper_sidebar-collapsed-60').removeClass(' mm-wrapper_blocking mm-wrapper_opening');
+            }, 400);
+            setTimeout(function() {
+              $('#my-icon').removeClass( "is-active" );
+            }, 100);
+        });
+        $('#menu').on( "click", function() {
+
+            $('.mm-wrapper_sidebar-collapsed-60').addClass(' mm-wrapper_opened mm-wrapper_background mm-wrapper_blocking ');
+            setTimeout(function(){
+                $('.mm-wrapper_sidebar-collapsed-60').addClass(' mm-wrapper_opening');
+            }, 400);
+            setTimeout(function() {
+              $('#my-icon').addClass( "is-active" );
+            }, 100);
+        });
+
+        $('#my-icon').on( "click", function() {
+            if($('#my-icon').hasClass("is-active")){
+                $('#menu').removeClass("mm-menu_opened");
+                $('.mm-wrapper_sidebar-collapsed-60').removeClass(' mm-wrapper_opened mm-wrapper_background ');
+                setTimeout(function(){
+                    $('.mm-wrapper_sidebar-collapsed-60').removeClass(' mm-wrapper_blocking mm-wrapper_opening');
+                }, 400);
+                setTimeout(function() {
+                  $('#my-icon').removeClass( "is-active" );
+                }, 100);
+            }else{
+                $('#menu').addClass("mm-menu_opened");
+                $('.mm-wrapper_sidebar-collapsed-60').addClass(' mm-wrapper_opened mm-wrapper_background mm-wrapper_blocking ');
+                setTimeout(function(){
+                    $('.mm-wrapper_sidebar-collapsed-60').addClass(' mm-wrapper_opening');
+                }, 400);
+                setTimeout(function() {
+                  $('#my-icon').addClass( "is-active" );
+                }, 100);
+            }
+        });
+
+        //Agregando al tooltip del menu
+
+           var cuentaUsuario = ""+sessionStorage.NB_CORREO +""
+                        + "<br>Nombre: "+ sessionStorage.nombre+""
+						+ "<br>Usuario Red: "+sessionStorage.m_usuario+"" ;
+          $('#Account').removeAttr('tooltip');
+          $('#Account').attr('tooltip', cuentaUsuario);
+          $('#Account > span').html('').html(cuentaUsuario);
+        $('#mm-0').removeAttr('style');
+    },
+
+}
+/*
+$(document).ready(function () {
+     MenuJS.init();
+  });*/
+</script>

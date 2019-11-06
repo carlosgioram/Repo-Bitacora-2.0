@@ -1,0 +1,71 @@
+<div class="wait_panel" style="text-align: center; margin-top: 15%;">
+       <div class="cargando"></div>
+       <br>
+       <label class="control-label bbva02 negrita" style="font-size: 20px;">CARGANDO...</label>
+</div>
+
+<div id="super_panel">
+<div class="clearfix">
+        <br>
+</div>
+
+<!--<h1 style="text-align: center; color: #094fa4; font-size: 450%;"><strong>Q/A DIGITAL IBMI</strong></h1>--->
+
+<div class="panel panel-primary" >
+  <div class="panel-body">
+
+     <div class="row">
+
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+           <img style="float: left; width: 10px; height: 60px;" class="img-responsive img_bancomer_rayas">
+           <p style="font-weight: bold; color: #4F81BD; font-size: 24px; padding-left: 20px;">
+              <span id="span_modulo_titulo">INICIO BITÁCORA 2.0</span>
+           </p>
+           <p style="color: #4F81BD; padding-left: 20px;" id="p_modulo_descripcion">Inicio</p>
+           <!--<div id="btn_descargar_base" class="btn btn-primary glyphicon glyphicon-download site-tooltipHome hide" data-toggle="tooltip" aria-describedby="tooltip" data-original-title="Descargar base completa" style="position: absolute; right: 20px; top: 30px;"></div>-->
+           <div id="btn_descargar_base" class="btn-group site-tooltipHome hide" data-toggle="tooltip" aria-describedby="tooltip" data-original-title="Descargar base completa" style="position: absolute; right: 20px; top: 30px; padding-left: 160px; width: 40px">
+             <button type="button" class="btn btn-default dropdown-toggle glyphicon glyphicon-download" data-toggle="dropdown" style="float: right;"></button>
+             <ul class="dropdown-menu" role="menu">
+               <li id="dwnld_xls"><a>XLS</a></li>
+               <li id="dwnld_csv"><a>CSV</a></li>
+             </ul>
+           </div>
+
+        </div> <!-- FIN DEL CLOL-XS -->
+
+     </div> <!-- FIN DEL ROW -->
+
+  </div> <!-- FIN DEL PANEL BODY -->
+
+</div> <!-- FIN DEL PANEL PRIMARY -->
+
+<div class="panel panel-primary" >
+
+  <div class="panel-body">
+
+     <div class="row">
+
+         <div id="container_avisos">
+         </div>
+
+          <div class="row equal avisos_not_found">
+             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 aviso">
+                <div class="panel panel-primary">
+                   <div class="panel-heading">¡Bienvenido!</div>
+                   <div class="panel-body">
+                      <p>Bitácora 2.0</p>
+                   </div>
+                </div>
+             </div>
+          </div>
+     </div> <!-- FIN DEL ROW -->
+
+  </div> <!-- FIN DEL PANEL BODY -->
+
+</div> <!-- FIN DEL PANEL PRIMARY -->
+          </div>
+<script>
+ MenuJS.openWaitMessage();
+ HomeJS.init();
+ // setTimeout(function() {$('.mm-page__blocker').click();}, 100);
+</script>

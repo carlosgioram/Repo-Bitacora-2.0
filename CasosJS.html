@@ -1,0 +1,1631 @@
+<script>
+window.eventosCasosJS = {
+    'click .carta_finiquito': function (e, value, row, index) {
+        CasosJS.clickBtnCartaFiniquito(row);
+    },
+
+    'click .cedula_quebranto': function (e, value, row, index) {
+        console.dir('');
+    },
+
+};
+var dialog = "";
+
+function estatusDoctos(value, row, index){
+  if (row.indice) {
+    var caso = alasql('SELECT * FROM ? WHERE indice = ' + row.indice + '', [busqueda])[0];
+    console.log('Caso', caso);
+    if (caso[FormularioJS.columnas['Viabilidad'][1]] !== '' && caso[FormularioJS.columnas['Auditoria'][0]] === '') {
+      return "En espera";
+    } else if (caso[FormularioJS.columnas['Viabilidad'][1]] !== '' && caso[FormularioJS.columnas['Auditoria'][0]] !== '') {
+      return "Con documentos";
+    } else {
+     return "";
+    }
+  }
+  return '';
+}
+
+function botonCartaFiniquito (value, row, index) {
+  //console.dir(row);
+  if(row.A != "" && row.M != ""){
+  //return ['<span onclick="CasosJS.clickBtnCartaFiniquito()" style="cursor:pointer;text-decoration:none;" class="btn_carta glyphicon glyphicon-edit"></span>'];
+    return ['<span  style="cursor:pointer;text-decoration:none;" class="btn_carta glyphicon glyphicon-edit carta_finiquito"></span>'].join('');
+  }else{
+    return "";
+  }
+}
+
+function botonCedulaQuebranto (value, row, index) {
+  //console.dir(row);
+  if(row.A != "" && row.M != ""){
+  //return ['<span onclick="CasosJS.clickBtnCartaFiniquito()" style="cursor:pointer;text-decoration:none;" class="btn_carta glyphicon glyphicon-edit"></span>'];
+    return ['<a href="https://drive.google.com/a/bbva.com/uc?authuser=0&amp;id=1OgFvldRW3_aBBIBQqmAKWUXvm5LUH5V8&amp;export=download" target="_blank">','<span  style="cursor:pointer;text-decoration:none;" class="btn_carta glyphicon glyphicon-download cedula_quebranto"></span>','</a>'].join('');
+  }else{
+    return "";
+  }
+}
+
+function commaSeparateNumber (val){
+   while (/(\d+)(\d{3})/.test(val.toString())){
+     val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
+   }
+   return '$'+val;
+}
+
+function porcentNumber (val){
+   return val+'%';
+}
+
+function sumaTotalMonto(){
+  return 'TOTAL';
+}
+
+
+var CasosJS = {
+  datosSpreadSheet:{},
+  datosTablaEstatus:{},
+  busqueda:{},
+  busquedaTodo:{},
+  idPdfGenerado: '',
+
+  settingTablaBusquedaFolio : {
+    striped: true, //Intercalado de colores en renglones
+    search: true,
+    toolbarAlign: 'left', //Alineado del toolbar a la izquierda siempre.
+    showFooter: false,
+    footerStyle: function footerStyle(value, row, index) {
+      return {
+        css: {
+          'background-color': 'rgba(4, 50, 99, 1) !important',
+          'font-family': 'BBVA Web Bold !important',
+          'color': '#FFF !important',
+        }
+      };
+    },
+    showExport: true,
+    exportDataType: 'all',
+    exportTypes: ['excel'], //xml, csv, excel, txt, sql .. .
+    exportOptions:{},
+    pagination: true,
+    pageSize: 25,
+    pageList: [25,50,75,90,115],
+    formatShowingRows: function(pageFrom, pageTo, totalRows) {
+      'use strict';
+      return 'Mostrando ' + pageFrom + ' al ' + pageTo + ' de ' + totalRows + ' registros';
+    },
+    formatRecordsPerPage: function(pageNumber) {
+      'use strict';
+      return pageNumber + ' registros por página';
+    },
+    formatLoadingMessage: function() {
+      'use strict';
+      return 'Cargando, espere por favor...';
+    },
+    formatSearch: function() {
+      'use strict';
+      return 'Buscar';
+    },
+    formatNoMatches: function() {
+      'use strict';
+      return 'No se encontro información';
+    },
+    columns: [
+      [{
+          field: 'A',
+          title: 'Fecha de Alta',
+          align: 'center',
+          valign: 'middle',
+          sortable: true,
+          class: 'cursor_row',
+        },
+        {
+          field: 'M',
+          title: 'No. Aclaración',
+          align: 'left',
+          valign: 'middle',
+          sortable: true,
+          class: 'cursor_row',
+        },
+        {
+          field: 'L',
+          title: 'Empleado',
+          align: 'center',
+          valign: 'middle',
+          sortable: false,
+        },
+        {
+          field: 'K',
+          title: 'Registro',
+          align: 'center',
+          valign: 'middle',
+          sortable: true,
+        },
+        {
+          field: 'F',
+          title: 'No. de Cliente',
+          align: 'center',
+          valign: 'middle',
+          sortable: true,
+        },
+        {
+          field: 'G',
+          title: 'Cliente',
+          align: 'center',
+          valign: 'middle',
+          sortable: false,
+        },
+        {
+          field: 'D',
+          title: 'Monto',
+          align: 'center',
+          valign: 'middle',
+          sortable: true,
+          formatter: 'commaSeparateNumber'
+        },
+        {
+          field: 'AQ',
+          title: 'Asignado a',
+          align: 'center',
+          valign: 'middle',
+          sortable: true,
+        },
+        {
+          field: 'area',
+          title: 'Área',
+          align: 'center',
+          valign: 'middle',
+          sortable: true,
+        },
+        {
+          field: 'estatus',
+          title: 'Estatus',
+          align: 'center',
+          valign: 'middle',
+          sortable: true,
+        },
+        {
+          field: 'avance',
+          title: 'Avance (%)',
+          align: 'center',
+          valign: 'middle',
+          sortable: true,
+          formatter: 'porcentNumber'
+        },
+        {
+          visible: false,
+          field: 'J',
+          title: 'CR Afectado',
+          align: 'center',
+          valign: 'middle',
+          sortable: true,
+        },
+        {
+          field: 'carta_finiquito',
+          title: 'Carta Finiquito',
+          align: 'center',
+          valign: 'middle',
+          sortable: false,
+          //formatter: CasosJS.operateFormatterIconosCarta,
+          //events: eventosUsuariosJS,
+          formatter: 'botonCartaFiniquito',
+          events: eventosCasosJS,
+        },
+        {
+          field: 'cedula_quebranto',
+          title: 'C. Quebranto',
+          align: 'center',
+          valign: 'middle',
+          sortable: false,
+          //formatter: CasosJS.operateFormatterIconosCarta,
+          //events: eventosUsuariosJS,
+          formatter: 'botonCedulaQuebranto',
+          events: eventosCasosJS,
+        },
+        {
+          field: 'estatus_document0s',
+          title: 'Estatus Doctos',
+          align: 'center',
+          valign: 'middle',
+          sortable: false,
+          //formatter: CasosJS.operateFormatterIconosCarta,
+          //events: eventosUsuariosJS,
+          formatter: 'estatusDoctos',
+        }]
+    ],
+    data: []
+  },
+
+
+  init: function () {
+    //console.dir("CasosJS.init");
+    MenuJS.closeWaitMessage();
+    CasosJS.eventosInicial();
+    CasosJS.crearTablas();
+    CasosJS.datosSpreadSheet=FormularioJS.alasql.obtener();
+    CasosJS.perfiladoPuesto(sessionStorage);
+    //$('#buscarBtn').trigger('click');
+      CasosJS.obtenerDatosParaTablaConFiltros();
+
+  },
+
+
+  eventosInicial: function () {
+    FormularioJS.opciones.agregar('#tipologia', 'tipologia');
+    FormularioJS.opciones.agregar('#denuncias', 'etapa_procesal_largo');
+    FormularioJS.opciones.agregar('#SLAs', 'nivel_servicio');
+
+    $('#rotar').click(function(){
+      $('.tarjeta').toggleClass('flipped');
+    });
+
+    $("#buscarBtn").click(function () {
+      /*var opcion = "";
+      var estatus="";
+      var area="";
+      var viable = '';
+      CasosJS.buscarBtnPor(opcion, estatus, area, viable);*/
+        CasosJS.obtenerDatosParaTablaConFiltros();
+    });
+
+    $('#btnCerrar').click(function() {
+        dialog.modal('hide');
+    });
+
+    $('#idcampoaclaracion').click(function() {
+      //alert('como diablos funciona esto');
+      return false;
+    });
+
+    $("#limpiarFiltros").click(function () {
+      'use strict';
+      var puesto=sessionStorage.id_puesto;
+      CasosJS.limpiarFiltros(puesto);
+    });
+
+    $('#buscarPor').change(function() {
+      CasosJS.opcionSelectBusquedaPor($('#buscarPor').val());
+    });
+
+
+    $('#buscarPor').selectpicker({
+      //size: 'auto',
+      showTick: true,
+      liveSearch: false,
+      style: 'form-control btn btn-Negocio',
+      size: 10,
+      actionsBox: true,
+      deselectAllText: 'Ninguno',
+      dropupAuto: true,
+      noneSelectedText: 'Seleccione',
+      selectAllText: 'Todos',
+    });
+    $('#filtroEstatusCasos').selectpicker({
+      //size: 'auto',
+      showTick: true,
+      liveSearch: false,
+      style: 'form-control btn btn-Negocio',
+      size: 10,
+      actionsBox: true,
+      deselectAllText: 'Ninguno',
+      dropupAuto: true,
+      noneSelectedText: 'Seleccione',
+      selectAllText: 'Todos',
+    });
+    $('#productos').selectpicker({
+      //size: 'auto',
+      showTick: true,
+      liveSearch: false,
+      style: 'form-control btn btn-Negocio',
+      size: 10,
+      actionsBox: true,
+      deselectAllText: 'Ninguno',
+      dropupAuto: true,
+      noneSelectedText: 'Seleccione',
+      selectAllText: 'Todos',
+    });
+    $('#filtroArea').selectpicker({
+      //size: 'auto',
+      showTick: true,
+      liveSearch: false,
+      style: 'form-control btn btn-Negocio',
+      size: 10,
+      actionsBox: true,
+      deselectAllText: 'Ninguno',
+      dropupAuto: true,
+      noneSelectedText: 'Seleccione',
+      selectAllText: 'Todos',
+    });
+    $('#tipologia, #filtroVistaViable, #denuncias, #SLAs').selectpicker({
+      //size: 'auto',
+      showTick: true,
+      liveSearch: false,
+      style: 'form-control btn btn-Negocio',
+      size: 10,
+      actionsBox: true,
+      deselectAllText: 'Ninguno',
+      dropupAuto: true,
+      noneSelectedText: 'Seleccione',
+      selectAllText: 'Todos',
+    });
+    //Esto permite que la entrada del MB sea siempre en mayusculas
+    $('#mbEjecutivo').unbind('input').bind('input', function (e) {
+      $(this).val(($(this).val()).toUpperCase()).change();
+    });
+    //Válidación de que numero de aclaracion solo reciba numero y letras
+    $('#nu_folio').unbind('input').bind('input', function (e) {
+        $(this).val(($(this).val()).replace(/([^A-Za-z0-9])/g, '')).change();
+    });
+
+    $(".site-tooltipTuto").tooltip({
+      //placement: "top",
+      trigger: "hover",
+      animation: true,
+      html: true
+    });
+
+  },
+
+/*********Esta función nos permitirá realizar la búsqueda en el objeto para mostrar lo que se quiere ver**********/
+    obtenerDatosParaTablaConFiltros: function(){
+         var objetoToWhere = CasosJS.crearObjetoFiltros();
+
+        var contador= 0;
+        $.each(objetoToWhere, function (key, value) {
+            if(value!=""){
+                contador++;
+            }
+        });
+        var datosBuscar = ""
+        if(contador > 0){
+            datosBuscar = sessionStorage.id_puesto == "1" || sessionStorage.titular == "1" ? busquedaTodo : busqueda
+        }else{
+            datosBuscar = busqueda
+        }
+
+            var objetoToWhere = CasosJS.crearObjetoFiltros();
+            var whereWhere = CasosJS.crearWhere(objetoToWhere);
+            var busqueda_todos = (alasql("SELECT indice, A, B, D, E, AQ, F, G, H,I, J, K, L, M, N, AR, CI, avance, area, estatus, carta_finiquito, AV, AW FROM ? "+whereWhere+" ", [datosBuscar]));
+             busqueda_todos.forEach((deCliente) => {
+               deCliente['A']='<span onclick="HomeJS.editarFormulario('+deCliente['indice']+')">'+deCliente['A']+'</span>';
+               deCliente['D'] = Number(deCliente['AV'] === '' ? 0 : deCliente['AV']) - Number(deCliente['AW'] === '' ? 0 : deCliente['AW']);
+               deCliente['M']='<span onclick="HomeJS.editarFormulario('+deCliente['indice']+')">'+( deCliente['M'].length == 0 ? '000000000' : deCliente['M']) + '</span>';
+               return deCliente;
+             });
+
+                if (sessionStorage.id_puesto === '8') {
+                  CasosJS.settingTablaBusquedaFolio.columns[0][7].visible = false;
+                  CasosJS.settingTablaBusquedaFolio.columns[0][8].visible = false;
+                  CasosJS.settingTablaBusquedaFolio.columns[0][9].visible = false;
+                  CasosJS.settingTablaBusquedaFolio.columns[0][10].visible = false;
+                };
+                //console.log('Todo = ', busqueda_todos);
+                var busqueda_total = 0, porcentaje_Total = 0;
+                busqueda_todos.forEach((total) => {
+                  busqueda_total += Number(total['D']);
+                  porcentaje_Total = porcentaje_Total === 0 ? Number(total['avance']) : (porcentaje_Total + Number(total['avance'])) / 2;
+                });
+
+               busqueda_todos.push({
+                  A: "",
+                  B: "",
+                  D: busqueda_total,
+                  E: '',
+                  AQ: "",
+                  F: "",
+                  G: "",
+                  H: "",
+                  I: "",
+                  J: "",
+                  K: "",
+                  L: "",
+                  M: "",
+                  N: "",
+                   AR: "",
+                   CI: "",
+                  area: "",
+                  avance: porcentaje_Total.toFixed(0),
+                  carta_finiquito: "",
+                  estatus: "",
+                  indice: ''
+                });
+
+                if (sessionStorage.id_puesto === '8') {
+                }
+
+                $('#table_busqueda_folio').bootstrapTable('refreshOptions', CasosJS.settingTablaBusquedaFolio);
+                $('#table_busqueda_folio').bootstrapTable('load', busqueda_todos);
+                $('#table_busqueda_folio').find('tbody tr:last td:last').html('');
+                $('#tablaVistaFolio').show(1100);
+    },
+
+    //Esta función creará un where para realizar la busqueda correspondiente por los filtros seleccionados
+    crearWhere:function(o){
+        var where = [];
+        //Vista fechas
+        if(o.fhInicio != "" && o.fhFinal != ""){
+            where.push(' A BETWEEN "'+o.fhInicio+'" and "'+o.fhFinal+'" ');
+        }
+
+        if(o.estatus != ""){
+           where.push(' estatus = "'+o.estatus+'" ');
+        }
+        if(o.viabilidad != ""){
+            where.push(' BR = "'+o.viabilidad+'" ');
+        }
+        if (o.area != "" && o.nivelServicio === ""){
+          where.push('area = "'+o.area+'" ');
+        }
+
+        //Vista num de aclaracion
+        if(o.numAclaracion != ""){
+            where.push(' M = "'+o.numAclaracion+'" ');
+        }
+
+        //Vista empleados
+        if(o.nameEmpleado != ""){
+            where.push(' L LIKE "%'+o.nameEmpleado+'%" ');
+        }
+        if(o.mEmpleado != ""){
+            where.push(' K = "'+o.mEmpleado+'" ');
+        }
+
+        //Vista clientes
+        if(o.nuCliente != ""){
+            where.push(' F = "'+o.nuCliente+'" ');
+        }
+        if(o.nbCliente != ""){
+            where.push(' G LIKE "%'+o.nameEmpleado+'$" ');
+        }
+        if(o.noCuentaCliente != ""){
+            where.push(' I = "'+o.noCuentaCliente+'" ');
+        }
+        if(o.noTarjetaCliente != ""){
+            where.push(' H = "'+o.noTarjetaCliente+'" ');//Peendiente
+        }
+
+        //Por productos
+        if(o.productos != ""){
+            where.push(' E = "'+o.productos+'" ');
+        }
+
+        //Por monto Minimo y Monto Maximo
+        if(o.montoMinimo != ""){
+           where.push(' D >= '+o.montoMinimo+' ');
+        }
+        if(o.montoMaximo != ""){
+           where.push(' D <= '+o.montoMaximo+' ');
+        }
+
+        //Por tipologia
+        if(o.tipologia != ""){
+            where.push(' AR = "'+o.tipologia+'" ');
+        }
+
+        //Por Etapa Procesal
+        if(o.etapaProcesa != ""){
+            where.push(' CI = "'+o.etapaProcesa+'" ');
+        }
+
+        //Por NIvel de servicio
+        if(o.nivelServicio != ""){
+          var laArea = (o.area !== '') ? ' AND area = "' + o.area + '" ' : '' ;
+            var nivelServicio = alasql('SELECT folio FROM slas WHERE nivelServicio = "' + o.nivelServicio + '"' + laArea)
+              .map((folio) => folio.folio)
+              .join('" OR CK="');
+            //opciones_filtros = 'WHERE CK="' + nivelServicio + '"';
+            where.push('  ( CK = "'+nivelServicio+'" ) ');
+        }
+
+        // Si es Aclaraciones, no puede ver los casos de consultas injustificadas por default
+        if (sessionStorage.id_puesto === '8') {
+          where.push('  (AR != "Consultas Injustificadas")');
+        }
+
+        return where.length>0? "WHERE " + where.join(' AND '): "";
+    },
+
+    //Esta función crea un objeto con todas las opciones disponibles
+    crearObjetoFiltros: function(){
+        var objeto = {
+            fhInicio: $('#fecha_inicial_filtro').val(),
+            fhFinal: $('#fecha_final_filtro').val(),
+
+            numAclaracion: $('#nu_folio').val(),
+
+            nameEmpleado: $('#nameEjecutivo').val(),
+            mEmpleado: $('#mbEjecutivo').val(),
+
+            nuCliente: $('#nu_cliente').val(),
+            nbCliente: $('#nb_cliente').val(),
+            noCuentaCliente: $('#nu_cuenta').val(),
+            noTarjetaCliente: $('#nu_tarjeta').val(),
+
+            productos: $('#productos').val(),
+
+            montoMinimo: $('#monto_minimo').val().trim(),
+            montoMaximo: $('#monto_maximo').val().trim(),
+
+            tipologia: $('#tipologia').val(),
+
+            etapaProcesa: $('#denuncias').val(),
+
+            nivelServicio: $('#SLAs').val(),
+
+            estatus: $('#filtroEstatusCasos').val(),
+            viabilidad: $('#filtroVistaViable').val(),
+            area: $('#filtroArea').val()
+        }
+        return objeto;
+    },
+    //Esta función creas la tabla de búsqueda con los settings indicados como parametros
+  crearTablas: function () {
+    $('#table_busqueda_folio').bootstrapTable(CasosJS.settingTablaBusquedaFolio);
+  },
+
+  perfiladoPuesto: function(sessionStorage){
+    //console.dir(sessionStorage);
+      busquedaTodo = CasosJS.agregaCamposEstatusNumero();
+      busquedaTodo = alasql('select * from ?', [busquedaTodo])
+    switch (sessionStorage.id_puesto) {
+      case '1':
+        $('#vistaAreaAdmin').show();
+        busqueda=CasosJS.agregaCamposEstatusNumero();
+      break;
+      case '9':
+      busqueda=CasosJS.agregaCamposEstatusNumero();
+      var puesto= alasql("SELECT nb_puesto FROM puesto WHERE id_puesto="+sessionStorage.id_puesto);
+      busqueda=(alasql("SELECT * FROM ? WHERE area='"+puesto[0].nb_puesto+"' || AR='Consultas Injustificadas'",[busqueda]));
+      break;
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '7':
+        busqueda=CasosJS.agregaCamposEstatusNumero();
+        var puesto=(alasql("SELECT nb_puesto FROM puesto WHERE id_puesto="+sessionStorage.id_puesto));
+        busqueda=(alasql("SELECT * FROM ? WHERE area='"+puesto[0].nb_puesto+"'",[busqueda]));
+      break;
+      case '8':
+        busqueda=CasosJS.agregaCamposEstatusNumero();
+        var puesto=(alasql("SELECT nb_puesto FROM puesto WHERE id_puesto="+sessionStorage.id_puesto));
+        busqueda=(alasql("SELECT * FROM ? WHERE area='"+puesto[0].nb_puesto+"' && estatus != 'Rechazado'",[busqueda]));
+      break;
+      case '10':
+        busqueda=CasosJS.agregaCamposEstatusNumero();
+        busqueda=(alasql("SELECT * FROM ? where  (AR='Fraude Consumado > 100,000' || AR = 'Fraude Consumado > 3,000,000') AND (area ='Penal' or  area ='Viabilidad')  ",[busqueda]));
+      break;
+      case '11':
+        busqueda=CasosJS.agregaCamposEstatusNumero();
+        var puesto=(alasql("SELECT nb_puesto FROM puesto WHERE id_puesto="+2));
+        busqueda=alasql("SELECT * FROM ? WHERE area='AFG' AND AA === '' AND (BA !== 'Rechazado') AND BW === ''",[busqueda])
+      break;
+      case '6':
+        busqueda=CasosJS.agregaCamposEstatusNumero();
+        var puesto=(alasql("SELECT nb_puesto FROM puesto WHERE id_puesto="+sessionStorage.id_puesto));
+        busqueda=(alasql("SELECT * FROM ? WHERE area='"+puesto[0].nb_puesto+"' or AR='Fraude Consumado > 3,000,000' or AR='Fraude Consumado > 100,000'",[busqueda]));
+        busqueda= (alasql("SELECT * FROM ? WHERE area='Auditoria' AND (AR='Fraude Consumado > 3,000,000' OR  AR='Fraude Consumado > 100,000') and AC != '' AND P != ''  ",[busqueda]));
+      break;
+    }
+  //  console.dir(busqueda);
+  },
+
+  buscarBtnPor: function (opcion, estatus, area, viable) {
+    //console.dir(estatus);
+    //console.dir(opcion);
+      opcion = $('#buscarPor').val();
+      estatus= $('#filtroEstatusCasos').val();
+      area= $('#filtroArea').val();
+      viable=$('#filtroVistaViable').val();
+
+    if (opcion === "" && estatus === "" && viable === '' && area === "") {
+      // Todo vacío
+      CasosJS.obtenerDatosTodos();
+    } else if (opcion !="" && estatus == "" && viable === '' && area == "") {
+      // Con una opción
+      CasosJS.obtenerDatosSpreadSheet();
+    } else if (opcion=="" && (estatus != "" || area != "" || viable !== '')) {
+      // Si esta seleccionado el estatus, el área o viable pero no una opción
+      CasosJS.obtenerDatosFiltroEstatus(estatus, area, viable);
+    } else if (opcion !== "" && (estatus != "" || viable !== '' || area !== "")) {
+      // Cuando esta seleccionado el estatos, el área o viabilidad junto a una opción
+      CasosJS.obtenerDatosSpreadSheet();
+    } else {
+      //console.dir("No se encontró selección en el buscador, buscando Todo");
+      CasosJS.obtenerDatosTodos();
+    }
+  },
+
+
+    cabiarOpcion:function(){
+        $('#vistaFolio').hide();
+        $('#vistaEjecutivo').hide();
+        $('#vistaClientes').hide();
+        $('#vistaEstatus').hide();
+        $('#vistaProductos').hide();
+        $('#vistaMonto').hide();
+        $('#vistaFecha').hide();
+        $('#vistaAreaAdmin').hide();
+         $('#vistaTipologia').hide();
+        $('#vistaViable').hide();
+        $('#vistaDenuncias').hide();
+        $('#vistaServicio').hide();
+
+        CasosJS.limpiarFiltrosOnchange();
+    },
+
+    limpiarFiltrosOnchange: function(){
+        $('#nu_folio').val('').change();
+        $('#nameEjecutivo').val('').change();
+        $('#mbEjecutivo').val('').change();
+        $('#nu_cliente').val('').change();
+        $('#nb_cliente').val('').change();
+        $('#nu_cuenta').val('').change();
+        $('#nu_tarjeta').val('').change();
+        $('#productos').val('').change().selectpicker('refresh');
+        $('#monto_minimo').val('').change();
+        $('#monto_maximo').val('').change();
+        $('#tipologia').val('').change().selectpicker('refresh');
+        $('#denuncias').val('').change().selectpicker('refresh');
+        $('#SLAs').val('').change().selectpicker('refresh');
+    },
+
+  opcionSelectBusquedaPor: function(opc){
+    /*$('#vistaFolio').hide();
+    $('#vistaEjecutivo').hide();
+    $('#vistaClientes').hide();
+    $('#vistaEstatus').hide();
+    $('#vistaProductos').hide();
+    $('#vistaMonto').hide();
+    $('#vistaFecha').hide();
+    $('#vistaAreaAdmin').hide();
+    $('#filtroArea').val("").change().selectpicker('refresh');
+    $('#filtroEstatusCasos').val("").change().selectpicker('refresh');
+    $('#vistaTipologia').hide();
+    $('#vistaViable').hide();
+    $('#filtroVistaViable').val('').change();
+    $('#nu_folio').val('').change();
+    $('#vistaDenuncias').hide();
+    $('#denuncias').val('').change();
+    $('#vistaServicio').hide();
+    $('#SLAs').val('').change();*/
+      CasosJS.cabiarOpcion();
+    switch(opc){
+      case 'vistaFolio':
+        //console.dir("folio");
+        $('#vistaFolio').show(1100);
+        break;
+      case 'vistaEjecutivo':
+        //console.dir("ejecutivo");
+        $('#vistaEjecutivo').show(1100);
+        break;
+      case 'vistaClientes':
+        //console.dir("cliente");
+        $('#vistaClientes').show(1100);
+        break;
+      case 'vistaProductos':
+        //console.dir("productos");
+        $('#vistaProductos').show(1100);
+        break;
+      case 'vistaMonto':
+        //console.dir("monto");
+        $('#vistaMonto').show(1100);
+        $('#vistaEstatus').show(1100);
+        //$('#vistaFecha').hide(1100);
+        break;
+      case 'vistaFecha':
+        //console.dir("fecha");
+        $('#vistaEstatus').show(1100);
+        $('#vistaFecha').show(1100);
+        break;
+      case 'vistaTipologia':
+        $('#vistaEstatus').show(1100);
+        $('#vistaTipologia').show(1100);
+        $('#vistaViable').show(1100);
+        if (sessionStorage.id_puesto === '1') {
+          $('#vistaAreaAdmin').show(1100);
+        }
+        break;
+      case 'vistaDenuncias':
+        $('#vistaEstatus').show(1100);
+        $('#vistaDenuncias').show(1100);
+        break;
+      case 'vistaServicio':
+        $('#vistaServicio').show(1100);
+        $('#vistaEstatus').show(1100);
+        $('#vistaViable').show(1100);
+        if (sessionStorage.id_puesto === '1') {
+          $('#vistaAreaAdmin').show(1100);
+        }
+        break;
+    }
+  },
+
+/*************  Busqueda de datos filtros  ************/
+  obtenerDatosTodos: function(){
+    //console.dir('obtenerDatosTodos');
+    //console.dir(busqueda);
+    var busqueda_todos = (alasql("SELECT indice, A, B, D, E, AQ, F, G, H, J, K, L, M, N, avance, area, estatus, carta_finiquito, AV, AW FROM ?", [ busqueda]));
+    //console.dir(busqueda_todos);
+    busqueda_todos.forEach((deCliente) => {
+      deCliente['D'] = Number(deCliente['AV'] === '' ? 0 : deCliente['AV']) - Number(deCliente['AW'] === '' ? 0 : deCliente['AW']);
+      deCliente['M'] = '<span onclick="HomeJS.editarFormulario('+deCliente['indice']+')">'+deCliente['M']+'</span>';
+    });
+    if (sessionStorage.id_puesto === '8') {
+      CasosJS.settingTablaBusquedaFolio.columns[0][8].visible = false;
+      CasosJS.settingTablaBusquedaFolio.columns[0][9].visible = false;
+      CasosJS.settingTablaBusquedaFolio.columns[0][10].visible = false;
+    };
+    //console.log('Todo = ', busqueda_todos);
+    var busqueda_total = 0, porcentaje_Total = 0;
+    busqueda_todos.forEach((total) => {
+      busqueda_total += Number(total['D']);
+      porcentaje_Total = porcentaje_Total === 0 ? Number(total['avance']) : (porcentaje_Total + Number(total['avance'])) / 2;
+    });
+
+   busqueda_todos.push({
+      A: "",
+      B: "",
+      D: busqueda_total,
+      E: '',
+      AQ: "",
+      F: "",
+      G: "",
+      H: "",
+      J: "",
+      K: "",
+      L: "",
+      M: "",
+      N: "",
+      area: "",
+      avance: porcentaje_Total.toFixed(0),
+      carta_finiquito: "",
+      estatus: "",
+      indice: ''
+    });
+
+    $('#table_busqueda_folio').bootstrapTable('refreshOptions', CasosJS.settingTablaBusquedaFolio);
+    $('#table_busqueda_folio').bootstrapTable('load', busqueda_todos);
+    $('#table_busqueda_folio').find('tbody tr:last td:last').html('');
+    $('#tablaVistaFolio').show(1100);
+  },
+
+  obtenerDatosFiltroEstatus: function(estatus, area, viable){
+    //console.dir('obtenerDatosFiltroEstatus');
+    var opciones_filtro_estatus = [];
+    var bandera=0;
+    if (estatus != ""){
+      opciones_filtro_estatus.push("estatus='"+estatus+"'");
+      bandera=1;
+    }
+    if (area != ""){
+      opciones_filtro_estatus.push("area='"+area+"'");
+      bandera=1;
+    }
+    if (viable !== ''){
+      opciones_filtro_estatus.push("BR='" + viable + "'");
+      bandera=1;
+    }
+    //console.log(opciones_filtro_estatus.join(' AND '));
+    if (bandera==1) {
+      var busqueda_todos = (alasql("SELECT indice, A, B, D, E, AQ, F, G, H, J, K, L, M, N, avance, area, estatus, carta_finiquito, AV, AW FROM ? WHERE " + opciones_filtro_estatus.join(' AND '), [sessionStorage.id_puesto == "1" || sessionStorage.titular == "1" ? busquedaTodo : busqueda]));
+      //console.dir(busqueda_todos);
+      busqueda_todos.forEach((deCliente) => {
+        deCliente['D'] = Number(deCliente['AV'] === '' ? 0 : deCliente['AV']) - Number(deCliente['AW'] === '' ? 0 : deCliente['AW']);
+        deCliente['M'] = '<span onclick="HomeJS.editarFormulario('+deCliente['indice']+')">'+deCliente['M']+'</span>';
+      });
+
+      var busqueda_total = 0, porcentaje_Total = 0;
+    busqueda_todos.forEach((total) => {
+      busqueda_total += Number(total['D']);
+      porcentaje_Total = porcentaje_Total === 0 ? Number(total['avance']) : (porcentaje_Total + Number(total['avance'])) / 2;
+    });
+    busqueda_todos.push({
+      A: "",
+      B: "",
+      D: busqueda_total,
+      E: '',
+      AQ: "",
+      F: "",
+      G: "",
+      H: "",
+      J: "",
+      K: "",
+      L: "",
+      M: "",
+      N: "",
+      area: "",
+      avance: porcentaje_Total.toFixed(0),
+      carta_finiquito: "",
+      estatus: "",
+      indice: ''
+    });
+
+
+      $('#table_busqueda_folio').bootstrapTable('refreshOptions', CasosJS.settingTablaBusquedaFolio);
+      $('#table_busqueda_folio').bootstrapTable('load', busqueda_todos);
+      $('#tablaVistaFolio').show(1100);
+    }
+  },
+
+  obtenerDatosSpreadSheet: function(){
+    //console.dir("obtenerDatosSpreadSheet_CasosJS");
+    var opc=$('#buscarPor').val();
+    //console.dir(CasosJS.datosSpreadSheet);
+    var opciones_filtros="";
+    var bandera=0;
+    const estatus=$('#filtroEstatusCasos').val(),
+      viable = $('#filtroVistaViable').val(),
+      area = $('#filtroArea').val();
+    //console.log(opc);
+    switch(opc){
+      case '':
+        //console.dir('vista busqueda por filtro');
+        break;
+      case 'vistaServicio':
+        console.log('Algo', $('#SLAs').val(), area);
+        var nivelServicio = alasql('SELECT folio FROM slas WHERE nivelServicio = "' + $('#SLAs').val() + '" AND area ="' + area + '"')
+          .map((folio) => folio.folio)
+          .join('" OR CK="');
+        opciones_filtros = 'WHERE CK="' + nivelServicio + '"';
+        if (viable !== '') {
+          opciones_filtros += ' AND BR = "' + viable + '"';
+        }
+        bandera = 1;
+        break;
+      case 'vistaDenuncias':
+          var etapaProcesal = $('#denuncias').val();
+          opciones_filtros="WHERE CI != ''";
+          if (etapaProcesal !== '') {
+            opciones_filtros += ' AND CI = "' + etapaProcesal + '"';
+          }
+          bandera=1;
+        break;
+      case 'vistaTipologia':
+          opciones_filtros="WHERE AR = '" + $('#tipologia').val() + "'";
+          if (viable !== '') {
+            opciones_filtros += ' AND BR = "' + viable + '"';
+          }
+          if (area !== '') {
+            opciones_filtros += ' AND area = "' + area + '"';
+          }
+          bandera=1;
+        break;
+      case 'vistaFolio':
+        var folio=$('#nu_folio').val().trim();
+        if(folio!=""){
+          opciones_filtros="WHERE M='"+folio+"'";
+          bandera=1;
+        }else if(folio==""){
+           $('#limpiarFiltros').trigger('click');
+           dialog = bootbox.dialog({
+             message: '<p class="text-center" style="font-size:14px;text-align:center;color: #004481;">Es necesario escribir un número de aclaración <br>para realizar la búsqueda.</p>',
+             closeButton: true,
+           });
+           setTimeout(function(){
+             dialog.modal('hide');
+           }, 5000);
+        }
+        break;
+
+      case 'vistaEjecutivo':
+        var empleado=$('#nameEjecutivo').val().trim();
+        var mb=$('#mbEjecutivo').val().trim();
+        if(empleado!="" && estatus==""){
+          opciones_filtros="WHERE L LIKE '%"+empleado+"%'";
+          bandera=1;
+        }else if(empleado!="" && estatus!=""){
+          opciones_filtros="WHERE L LIKE '%"+empleado+"%' AND estatus='"+estatus+"'";
+          bandera=1;
+        }else if(mb!=""&& estatus==""){
+          opciones_filtros="WHERE K='"+mb+"'";
+          bandera=1;
+        }else if(mb!="" && estatus!=""){
+          opciones_filtros="WHERE K='"+mb+"' AND estatus='"+estatus+"'";
+          bandera=1;
+        }else if (mb=="" && estatus=="" && empleado==""){
+           $('#limpiarFiltros').trigger('click');
+           dialog = bootbox.dialog({
+             message: '<p class="text-center" style="font-size:14px;text-align:center;color: #004481;">Es necesario llenar alguna de las opciones o seleccionar un estatus <br> para realizar la búsqueda.</p>',
+             closeButton: true,
+           });
+           setTimeout(function(){
+             dialog.modal('hide');
+           }, 5000);
+        }
+        break;
+
+      case 'vistaClientes':
+        var nuCliente=$('#nu_cliente').val().trim();
+        var cliente=$('#nb_cliente').val().trim();
+        var cuenta=$('#nu_cuenta').val().trim();
+        var tarjeta=$('#nu_tarjeta').val().trim();
+        if(nuCliente!="" && estatus==""){
+          opciones_filtros="WHERE F='"+nuCliente+"'";
+          bandera=1;
+        }else if (nuCliente!="" && estatus!=""){
+          opciones_filtros="WHERE F='"+nuCliente+"' AND estatus='"+estatus+"'";
+          bandera=1;
+        }else if(cliente!="" && estatus==""){
+          opciones_filtros="WHERE G LIKE '%"+cliente+"%'";
+          bandera=1;
+        }else if(cliente!="" && estatus!=""){
+          opciones_filtros="WHERE G LIKE '%"+cliente+"%' AND estatus='"+estatus+"'";
+          bandera=1;
+        }else if(cuenta!="" && estatus==""){
+          opciones_filtros="WHERE L='"+cuenta+"'";
+          bandera=1;
+        }else if(cuenta!="" && estatus!=""){
+          opciones_filtros="WHERE L='"+cuenta+"' AND estatus='"+estatus+"'";
+          bandera=1;
+        }else if(tarjeta!="" && estatus==""){
+          opciones_filtros="WHERE L='"+tarjeta+"'";
+          bandera=1;
+        }else if(tarjeta!="" && estatus!=""){
+          opciones_filtros="WHERE L='"+tarjeta+"' AND estatus='"+estatus+"'";
+          bandera=1;
+        }else if (nuCliente=="" && estatus=="" && tarjeta=="" && cliente=="" && cuenta==""){
+           $('#limpiarFiltros').trigger('click');
+           dialog = bootbox.dialog({
+             message: '<p class="text-center" style="font-size:14px;text-align:center;color: #004481;">Es necesario llenar alguna de las opciones o seleccionar un estatus<br> para realizar la búsqueda.</p>',
+             closeButton: true,
+           });
+           setTimeout(function(){
+             dialog.modal('hide');
+           }, 5000);
+        }
+
+        break;
+
+      case 'vistaProductos':
+        var productos=$('#productos').val();
+        if(productos!=""){
+          opciones_filtros="WHERE E='"+productos+"'";
+          bandera=1;
+        }else if(productos==""){
+           $('#limpiarFiltros').trigger('click');
+           dialog = bootbox.dialog({
+             message: '<p class="text-center" style="font-size:14px;text-align:center;color: #004481;">Es necesario escribir un número de aclaración <br>para realizar la búsqueda.</p>',
+             closeButton: true,
+           });
+           setTimeout(function(){
+             dialog.modal('hide');
+           }, 5000);
+        }
+        break;
+      case 'vistaMonto':
+        var minimo=$('#monto_minimo').val().trim();
+        var maximo=$('#monto_maximo').val().trim();
+
+        if ((minimo==0 || minimo=="") && maximo>0 && estatus==""){
+          opciones_filtros="WHERE D BETWEEN 0 AND "+maximo;
+          bandera=1;
+        }else if (minimo>0 && (maximo==0||maximo=="") && estatus==""){
+          opciones_filtros="WHERE D>="+minimo;
+          bandera=1;
+        }else if ((minimo==0 || minimo=="") && maximo>0 && estatus!=""){
+          opciones_filtros="WHERE estatus=='"+estatus+"' AND D BETWEEN 0 AND "+maximo;
+          bandera=1;
+        }else if (minimo>0 && (maximo==0||maximo=="") && estatus!=""){
+          opciones_filtros="WHERE estatus=='"+estatus+"' AND D>="+minimo;
+          bandera=1;
+        }else if (minimo>0 && maximo>minimo && estatus==""){
+          opciones_filtros="WHERE D BETWEEN "+minimo+" AND "+maximo;
+          bandera=1;
+        }else if (minimo>0 && maximo>minimo && estatus!=""){
+          opciones_filtros="WHERE estatus=='"+estatus+"' AND D BETWEEN "+minimo+" AND "+maximo;
+          bandera=1;
+        }else if (minimo>0 && minimo>maximo && maximo>0 && (estatus!="" || estatus=="")){
+           $('#limpiarFiltros').trigger('click');
+           dialog = bootbox.dialog({
+             message: '<p class="text-center" style="font-size:14px;text-align:center;color: #004481;">Es necesario que el Monto Máximo sea mayor al Monto Mínimo.</p>',
+             closeButton: true,
+           });
+           setTimeout(function(){
+             dialog.modal('hide');
+           }, 5000);
+        }else if (minimo=="" && maximo=="" && (estatus==""||estatus!="")){
+           $('#limpiarFiltros').trigger('click');
+           dialog = bootbox.dialog({
+             message: '<p class="text-center" style="font-size:14px;text-align:center;color: #004481;">Es necesario escribir un monto para la busqueda.</p>',
+             closeButton: true,
+           });
+           setTimeout(function(){
+             dialog.modal('hide');
+           }, 5000);
+        }
+        break;
+
+       case 'vistaFecha':
+        var fh_inicial=$('#fecha_inicial_filtro').val().trim();
+        var fh_final=$('#fecha_final_filtro').val().trim();
+
+        if ((fh_inicial==null || fh_inicial=="") && fh_final!="" && estatus==""){
+          opciones_filtros="WHERE A< '"+fh_final+"'";
+          bandera=1;
+        }else if (fh_inicial!="" && (fh_final==null||fh_final=="") && estatus==""){
+          opciones_filtros="WHERE A>='"+fh_inicial+"'";
+          bandera=1;
+        }else if ((fh_inicial==null || fh_inicial=="") && fh_final!="" && estatus!=""){
+          opciones_filtros="WHERE estatus=='"+estatus+"' AND A< '"+fh_final+"'";
+          bandera=1;
+        }else if (fh_inicial!="" && (fh_final==null||fh_final=="") && estatus!=""){
+          opciones_filtros="WHERE estatus=='"+estatus+"' AND A>='"+fh_inicial+"'";
+          bandera=1;
+        }else if (fh_inicial!="" && fh_final>fh_inicial && estatus==""){
+          opciones_filtros="WHERE A BETWEEN '"+fh_inicial+"' AND '"+fh_final+"'";
+          bandera=1;
+        }else if (fh_inicial!="" && fh_final>fh_inicial && estatus!=""){
+          opciones_filtros="WHERE estatus=='"+estatus+"' AND A BETWEEN '"+fh_inicial+"' AND '"+fh_final+"'";
+          bandera=1;
+        }else if (fh_inicial!="" && fh_inicial>fh_final && fh_final!="" && (estatus!="" || estatus=="")){
+           $('#limpiarFiltros').trigger('click');
+           dialog = bootbox.dialog({
+             message: '<p class="text-center" style="font-size:14px;text-align:center;color: #004481;">Es necesario que la fecha final sea mayor a la fecha inicial.</p>',
+             closeButton: true,
+           });
+           setTimeout(function(){
+             dialog.modal('hide');
+           }, 5000);
+        }else if (fh_inicial=="" && fh_final=="" && (estatus==""||estatus!="")){
+           $('#limpiarFiltros').trigger('click');
+           dialog = bootbox.dialog({
+             message: '<p class="text-center" style="font-size:14px;text-align:center;color: #004481;">Es necesario una fecha para la busqueda.</p>',
+             closeButton: true,
+           });
+           setTimeout(function(){
+             dialog.modal('hide');
+           }, 5000);
+        }else {//console.dir('No esta haciendo nada con las fechas');
+        }
+        break;
+     }
+     if(bandera==1){
+       $('#tablaVistaFolio').show(1100);
+       if (opc === 'vistaServicio') {
+         var busqueda_filtros = (alasql("SELECT indice, A, B, D, E, AQ, F, G, H, J, K, L, M, N, area, avance, estatus, carta_finiquito FROM transformaciones " + opciones_filtros));
+       } else {
+         var busqueda_filtros = (alasql("SELECT indice, A, B, D, E, AQ, F, G, H, J, K, L, M, N, area, avance, estatus, carta_finiquito FROM ? "+opciones_filtros, [sessionStorage.id_puesto == "1" || sessionStorage.titular == "1" ? busquedaTodo : busqueda]));
+       }
+       //console.dir('busqueda_filtros');
+       //console.table(busqueda_filtros);
+       busqueda_filtros.forEach((deCliente) => {
+         deCliente['D'] = Number(deCliente['AV'] === '' ? 0 : deCliente['AV']) - Number(deCliente['AW'] === '' ? 0 : deCliente['AW']);
+         deCliente['M']='<span onclick="HomeJS.editarFormulario('+deCliente['indice']+')">'+deCliente['M']+'</span>';
+       });
+
+       var busqueda_total = 0, porcentaje_Total = 0;
+      busqueda_filtros.forEach((total) => {
+        busqueda_total += Number(total['D']);
+        porcentaje_Total = porcentaje_Total === 0 ? Number(total['avance']) : (porcentaje_Total + Number(total['avance'])) / 2;
+      });
+      busqueda_filtros.push({
+        A: "",
+        B: "",
+        D: busqueda_total,
+        E: '',
+        AQ: "",
+        F: "",
+        G: "",
+        H: "",
+        J: "",
+        K: "",
+        L: "",
+        M: "",
+        N: "",
+        area: "",
+        avance: porcentaje_Total.toFixed(0),
+        carta_finiquito: "",
+        estatus: "",
+        indice: ''
+      });
+
+       $('#table_busqueda_folio').bootstrapTable('refreshOptions', CasosJS.settingTablaBusquedaFolio);
+       $('#table_busqueda_folio').bootstrapTable('load', busqueda_filtros);
+     }
+
+  },
+
+  limpiarFiltros: function (puesto) {
+    if(puesto==1){
+        $('#vistaAreaAdmin').show(1100);
+     }
+
+
+     $('#buscarPor').val("").change().selectpicker('refresh');
+     $('#filtroEstatusCasos').val("").change().selectpicker('refresh');
+     $('#productos').val("").change().selectpicker('refresh');
+     $('#vistaFolio').hide(1100);
+     $('#vistaEjecutivo').hide(1100);
+     $('#vistaClientes').hide(1100);
+     $('#vistaProductos').hide(1100);
+     //$('#tablaVistaFolio').hide(1100);
+     $('#nu_folio').val("");
+     $('#nameEjecutivo').val("");
+     $('#mbEjecutivo').val("");
+     $('#nu_cliente').val("");
+     $('#nb_cliente').val("");
+     $('#nu_cuenta').val("");
+     $('#nu_tarjeta').val("");
+     $('#vistaEstatus').show(1100);
+      $('#vistaViable').show(1100);
+
+     $('#vistaMonto').hide(1100);
+     $('#monto_minimo').val("");
+     $('#monto_maximo').val("");
+     $('#vistaFecha').hide(1100);
+     $('#fecha_inicial_filtro').val("");
+     $('#fecha_final_filtro').val("");
+     $('#filtroArea').val("").change().selectpicker('refresh');
+     $('#tipologia').val("").change();
+     $('#filtroVistaViable').val("").change();
+
+      var busqueda_todos = (alasql("SELECT indice, A, B, D, E, AQ, F, G, H,I, J, K, L, M, N, AR, CI, avance, area, estatus, carta_finiquito FROM ? ", [datosBuscar]));
+       $('#table_busqueda_folio').bootstrapTable('refreshOptions', CasosJS.settingTablaBusquedaFolio);
+                $('#table_busqueda_folio').bootstrapTable('load', busqueda_todos);
+                $('#table_busqueda_folio').find('tbody tr:last td:last').html('');
+  },
+
+
+/***********  Funcion que agrega campos (area, avance, estatus) a la busqueda general ***********/
+
+  agregaCamposEstatusNumero: function(){
+    var busqueda_estatus = (alasql("SELECT * FROM ?", [CasosJS.datosSpreadSheet]));
+    //console.dir(busqueda_estatus);
+    //console.dir('Numero de registros regresados de la busqueda: '+busqueda_estatus.length);
+    for(var i=0;i<busqueda_estatus.length;i++) {
+      var estatus_casos=CasosJS.obtenerEstatusAclaraciones(busqueda_estatus[i].indice);
+      //console.dir(estatus_casos);
+        puesto = alasql('SELECT ROW nb_puesto FROM puesto WHERE id_puesto =' + sessionStorage.id_puesto)[0];
+        //console.dir(puesto);
+
+      var reportadoPor = FormularioJS.columnas[estatus_casos.area][3] !== null ?
+                        busqueda_estatus[i][FormularioJS.columnas[estatus_casos.area][3]] === '' ?
+                        'Sin Asignar' :
+                        alasql('SELECT ROW nombre FROM usuarios WHERE email = "' + busqueda_estatus[i][FormularioJS.columnas[estatus_casos.area][3]] + '"')[0] :
+                        'Sin Asignar';
+
+      //console.dir(reportadoPor);
+      if (estatus_casos.area_paralela) {
+        if (estatus_casos.area_paralela === puesto) {
+          busqueda_estatus[i]['area']=estatus_casos.area_paralela;
+          busqueda_estatus[i]['avance']=estatus_casos.avance;
+          busqueda_estatus[i]['estatus']=estatus_casos.estatus_paralela === 'Asignado' ? 'En proceso' : estatus_casos.estatus_paralela;
+          busqueda_estatus[i]['carta_finiquito']="carta";
+        } else {
+          busqueda_estatus[i]['area']=estatus_casos.area;
+          busqueda_estatus[i]['avance']=estatus_casos.avance;
+          busqueda_estatus[i]['estatus']=estatus_casos.estatus === 'Asignado' ? 'En proceso' : estatus_casos.estatus;
+          busqueda_estatus[i]['carta_finiquito']="carta";
+        }
+      } else {
+        busqueda_estatus[i]['area']=estatus_casos.area;
+        busqueda_estatus[i]['avance']=estatus_casos.avance;
+        busqueda_estatus[i]['estatus']=estatus_casos.estatus === 'Asignado' ? 'En proceso' : estatus_casos.estatus;
+        busqueda_estatus[i]['carta_finiquito']="carta";
+      }
+      busqueda_estatus[i]['AQ'] = reportadoPor;
+    }
+    //console.dir('busqueda_estatus*****');
+
+    return busqueda_estatus;
+  },
+
+
+/***********************************    CARTA FINIQUITO   ***************************************/
+
+  clickBtnCartaFiniquito: function(row){
+
+        dialog = bootbox.dialog({
+          message: '<div class="row"><div class="col-md-11"><p class="text-center" style="font-size:14px;text-align:center;color: #004481;">Carta Finiquito.</p></div><div class="col-md-1" style="cursor: pointer;" id="closeCartaFiniquito">X</div></div>'+
+                     '<div class="panel panel-primary">'+
+                       '<div class="panel-body panel_body_auto">'+
+                         '<div class="row">'+
+                           '<div class="col-xs-2 col-sm-2 col-md-2"></div>'+
+                           '<div class="col-xs-7 col-sm-7 col-md-7">'+
+                             '<label for="monto_cf"><p class="" style="color:#004481;">Ingresa el monto (en número), que va a ir en la carta finiquito: </p></label>'+
+                             '<input type="number" class="form-control" id="monto_cf" placeholder="Ingresa el monto en número" style="padding-left: 15px; height: 29px;">'+
+                           '</div>'+
+                         '</div><div class="row">' +
+                           '<div class="col-xs-2 col-sm-2 col-md-2"></div>'+
+                           '<div class="col-xs-7 col-sm-7 col-md-7">'+
+                             '<label for="deudor_cf"><p class="" style="color:#004481;">Ingresa el número del deudor: </p></label>'+
+                             '<input type="number" class="form-control" id="deudor_cf" placeholder="Ingresa el nombre del deudor" style="padding-left: 15px; height: 29px;">'+
+                           '</div>'+
+                         '</div>'+
+                         '<div class="clearfix"></div>'+
+                         '<div class="row">'+
+                           '<div class="col-xs-2 col-sm-2 col-md-2"></div>'+
+                           '<div class="col-xs-2 col-sm-2 col-md-2">'+
+                             '<button id="btnPDFCartaFiniquito" class="btn btn-default btnNuevoDos glyphicon glyphicon-download " ><span style="color:#fff;">  Generar vista previa PDF</span></button>'+
+                           '</div>'+
+                           '<div class="col-xs-2 col-sm-2 col-md-2">'+
+                           '</div>'+
+                           '<div class="col-xs-2 col-sm-2 col-md-2">'+
+                             '<button id="btnEnviarCartaFiniquito" class="btn btn-default btnNuevoDos glyphicon glyphicon-send " ><span style="color:#fff;"> Enviar Correo</span></button>'+
+                           '</div>'+
+                           '<div class="clearfix"></div>'+
+                           '<div class="col-xs-12 col-sm-12 col-md-12 text-center" id="descargarPdfVistaPreviaDiv">'+
+                             '<a style="color:#004481;" id="descargarPdfVistaPrevia" target="_blank">Descargar vista prevía PDF</a>'+
+                           '</div>'+
+                         '</div>'+
+                       '</div>'+
+                     '</div>',
+          closeButton: false,
+        });
+
+
+          $('#closeCartaFiniquito').click(function(){
+            dialog.modal('hide');
+            CasosJS.eliminarCopiayPdf();
+          })
+
+        $('#descargarPdfVistaPrevia').removeAttr('href');
+        $('#descargarPdfVistaPreviaDiv').hide('1000');
+        $('#btnPDFCartaFiniquito').click (function(){
+          //alert("Descarga de PDF");
+          //row.producto = 'Cuenta de Débito';
+          CasosJS.descargarEnviarPdfCartaFiniquito(row, 'descargar');
+        });
+        $('#btnEnviarCartaFiniquito').click(function(){
+          //console.dir('botono enviar carta finiquito');
+          dialog = bootbox.dialog({
+            message:  '<div class="row"><div class="col-md-11"><p class="text-center" style="font-size:14px;text-align:center;color: #004481;">Envío del Correo.</p></div><div class="col-md-1" style="cursor: pointer;" id="closeCartaFiniquito">X</div></div>'+
+                        '<div class="panel panel-primary">'+
+                          '<div class="panel-body panel_body_auto">'+
+                            '<div class="row">'+
+                              '<div class="col-xs-1 col-sm-1 col-md-1"></div>'+
+                              '<div class="col-xs-10 col-sm-10 col-md-10">'+
+                                '<label for="correos_cf"><p class="" style="color:#004481;">Ingresa el o los correos a dónde será enviada la carta finiquito, separados por comas: </p></label>'+
+                                '<input type="text" class="form-control" id="correos_cf" placeholder="Ingresa los correos separados por comas" style="padding-left: 15px; height: 29px;">'+
+                              '</div>'+
+                            '</div>'+
+                            '<div class="clearfix"></div>'+
+                            '<div class="row">'+
+                              '<div class="col-xs-5 col-sm-5 col-md-5"></div>'+
+                              '<div class="col-xs-2 col-sm-2 col-md-2">'+
+                                '<button id="btnEnviarCorreos" class="btn btn-default btnNuevoDos glyphicon glyphicon-send " ><span style="color:#fff;"> Enviar </span></button>'+
+                              '</div>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>',
+            closeButton: true,
+          });
+
+
+          $('#btnEnviarCorreos').click(function(){
+            var correos=$('#correos_cf').val();
+
+            for(i=0; i< correos.split(',').length; i++){
+                   if(correos.split(',')[i].split('@')[1] == "bbva.com"){
+                       CasosJS.descargarEnviarPdfCartaFiniquito(row, 'enviar');
+                       setTimeout(function(){
+                         dialog.modal('hide');
+                       }, 6000);
+
+                   }else{
+                       dialog = bootbox.dialog({
+                         message: '<p class="text-center" style="font-size:14px;text-align:center;color: #004481;">Los correos deben ser del dominio BBVA.COM</p>',
+                         closeButton: true,
+                       });
+                       setTimeout(function(){
+                         dialog.modal('hide');
+                       }, 4000);
+                   }
+            }
+
+          });
+        });
+
+  },
+
+
+    descargarEnviarPdfCartaFiniquito: function(row, tipo){
+    //console.dir(row);
+    CasosJS.idPdfGenerado = '';
+    if($('#monto_cf').val() == ''){
+      bootbox.dialog({
+                         message: '<p class="text-center" style="font-size:14px;text-align:center;color: #004481;">Ingrese el monto</p>',
+                         closeButton: true,
+                       });
+    }else{
+
+      var meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+          var fechaA = row.A;
+          var spliteando = fechaA.split('>');
+          var spliteando1 = spliteando[1].replace(/<\/span/g, '');
+
+          var fecha = new Date();
+          var objeto = {};
+          objeto.dia_hoy = fecha.getDate();
+          objeto.mes_hoy = meses[fecha.getMonth()];
+          objeto.anio_hoy = fecha.getFullYear();
+          var fecha_doc = new Date(spliteando1);
+          //console.dir(fecha_doc);
+
+           objeto.dia = fecha_doc.getDate();
+          objeto.mes = meses[fecha_doc.getMonth()];
+          objeto.anio = fecha_doc.getFullYear();
+
+          objeto.monto = commaSeparateNumber($('#monto_cf').val());
+          objeto.monto_letra = NumeroALetras($('#monto_cf').val());
+          objeto.producto = row.E;
+          objeto.producto_numero = row.H;
+          objeto.nombre = row.G;
+          objeto.sucursal = row.J;
+          objeto.tipo = tipo;
+          objeto.to = $('#correos_cf').val();
+          //console.dir(objeto);
+           MenuJS.openLilWaitMessage();
+        google.script.run.withSuccessHandler(function (response) {
+          CasosJS.idPdfGenerado = response.idArray;
+          MenuJS.closeLilWaitMessage();
+          if(tipo == "descargar"){
+            $('#descargarPdfVistaPreviaDiv').show('1000');
+            $('#descargarPdfVistaPrevia').attr('href', response.urlDowload)
+          }
+          //console.dir(response);
+
+        }).withFailureHandler(GenericJS.setFailure).cartaFiniquito(objeto);
+          }
+       CasosJS.guardarDeudorCartaFiniquito($('#deudor_cf').val(), row.indice);
+    },
+    guardarDeudorCartaFiniquito : function (deudor, indice) {
+      //console.log(deudor, indice);
+      var rango = 'CF' + indice;
+      FormularioJS.sprdsheet.guardar(rango, deudor);
+    },
+
+/*+**************************Función que eliminará la copia y el pdf generado**************************************/
+eliminarCopiayPdf: function(){
+  if(CasosJS.idPdfGenerado != ''){
+    google.script.run.withSuccessHandler(function (response) {
+          CasosJS.idPdfGenerado = '';
+        }).withFailureHandler(GenericJS.setFailure).eliminarCartasFiniquito(CasosJS.idPdfGenerado);
+  }
+},
+
+/****************************** Funcion de muestra de avance del proceso de una aclaración ******************************/
+
+  obtenerEstatusAclaraciones: function (indice_data) {
+    var variables = ['AX', 'AZ', 'BA', 0],
+      objeto_estatus= { area: 'AFG' },
+      avance = 0;
+
+    CasosJS.datosTablaEstatus=FormularioJS.alasql.obtener();
+    var estatus_aclaraciones = alasql("SELECT indice, AR, AX, AZ, BA, BE, BG, BH, BI, BJ, BK, BN, BZ, BO, BP, BQ, BS, BU, BX, BW, CC, CD, CE, CI, BM, BN, BO, CK FROM ? WHERE indice="+indice_data, [CasosJS.datosTablaEstatus])[0];
+    //console.dir('estatus_aclaraciones');
+    //console.dir(estatus_aclaraciones);
+
+    // Nueva forma de sacar el avance:
+    var tiempos = alasql('SELECT SUM(tmp_aceptar + tmp_backlog) AS [Tiempo], tipologia AS [Tipologia] FROM area_tmp GROUP BY tipologia');
+
+    if (estatus_aclaraciones['BA'] !== '' && (sessionStorage.id_puesto === '2' || sessionStorage.id_puesto === '1')) {
+      // Es AFG
+      objeto_estatus.area = 'AFG';
+      avance = estatus_aclaraciones['BA'] === 'En proceso'
+        ? 17
+        : estatus_aclaraciones['BA'] === 'Pendiente'
+          ? 0
+          : estatus_aclaraciones['BA'] === 'Asignado'
+            ? 9
+            : estatus_aclaraciones['BA'] === 'Terminado' || estatus_aclaraciones['BA'] === 'Rechazado'
+              ? 100
+              : avance;
+      variables = ['AX', 'AZ', 'BA', avance];
+    } else if (estatus_aclaraciones['BH'] !== '' && (sessionStorage.id_puesto === '3' || sessionStorage.id_puesto === '1')) {
+      // Es Seguridad
+      objeto_estatus.area = 'Seguridad';
+      avance = estatus_aclaraciones['BH'] === 'En proceso'
+        ? 33
+        : estatus_aclaraciones['BH'] === 'Pendiente'
+          ? 17
+          : estatus_aclaraciones['BH'] === 'Asignado'
+            ? 26
+            : estatus_aclaraciones['BH'] === 'Terminado' || estatus_aclaraciones['BH'] === 'Rechazado'
+              ? 100
+              : avance;
+      variables = ['BE', 'BG', 'BH', avance];
+    } else if (estatus_aclaraciones['BJ'] !== '' && (sessionStorage.id_puesto === '9' || sessionStorage.id_puesto === '1')) {
+      // aquí entra RCI, cuando tenga los campos
+      objeto_estatus.area = 'RCI';
+      avance = estatus_aclaraciones['BJ'] === 'En proceso'
+        ? 67
+        : estatus_aclaraciones['BJ'] === 'Pendiente'
+          ? 33
+          : estatus_aclaraciones['BJ'] === 'Asignado'
+            ? 50
+            : estatus_aclaraciones['BJ'] === 'Terminado' || estatus_aclaraciones['BJ'] === 'Rechazado'
+              ? 100
+              : avance;
+      variables = ['BI', 'BK', 'BJ', avance];
+    }
+
+    if (estatus_aclaraciones['BA'] !== '' && estatus_aclaraciones['AA'] !== '' && (sessionStorage.id_puesto === '11' || sessionStorage.id_puesto === '1')) {
+      // Es AFG - para subir el quebranto
+      objeto_estatus.area = 'AFG';
+      avance = estatus_aclaraciones['BA'] === 'En proceso'
+        ? 17
+        : estatus_aclaraciones['BA'] === 'Pendiente'
+          ? 0
+          : estatus_aclaraciones['BA'] === 'Asignado'
+            ? 9
+            : estatus_aclaraciones['BA'] === 'Terminado' || estatus_aclaraciones['BA'] === 'Rechazado'
+              ? 100
+              : avance;
+      variables = ['AX', 'AZ', 'BA', avance];
+    }
+
+    if (estatus_aclaraciones['BO'] !== '' && (alasql('SELECT ROW nb_area FROM (SELECT * FROM puesto JOIN puesto_area USING id_puesto JOIN area using id_area) WHERE id_puesto=' + sessionStorage.id_puesto)[0] === 'RRLL' || !objeto_estatus.area)  && (sessionStorage.id_puesto === '4' || sessionStorage.id_puesto === '4')) {
+      // RRLL
+      objeto_estatus.area = 'RRLL';
+      avance = estatus_aclaraciones['BO'] === 'En proceso'
+        ? 80
+        : estatus_aclaraciones['BO'] === 'Pendiente'
+          ? 0
+          : estatus_aclaraciones['BO'] === 'Asignado'
+            ? 40
+            : estatus_aclaraciones['BO'] === 'Terminado' || estatus_aclaraciones['BO'] === 'Rechazado'
+              ? 100
+              : avance;
+      variables = ['BG', 'BZ', 'BO', avance];
+    }
+
+    if (estatus_aclaraciones['BS'] !== '' && (sessionStorage.id_puesto === '5' || sessionStorage.id_puesto === '1' || sessionStorage.id_puesto == '10')) {
+      // Es Viabilidad
+      objeto_estatus.area = 'Viabilidad';
+      avance = estatus_aclaraciones['BS'] === 'En proceso'
+        ? 87
+        : estatus_aclaraciones['BS'] === 'Pendiente'
+          ? 67
+          : estatus_aclaraciones['BS'] === 'Asignado'
+            ? 77
+            : estatus_aclaraciones['BS'] === 'Terminado' || estatus_aclaraciones['BJ'] === 'Rechazado'
+              ? 100
+              : avance;
+      variables = ['BP', 'BQ', 'BS', avance];
+    }
+
+    if (estatus_aclaraciones['BW'] !== '' && (sessionStorage.id_puesto === '6' || sessionStorage.id_puesto === '1')) {
+      // Es Auditoría
+      objeto_estatus.area = 'Auditoria'
+      avance = estatus_aclaraciones['BJ'] === 'En proceso'
+        ? 87
+        : estatus_aclaraciones['BJ'] === 'Pendiente'
+          ? 67
+          : estatus_aclaraciones['BJ'] === 'Asignado'
+            ? 77
+            : estatus_aclaraciones['BJ'] === 'Terminado' || estatus_aclaraciones['BJ'] === 'Rechazado'
+              ? 100
+              : avance;
+      variables = ['BU', 'BX', 'BW', avance];
+    }
+
+    if (estatus_aclaraciones['CE'] !== '' && (sessionStorage.id_puesto === '7'|| sessionStorage.id_puesto === '1' || sessionStorage.id_puesto === '10' )) {
+      // Es Penal
+      objeto_estatus.area = 'Penal';
+      avance = estatus_aclaraciones['CE'] === 'En proceso' || estatus_aclaraciones['CE'] === 'Terminado'
+        ? 100
+        : estatus_aclaraciones['CE'] === 'Pendiente'
+          ? 87
+          : avance;
+      variables = ['CC', 'CD', 'CE', avance];
+      objeto_estatus.etapa_procesal = estatus_aclaraciones['CI'];
+    }
+
+    if (sessionStorage.id_puesto === '8') {
+       objeto_estatus.area ='Aclaraciones';
+       var elEstatus = estatus_aclaraciones['CI'] !== '' ? 'Terminado' : 'En proceso';
+       elEstatus = estatus_aclaraciones[variables[2]] === 'Rechazado' ? estatus_aclaraciones[variables[2]] : elEstatus;
+       variables = ['AX', 'AZ', elEstatus, 0];
+    }
+
+
+
+    objeto_estatus.fh_inicio = estatus_aclaraciones[variables[0]];
+    objeto_estatus.fh_fin = estatus_aclaraciones[variables[1]];
+    objeto_estatus.estatus = estatus_aclaraciones[variables[2]] ? estatus_aclaraciones[variables[2]] : variables[2];
+    objeto_estatus.avance = variables[3];
+    return objeto_estatus;
+  },
+
+  buscarPara : function (grafica, data, params) {
+    var aBuscar = '',
+      viabilidad = '',
+      area = '';
+    //console.log(grafica, data, params)
+    switch (grafica) {
+      case 'SLARetraso':
+        console.log(params);
+        aBuscar = params.seriesName.replace(/\n/g, ' ').replace(/\s+/gi, ' ').trim();
+        area = params.name.replace(/\n/g, ' ').replace(/\s+/gi, ' ').trim();
+        setTimeout(function () {
+          $('#buscarPor').val('vistaServicio').change();
+          if (sessionStorage.id_puesto !== '1') {
+            area = alasql('SELECT ROW nb_area FROM area WHERE id_area=' + Number(sessionStorage.id_puesto))[0];
+          }
+          $('#SLAs').val(aBuscar).change();
+          sessionStorage.id_puesto === '1' ? $('#filtroArea').val(area).change() : '';
+          $('#buscarBtn').click();
+          MenuJS.closeLilWaitMessage();
+        }, 1000);
+      break;
+      case 'NumSentencias':
+        setTimeout(function () {
+          $('#buscarPor').val('vistaDenuncias').change();
+          $('#denuncias').val('Ejecución de la Sentencia').change();
+          $('#buscarBtn').click();
+          MenuJS.closeLilWaitMessage();
+        }, 1000);
+      break;
+      case 'AreasVSCasuisticas':
+        aBuscar = params.name.replace(/\n/g, ' ').replace(/\s+/gi, ' ').trim();
+        area = params.seriesName.replace(/\n/g, ' ').replace(/\s+/gi, ' ').trim();
+        setTimeout(function () {
+          $('#buscarPor').val('vistaTipologia').change();
+          $('#tipologia').val(aBuscar).change();
+          if (sessionStorage.id_puesto === '1') {
+            $('#filtroArea').val(area).change();
+          }
+          $('#buscarBtn').click();
+          MenuJS.closeLilWaitMessage();
+        }, 1000);
+      break;
+      case 'AreasVSEstatus':
+        aBuscar = params.name.replace(/\n/g, ' ').replace(/\s+/gi, ' ').trim();
+        area = params.seriesName.replace(/\n/g, ' ').replace(/\s+/gi, ' ').trim();
+        setTimeout(function () {
+          $('#filtroEstatusCasos').val(aBuscar).change();
+          if (sessionStorage.id_puesto === '1') {
+            $('#filtroArea').val(area).change();
+          }
+          $('#buscarBtn').click();
+          MenuJS.closeLilWaitMessage();
+        }, 1000);
+      break;
+      case 'Etapa Procesal':
+        aBuscar = params.name.replace(/\n/g, ' ').replace(/\s+/gi, ' ').trim();
+        setTimeout(function () {
+          $('#buscarPor').val('vistaDenuncias').change();
+          $('#denuncias').val(aBuscar).change();
+          $('#buscarBtn').click();
+          MenuJS.closeLilWaitMessage();
+        }, 1000);
+      break;
+      case 'Denuncias':
+        setTimeout(function () {
+          $('#buscarPor').val('vistaDenuncias').change();
+          $('#buscarBtn').click();
+          MenuJS.closeLilWaitMessage();
+        }, 1000);
+      break;
+      case 'Casuisticas':
+        aBuscar = params.name.replace(/\n/g, ' ').replace(/\s+/gi, ' ').trim(),
+        viabilidad = params.seriesName.replace(/\n/g, ' ').replace(/\s+/gi, ' ').trim() === 'No Viables' ? 'Rechazado' : 'Aceptado';
+        setTimeout(function () {
+          $('#buscarPor').val('vistaTipologia').change();
+          $('#tipologia').val(aBuscar).change();
+          $('#filtroVistaViable').val(viabilidad).change();
+          $('#buscarBtn').click();
+          MenuJS.closeLilWaitMessage();
+        }, 1000);
+      break;
+      default:
+      break;
+    }
+    /*
+    $('#table_busqueda_folio').bootstrapTable('refreshOptions', CasosJS.settingTablaBusquedaFolio);
+    $('#table_busqueda_folio').bootstrapTable('load', busqueda_todos);
+    $('#tablaVistaFolio').show(1100);
+    */
+  },
+
+
+
+
+}
+
+
+
+</script>

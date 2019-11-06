@@ -1,0 +1,1045 @@
+<div class="wait_panel" style="text-align: center; margin-top: 15%;">
+       <div class="cargando"></div>
+       <br>
+       <label class="control-label bbva02 negrita" style="font-size: 20px;">CARGANDO...</label>
+</div>
+
+<div id="super_panel">
+ <div class="clearfix" style="float: none;">
+          <br>
+ </div>
+
+ <!--<h1 style="text-align: center; color: #094fa4; font-size: 450%;"><strong>Q/A DIGITAL IBMI</strong></h1>--->
+
+ <div class="panel panel-primary" >
+   <div class="panel-body">
+     <div class="row">
+       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+         <img style="float: left; width: 10px; height: 60px;" class="img-responsive img_bancomer_rayas">
+         <p style="font-weight: bold; color: #4F81BD; font-size: 24px; padding-left: 20px;">
+           <span id="span_modulo_titulo">ALTA DE REPORTE</span>
+         </p>
+         <p style="color: #4F81BD; padding-left: 20px;" id="p_modulo_descripcion">Descripción corta del reporte</p>
+
+         <!-- --------------------DATOS VISIBLES  ------------------------ -->
+         <div class="row equal vista_reporte hide">
+           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+             <div class="panel panel-primary">
+               <div class="panel-heading">Datos Generales</div>
+               <div class="panel-body">
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_folio"  class="col-sm-3 control-label">Número de Folio:</label>
+                     <div class="col-sm-9">
+                       <label id="v_folio" columna="CK"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_numAclaracion"  class="col-sm-3 control-label">Número de Aclaración:</label>
+                     <div class="col-sm-9">
+                       <label id="v_numAclaracion" columna="M"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_fechaAlta"  class="col-sm-3 control-label">Alta:</label>
+                     <div class="col-sm-9">
+                       <label id="v_fechaAlta" columna="A"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_fechaIncidente"  class="col-sm-3 control-label">Fecha del incidente:</label>
+                     <div class="col-sm-9">
+                       <label id="v_fechaIncidente" columna="C"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_area"  class="col-sm-3 control-label">Notificado por:</label>
+                     <div class="col-sm-9">
+                       <label id="v_area" columna="B,O,AQ"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_cr_afectado" class="col-sm-3 control-label">CR afectado:</label>
+                     <div class="col-sm-9">
+                       <label id="v_cr_afectado" columna="J"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_sucursal" class="col-sm-3 control-label">Sucursal:</label>
+                     <div class="col-sm-9">
+                       <label id="v_sucursal" columna="CP"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_division" class="col-sm-3 control-label">División:</label>
+                     <div class="col-sm-9">
+                       <label id="v_division" columna="CQ"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_cuentaCliente" class="col-sm-3 control-label">No. de Cuenta:</label>
+                     <div class="col-sm-9">
+                       <label id="v_cuentaCliente" columna="I"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_producto" class="col-sm-3 control-label">Producto:</label>
+                     <div class="col-sm-9">
+                       <label id="v_producto" columna="E,H"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_tarjetaCliente" class="col-sm-3 control-label">Monto:</label>
+                     <div class="col-sm-9">
+                       <label id="v_tarjetaCliente" columna="D"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_nombreCliente" class="col-sm-3 control-label">Cliente:</label>
+                     <div class="col-sm-9">
+                       <label id="v_nombreCliente" columna="F,G"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_empleado" class="col-sm-3 control-label">Empleado:</label>
+                     <div class="col-sm-9">
+                       <label id="v_empleado" columna="K,L"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_descripcion" class="col-sm-3 control-label">Descripción:</label>
+                     <div class="col-sm-9">
+                       <label id="v_descripcion" columna="N"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_casoRelacionado" class="col-sm-3 control-label">Caso Relacionado:</label>
+                     <div class="col-sm-9">
+                       <label id="v_casoRelacionado" columna="AP"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_tipologia" class="col-sm-3 control-label">Tipología:</label>
+                     <div class="col-sm-9">
+                       <label id="v_tipologia" columna="AR"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_modus" class="col-sm-3 control-label">Modus operandi:</label>
+                     <div class="col-sm-9">
+                       <label id="v_modus" columna="AS"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_prioridad" class="col-sm-3 control-label">Prioridad:</label>
+                     <div class="col-sm-9">
+                       <label id="v_prioridad" columna="AT"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_afectacion" class="col-sm-3 control-label">Afectación:</label>
+                     <div class="col-sm-9">
+                       <label id="v_afectacion" columna="AU"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_importe" class="col-sm-3 control-label">Importe:</label>
+                     <div class="col-sm-9">
+                       <label id="v_importe" columna="AV,AW"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_dg" class="col-sm-3 control-label">DG, División, Área:</label>
+                     <div class="col-sm-9">
+                       <label id="v_dg" columna="BB,BC,BD"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_regimen" class="col-sm-3 control-label">Régimen Disciplinario:</label>
+                     <div class="col-sm-9">
+                       <label id="v_regimen" columna="BM,BN"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_deudor" class="col-sm-3 control-label">Deudor:</label>
+                     <div class="col-sm-9">
+                       <label id="v_deudor" columna="CF"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_viabilidad" class="col-sm-3 control-label">Viabilidad:</label>
+                     <div class="col-sm-9">
+                       <label id="v_viabilidad" columna="BR"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_pruebas" class="col-sm-3 control-label">Recepción de Pruebas:</label>
+                     <div class="col-sm-9">
+                       <label id="v_pruebas" columna="CC"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_denuncia" class="col-sm-3 control-label">Presentación de Denuncia:</label>
+                     <div class="col-sm-9">
+                       <label id="v_denuncia" columna="CD"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_juicio" class="col-sm-3 control-label">Juicio:</label>
+                     <div class="col-sm-9">
+                       <label id="v_juicio" columna="CH,CI"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_folioFaro" class="col-sm-3 control-label">Folio FARO:</label>
+                     <div class="col-sm-9">
+                       <label id="v_folioFaro" columna="BL"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                   <label for="v_folioAudie" class="col-sm-3 control-label">Folio AUDIE:</label>
+                     <div class="col-sm-9">
+                       <label id="v_folioAudie" columna="CB"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                   <label for="v_status" class="col-sm-3 control-label">Status:</label>
+                     <div class="col-sm-9">
+                       <label id="v_status" columna="CJ"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_rechazos" class="col-sm-3 control-label">Rechazados:</label>
+                     <div class="col-sm-9">
+                       <label id="v_rechazos" columna="CJ"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_sinparticipacion" class="col-sm-3 control-label">Sin Participación:</label>
+                     <div class="col-sm-9">
+                       <label id="v_sinparticipacion" columna="CJ"></label>
+                     </div>
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                     <label for="v_viabilidad" class="col-sm-3 control-label">Viabilidad:</label>
+                     <div class="col-sm-9">
+                       <label id="v_viabilidad" columna="CJ"></label>
+                     </div>
+                   </div>
+               </div>
+             </div>
+           </div>
+         </div>
+
+
+         <!-- ----------------- DATOS EDITABLES ----------------- -->
+         <div class="row equal avisos_not_found">
+         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 vista_editable">
+             <form role="form">
+               <div class="panel panel-primary">
+                 <div class="panel-heading">Datos Generales
+                   <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#form_general" aria-expanded="false" aria-controls="form_general">+</button>
+                 </div>
+                 <div class="collapse panel-body" id="form_general">
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="fechaAlta">Fecha de alta</label>
+                   <input type="date" class="form-control " id="fechaAlta" columna="A" disabled="disabled">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group hide">
+                   <label for="area">Área que notifica</label>
+                   <select class="selectpicker form-control" name="area" id="area" columna="B" contenido="area">
+                   </select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="fechaIncidente">Fecha del incidente</label>
+                   <input type="date" class="form-control" id="fechaIncidente" columna="C">
+                 </div>
+                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group">
+                   <label for="monto">Monto</label>
+                   <div class="input-group">
+                     <span class="input-group-addon">$</span>
+                     <input type="text" class="form-control" id="monto" columna="D" pattern="([0-9]*)(.*), $1" style="z-index: 0;">
+                     <span class="input-group-addon">MXN</span>
+                   </div>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="producto">Producto</label>
+                   <select class="selectpicker form-control" name="producto" id="producto" columna="E" contenido="producto"></select>
+                 </div>
+                 <!--
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="reporte">Tipo de Reporte</label>
+                   <select class="form-control" name="reporte" id="reporte" columna="I">
+                     <option value="">Reporte 1</option>
+                     <option value="">Reporte 2</option>
+                     <option value="">Reporte 3</option>
+                   </select>
+                 </div>
+                 -->
+               <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="cr_notifica">CR que notifica</label>
+                   <input type="text" class="form-control" id="cr_notifica" columna="O" pattern="([0-9]*)(.*), $1" maxlength="4">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="cr_afectado"class="site-tooltipAlta"
+                       data-toggle="tooltip" aria-describedby="tooltip"
+                       data-original-title="CR en el que se consumó el fraude">CR Afectado</label>
+                   <input type="text" class="form-control" id="cr_afectado" columna="J" pattern="([0-9]*)(.*), $1" maxlength="4">
+                 </div>
+
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="numAclaracion">Número de Aclaración</label>
+                   <input type="text" class="form-control text-uppercase" id="numAclaracion" placeholder="Número de Aclaración del Cliente" pattern="([0-9a-zA-Z]*)(.*), $1" maxlength="10" columna="M">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="sucursalAclaracion">Sucursal</label>
+                   <input type="text" class="form-control text-uppercase" id="sucursalAclaracion" placeholder="Sucursal" pattern="([0-9A-Za-zñÑ\s]+)*(.*), $1"  columna="CP">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="divisionAclaracion">División</label>
+                   <input type="text" class="form-control text-uppercase" id="divisionAclaracion" placeholder="División" pattern="([0-9A-Za-zñÑ\s]+)*(.*), $1"  maxlength="200" columna="CQ">
+                 </div>
+                 <!--div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="deudor">Deudor</label>
+                   <input type="text" class="form-control" id="deudor" placeholder="Nombre del deudor" columna="CL" pattern="([0-9]*)(.*), $1" maxlength="8">
+                 </div-->
+               </div>
+             </div>
+             <!-- Cliente Afectado -->
+             <div class="panel panel-primary">
+               <div class="panel-heading">Cliente(s) afectado(s)
+                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#form_cliente" aria-expanded="false" aria-controls="form_cliente">+</button>
+                 <button id="btn_subir_cliente" class="btn btn-primary glyphicon glyphicon-upload" type="button" style="margin-right: 10px; margin-top: -7px;"></button>
+               </div>
+               <div class="collapse panel-body" id="form_cliente">
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group hide">
+                   <label for="numCliente">Número de cliente</label>
+                   <input type="text" class="form-control" id="numCliente" columna="F" pattern="([A-Z0-9]*)(.*), $1" maxlength="8">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="numCliente_">Número de cliente</label>
+                   <input type="text" class="form-control" id="numCliente_" columna="_F" pattern="([0-9]*)(.*), $1">
+                 </div>
+                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group hide">
+                   <label for="nombreCliente">Nombre del cliente</label>
+                   <input type="text" class="form-control" id="nombreCliente" columna="G" pattern="([A-Za-zñÑ\s]+)*(.*), $1">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="nombreCliente_AP">Apellido Paterno del cliente</label>
+                   <input type="text" class="form-control text-uppercase" id="nombreCliente_AP" columna="_G" pattern="([A-Za-zñÑ\s]+)*(.*), $1">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="nombreCliente_AM">Apellido Materno del cliente</label>
+                   <input type="text" class="form-control text-uppercase" id="nombreCliente_AM" columna="_G" pattern="([A-Za-zñÑ\s]+)*(.*), $1">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="nombreCliente_NM">Nombre(s) del cliente</label>
+                   <input type="text" class="form-control text-uppercase" id="nombreCliente_NM" columna="_G" pattern="([A-Za-zñÑ\s]+)*(.*), $1">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group hide">
+                   <label for="cuentaCliente">Número de Cuenta del Cliente</label>
+                   <input type="text" class="form-control" id="cuentaCliente" columna="I" pattern="([0-9]*)(.*), $1" maxlength="10">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="cuentaCliente-">Número de Cuenta del Cliente</label>
+                   <input type="text" class="form-control" id="cuentaCliente_" columna="_I" pattern="([0-9]*)(.*), $1" maxlength="10">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group hide">
+                   <label for="tarjetaCliente">Número de Producto</label>
+                   <input type="text" class="form-control" id="tarjetaCliente" columna="H" pattern="([0-9]*)(.*), $1" maxlength="16">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="tarjetaCliente_">Número de Tarjeta de Crédito</label>
+                   <input type="text" class="form-control" id="tarjetaCliente_" columna="_H" pattern="([0-9]*)(.*), $1" maxlength="16">
+                 </div>
+                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group btns hide">
+                   <button class="btn" type="button" name="clienteOpcionesAgregar">Agregar</button>
+                   <button class="btn" type="button" name="clienteOpcionesQuitar">Quitar</button>
+                 </div>
+               </div>
+             </div>
+             <!-- Empleado Involucrado -->
+             <div class="panel panel-primary">
+               <div class="panel-heading">Empleado(s) involucrado(s)
+                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#form_empleado" aria-expanded="false" aria-controls="form_empleado">+</button>
+                 <button id="btn_subir_empleado" class="btn btn-primary glyphicon glyphicon-upload" type="button" style="margin-right: 10px; margin-top: -7px;"></button>
+               </div>
+               <div class="collapse panel-body" id="form_empleado">
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group hide">
+                   <label for="empleado_M">M del empleado</label>
+                   <input type="text" class="form-control text-uppercase" id="empleado_M" placeholder="MXXXXXX" columna="K">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="empleado">M del empleado</label>
+                   <input type="text" class="form-control text-uppercase" id="empleado" placeholder="MXXXXXX" columna="_K" pattern="(^[a-zA-Z](?:[a-zA-Z0-9]{0,5})?[0-9]?$)*(.*), $1">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group hide">
+                   <label for="nombre_empleado">Nombre del empleado</label>
+                   <input type="text" class="form-control" id="nombre_empleado" placeholder="Nombre del empleado involucrado" columna="L" pattern="([A-Za-zñÑ\s]+)*(.*), $1">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="nombre_empleado_AP">Apellido Paterno del empleado</label>
+                   <input type="text" class="form-control text-uppercase" id="nombre_empleado_AP" placeholder="Nombre del empleado involucrado" columna="_L" pattern="([A-Za-zñÑ\s]+)*(.*), $1">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="nombre_empleado_AM">Apellido Materno del empleado</label>
+                   <input type="text" class="form-control text-uppercase" id="nombre_empleado_AM" placeholder="Nombre del empleado involucrado" columna="_L" pattern="([A-Za-zñÑ\s]+)*(.*), $1">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="nombre_empleado_NM">Nombre(s) del empleado</label>
+                   <input type="text" class="form-control text-uppercase" id="nombre_empleado_NM" placeholder="Nombre del empleado involucrado" columna="_L" pattern="([A-Za-zñÑ\s]+)*(.*), $1">
+                 </div>
+                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group btns hide">
+                   <button class="btn" type="button" name="empleadoOpcionesAgregar">Agregar</button>
+                   <button class="btn" type="button" name="empleadoOpcionesQuitar">Quitar</button>
+                 </div>
+               </div>
+             </div>
+             <!-- Descripción -->
+             <div class="panel panel-primary">
+               <div class="panel-heading">Descripción del evento
+                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#form_descripcion" aria-expanded="false" aria-controls="form_descripcion">+</button>
+               </div>
+               <div class="collapse panel-body" id="form_descripcion">
+                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group hide">
+                   <input type="text" class="form-control" style="resize: none;"  id="descripcion" columna="N">
+                 </div>
+                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                 <textarea type="text" class="form-control desc" style="resize: none;"  id="descripcion1" rows="10" maxlength="1500"  columna="_N" onkeyup="$('#conteo_caracteres').find('span').html($(this).val().length)"></textarea>
+                 <div id="conteo_caracteres"><span>0</span> / 1500</div>
+                 </div>
+                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                   <label for="descripcion1">¿En qué fundamentas tu sospecha de fraude interno? </label>
+                   <input type="text" class="form-control desc" id="descripcion2" placeholder="" maxlength="300"  columna="_N">
+                 </div>
+               </div>
+             </div>
+             <div class="panel panel-primary">
+               <div class="panel-heading">Documentos
+                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#form_documentos" aria-expanded="false" aria-controls="form_documentos">+</button>
+               </div>
+               <div class="collapse panel-body" id="form_documentos">
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_reclamación" columna="P" origen="Aclaraciones">Carta Reclamación</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_informe_afg" columna="Q" origen="AFG">Informe AFG</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_informe_seguridad" columna="R" origen="Seguridad">Informe Seguridad</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_informe_rci" columna="S" origen="RCI">Informe RCI</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_paquete" columna="V" origen="Auditoría">Paquete contable</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_logs" columna="W" origen="AFG">Logs</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="videos" columna="X" origen="Seguridad">Videos / Fotogramas</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_quebranto" columna="Y" origen="Auditoría">Quebranto</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_constancia_entrevista" columna="Z" origen="Seguridad/RCI">Constancia de entrevista</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_cedula_quebranto" columna="AA" origen="AFG-Quebranto">Cédula de quebranto</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_evidencia" columna="AB" origen="Seguridad">Evidencia externa</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_finiquito" columna="AC" origen="Aclaraciones">Carta finiquito</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_informe_auditoria" columna="AD" origen="Auditoría">Informe Auditoría</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_sip" columna="AE" origen="Seguridad">SIP</label>
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="doc_sospecha" columna="AF">Fundamento de sospecha</label>
+                 </div>
+                 <!-- También tenemos los campos: T, U, AG, AH, AI, AJ, AK, AL, AM, AN, AO-->
+                 <!-- Informativo -->
+                 <div class="clearfix"></div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <div class="label-success" style="width: 20px;height: 20px;float: left;margin-right: 10px;"></div>
+                   Con Documento
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <div class="lbl-secundary" style="width: 20px;height: 20px;float: left;margin-right: 10px;"></div>
+                   Documento de otra área
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <div class="label-primary" style="width: 20px;height: 20px;float: left;margin-right: 10px;"></div>
+                   Documento por subir
+                 </div>
+               </div>
+             </div>
+             <button id="btn_datos_generales" class="btn btn-primary" type="button" name="Enviar">Enviar</button>
+           </form>
+         </div>
+         <!--Iniciando Tabs-->
+         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12" id="form_areas">
+           <div class="clearfix"><br></div>
+           <ul class="nav nav-tabs">
+             <li id="tabsAFG" class="site-tooltipTuto hide" data-toggle="tooltip" aria-describedby="tooltip"
+               data-original-title="Area Antifraudes" id="inicioAFG">
+               <a data-toggle="tab" href="#cuestionarioAFG">AFG</a>
+             </li>
+             <li id="tabsRCI" class="site-tooltipTuto hide" data-toggle="tooltip" aria-describedby="tooltip"
+               data-original-title="Área de RCI">
+               <a data-toggle="tab" href="#cuestionarioRCI">RCI</a>
+             </li>
+             <li id="tabsSeguridad" class="site-tooltipTuto hide" data-toggle="tooltip" aria-describedby="tooltip"
+               data-original-title="Área de Seguridad">
+               <a data-toggle="tab" href="#cuestionarioSeguridad">Seguridad</a>
+             </li>
+             <li id="tabsRRLL" class="site-tooltipTuto hide" data-toggle="tooltip" aria-describedby="tooltip"
+               data-original-title="Área de RRLL">
+               <a data-toggle="tab" href="#cuestionarioRRLL">RRLL</a>
+             </li>
+             <li id="tabsViabilidad" class="site-tooltipTuto hide" data-toggle="tooltip" aria-describedby="tooltip"
+               data-original-title="Viabilidad">
+               <a data-toggle="tab" href="#cuestionarioViabilidad">Viabilidad</a>
+             </li>
+             <li id="tabsAuditoria" class="site-tooltipTuto hide" data-toggle="tooltip" aria-describedby="tooltip"
+               data-original-title="Área de Auditoría">
+               <a data-toggle="tab" href="#cuestionarioAuditoria">Auditoría</a>
+             </li>
+             <li id="tabsPenal" class="site-tooltipTuto hide" data-toggle="tooltip" aria-describedby="tooltip"
+               data-original-title="Área Penal">
+               <a data-toggle="tab" href="#cuestionarioPenal">Penal</a>
+             </li>
+             <li id="tabsAclaraciones" class="site-tooltipTuto hide" data-toggle="tooltip" aria-describedby="tooltip"
+               data-original-title="Área Aclaraciones">
+               <a data-toggle="tab" href="#cuestionarioAclaraciones">Aclaraciones</a>
+             </li>
+           </ul>
+           <!-- Opciones de Tabs -->
+           <div class="tab-content">
+             <!-- Tab Aclaraciones -->
+             <div role="tabpanel" class="tab-pane" id="cuestionarioAclaraciones">
+               <div class="clearfix"><br></div>
+               <div class="row">
+                 <!-- ¿Ingresa al Circuito? -->
+                 <div class="col-lg-12 botoneraAclaraciones">
+                   <div class="clearfix btn_borderTop"></div>
+                   <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 form-group"></div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Guardar las modificaciones realizadas al caso"
+                     type="button" name="Aprobar">Guardar</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                   </div>
+                 </div>
+               </div>
+             </div>
+             <!-- Tab AFG -->
+             <div role="tabpanel" class="tab-pane" id="cuestionarioAFG"> <!-- class="active" -->
+               <div class="clearfix"><br></div>
+               <div class="row">
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="caso">Caso Relacionado</label>
+                   <div class="input-group">
+                     <input type="text" class="form-control" id="caso" placeholder="Caso Relacionado" columna="AP">
+                     <span id="buscar" class="btn input-group-addon">
+                       <span class="glyphicon glyphicon-search"></span>
+                   </span>
+                   </div>
+                 </div>
+                 <!--<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="complejidad">Complejidad</label>
+                   <select class="form-control bbva02 selectpicker" name="complejidad" id="complejidad" columna="AQ" contenido="complejidad"></select>
+                 </div> -->
+                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group">
+                   <label for="tipologia">Tipología</label>
+                   <select class="form-control bbva02 selectpicker" name="tipologia" id="tipologia" columna="AR" contenido="tipologia"></select>
+                 </div>
+                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group">
+                   <label for="modus">Modus operandi</label>
+                   <select class="form-control bbva02 selectpicker" name="modus" id="modus" columna="AS" contenido="modus_operandi"></select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="prioridad">Prioridad</label>
+                   <select class="form-control bbva02 selectpicker" name="prioridad" id="prioridad" columna="AT" contenido="prioridad"></select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="cancelacion">Afectación</label>
+                   <select class="form-control bbva02 selectpicker" name="cancelacion" id="cancelacion" columna="AU" contenido="afectacion"></select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="importe_quebranto">Importe Afectado</label>
+                   <input type="number" class="form-control" id="importe_quebranto" placeholder="Importe Afectado" columna="AV" value="0">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="importe_recuperacion">Importe Recuperado</label>
+                   <input type="number" class="form-control" id="importe_recuperacion" placeholder="Importe Recuperado" columna="AW" value="0">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="importe_total">Importe Quebranto</label>
+                   <input type="number" class="form-control" id="importe_total" placeholder="Importe Quebranto" disabled="disabled" value="0">
+                 </div>
+                 <!-- Estos no se muestran
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group dash_block">
+                   <label for="fecha_afg">Fecha de inicio</label>
+                   <input type="date" class="form-control" id="fecha_afg" placeholder="Fecha de inicio" columna="AX">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group dash_block">
+                   <label for="fecha_fin_afg">Fecha de término</label>
+                   <input type="date" class="form-control" id="fecha_fin_afg" placeholder="Fecha de término" columna="AZ">
+                 </div> -->
+                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group">
+                   <label for="asignado_afg">Asignado</label>
+                   <select class="form-control bbva02 selectpicker" name="asignado_afg" id="asignado_afg" columna="AY" contenido="asignado" area="AFG"></select>
+                 </div>
+                 <!-- INDICADORES -->
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="tiempo_afg">Nivel de servicio</label>
+                   <div class="label-status site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title="">Fuera de Tiempo</div>
+                 </div>
+                 <!-- ¿Ingresa al Circuito? -->
+                 <div class="col-lg-12 botoneraAFG">
+                   <div class="clearfix btn_borderTop"></div>
+                   <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 form-group"></div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Aprobar y avanzar el proceso"
+                     type="button" name="Aprobar">Aprobar</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Guardar las modificaciones realizadas al caso"
+                     type="button" name="Guardar">Guardar</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-secundary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Rechazar y detener el proceso"
+                     type="button" name="Rechazar">Descartar</button>
+                     <button class="btn btn-secundary site-tooltipTuto hide"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Reabrir el caso"
+                     type="button" name="Reabrir">Reabrir</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-secundary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Continua el flujo sin participación"
+                     type="button" name="sinParticipacion">Sin Participación</button>
+                   </div>
+                 </div>
+               </div>
+             </div>
+             <!-- Tab RCI -->
+             <div role="tabpanel" class="tab-pane" id="cuestionarioRCI"> <!-- class="active" -->
+               <div class="clearfix"><br></div>
+               <div class="row">
+                 <!--<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group">
+                   <label for="asignado_rci">Asignado</label>
+                   <select class="form-control bbva02 selectpicker" name="asignado_rci" id="asignado_rci" columna="BT" contenido="asignado" area="RCI"></select>
+                 </div>-->
+                 <!-- INDICADORES -->
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="tiempo_rci">Nivel de servicio</label>
+                   <div class="label-status site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title="">Fuera de Tiempo</div>
+                 </div>
+                 <!-- ¿Ingresa al Circuito? -->
+                 <div class="col-lg-12 botoneraRCI">
+                   <div class="clearfix btn_borderTop"></div>
+                   <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 form-group"></div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Aprobar y avanzar el proceso"
+                     type="button" name="Aprobar">Aprobar</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Guardar las modificaciones realizadas al caso"
+                     type="button" name="Guardar">Guardar</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-secundary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Continua el flujo sin participación"
+                     type="button" name="sinParticipacion">Sin Participación</button>
+                     <button class="btn btn-secundary site-tooltipTuto hide"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Reabrir el caso"
+                     type="button" name="Reabrir">Reabrir</button>
+                   </div>
+                 </div>
+               </div>
+             </div>
+             <!-- Tab Seguridad -->
+             <div role="tabpanel" class="tab-pane" id="cuestionarioSeguridad">
+               <div class="clearfix"><br></div>
+               <div class="row">
+                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group">
+                   <label for="asignado_seguridad">Asignado</label>
+                   <select class="form-control bbva02 selectpicker" name="asignado_seguridad" id="asignado_seguridad" columna="BF" contenido="asignado" area="Seguridad"></select>
+                 </div>
+                 <!--
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="estatus_seguridad">Estatus</label>
+                   <select class="form-control bbva02 selectpicker" name="estatus_seguridad" id="estatus_seguridad" columna="BH" contenido="estatus"></select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group dash_block">
+                   <label for="fecha_seguridad">Fecha de inicio</label>
+                   <input type="date" class="form-control " id="fecha_seguridad" placeholder="Fecha de inicio" columna="BE">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group dash_block">
+                   <label for="fecha_fin_seguridad">Fecha de término</label>
+                   <input type="date" class="form-control" id="fecha_fin_seguridad" placeholder="Fecha de término" columna="BG">
+                 </div>
+                 -->
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="folio_faro">Folio Faro</label>
+                   <input type="text" class="form-control" id="folio_faro" placeholder="Folio Faro" columna="BL" pattern="((?:^[A-Z]{0,3}$)|(?:^[A-Z]{0,3}-$)|(?:^[A-Z]{0,3}-[A-Z]{0,2}$)|(?:^[A-Z]{0,3}-[A-Z]{0,2}-$)|(?:^[A-Z]{0,3}-[A-Z]{0,2}-[0-9]{0,4}$)|(?:^[A-Z]{0,3}-[A-Z]{0,2}-[0-9]{0,4}-$)|(?:^[A-Z]{0,3}-[A-Z]{0,2}-[0-9]{0,4}-[0-9]{0,6}$))*(.*), $1">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="dg_areas_a">DG</label>
+                   <select class="form-control bbva02 selectpicker" name="dg_areas_a" id="dg_areas_a" columna="BB" contenido="dg_areas_a"></select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group hide">
+                   <label for="dg_areas_b">Divisiones</label>
+                   <select class="form-control bbva02 selectpicker" name="dg_areas_b" id="dg_areas_b" columna="BC"></select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group hide">
+                   <label for="dg_areas_c">Bancas</label>
+                   <select class="form-control bbva02 selectpicker" name="dg_areas_c" id="dg_areas_c" columna="BD" contenido="dg_bancas"></select>
+                 </div>
+                 <!-- INDICADORES -->
+                 <!--
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="nivel_servicio_seguridad">Nivel de Servicio</label>
+                   <div class="label-status lbl-warning site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title="Quedan 9 día para el término del proceso">No tan bueno</div>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="nivel_servicio_real_seguridad">Nivel de Servicio (Real)</label>
+                   <div class="label-status lbl-success site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title="Quedan 9 día para el término del proceso">Bueno</div>
+                 </div>
+                 -->
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="tiempo_seguridad">Nivel de servicio</label>
+                   <div class="label-status site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title=""></div>
+                 </div>
+                 <!-- ¿Ingresa al Circuito? -->
+                 <div class="col-lg-12 botoneraSeguridad">
+                   <div class="clearfix btn_borderTop"></div>
+                   <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 form-group"></div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Aprobar y avanzar el proceso"
+                     type="button" name="Aprobar">Aprobar</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Guardar las modificaciones realizadas al caso"
+                     type="button" name="Guardar">Guardar</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-secundary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Continua el flujo sin participación"
+                     type="button" name="sinParticipacion">Sin Participación</button>
+                     <button class="btn btn-secundary site-tooltipTuto hide"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Reabrir el caso"
+                     type="button" name="Reabrir">Reabrir</button>
+                   </div>
+                 </div>
+               </div>
+             </div>
+             <!-- Tab RRLL -->
+             <div role="tabpanel" class="tab-pane" id="cuestionarioRRLL">
+               <div class="clearfix"><br></div>
+               <div class="row">
+               <!--
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="estatus_rrll">Estatus</label>
+                   <select class="form-control bbva02 selectpicker" name="estatus_rrll" id="estatus_rrll" columna="Bo" contenido="estatus"></select>
+                 </div>
+               -->
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="fecha_rrll">Régimen Disciplinario</label>
+                   <select class="form-control bbva02 selectpicker" name="regimen_disciplinario_rrll" id="regimen_disciplinario_rrll" columna="BM" contenido="regimen_disciplinario"></select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="fecha_rrll">Fecha de aplicación</label>
+                   <input type="date" class="form-control " id="fecha_rrll" placeholder="Régimen Diciplinario" columna="BN">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="tiempo_rrll">Nivel de servicio</label>
+                   <div class="label-status site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title=""></div>
+                 </div>
+                 <!-- ¿Ingresa al Circuito? -->
+                 <div class="col-lg-12 botoneraRRLL">
+                   <div class="clearfix btn_borderTop"></div>
+                   <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 form-group"></div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Aprobar y avanzar el proceso"
+                     type="button" name="Aprobar">Aplicar</button>
+                     <button class="btn btn-secundary site-tooltipTuto hide"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Reabrir el caso"
+                     type="button" name="Reabrir">Reabrir</button>
+                   </div>
+                   <!--
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Guardar las modificaciones realiadas al caso"
+                     type="button" name="Guardar">Guardar</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-secundary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Rechazar y detener el proceso"
+                     type="button" name="Rechazar">Rechazar</button>
+                   </div>
+                   -->
+                 </div>
+               </div>
+             </div>
+             <!-- Tab Viabilidad -->
+             <div role="tabpanel" class="tab-pane" id="cuestionarioViabilidad">
+               <div class="clearfix"><br></div>
+               <div class="row">
+               <!--
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group dash_block">
+                   <label for="fechaInicioJ">Fecha Inicio</label>
+                   <input type="date" class="form-control" id="fechaInicioJ" columna="BP">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group dash_block">
+                   <label for="fechaTerminoViaP">Fecha Termino</label>
+                   <input type="date" class="form-control" id="fechaTerminoViaP" columna="BQ">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="nombreCliente">Estatus</label>
+                   <select class="form-control bbva02 selectpicker" name="enTiempoJ" id="enTiempoJ" columna="BS" contenido="estatus"></select>
+                 </div>
+               -->
+                 <!-- INDICADORES -->
+                 <!--
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="nivel_servicio_seguridad">Nivel de Servicio</label>
+                   <div class="label-status lbl-warning site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title="Quedan 9 día para el término del proceso">No tan bueno</div>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="nivel_servicio_real_seguridad">Nivel de Servicio (Real)</label>
+                   <div class="label-status lbl-success site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title="Quedan 9 día para el término del proceso">Bueno</div>
+                 </div>
+                 -->
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="tiempo_seguridad">Nivel de servicio</label>
+                   <div class="label-status site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title="El proceso se encuentra fuera del tiempo establecido">Fuera de Tiempo</div>
+                 </div>
+                 <!-- ¿Ingresa al Circuito? -->
+                 <div class="col-lg-12 botoneraViabilidad">
+                   <div class="clearfix btn_borderTop"></div>
+                   <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 form-group"></div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Aprobar y avanzar el proceso"
+                     type="button" name="Aprobar">Viable</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <!--<button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Guardar las modificaciones realiadas al caso"
+                     type="button" name="Guardar">Guardar</button>-->
+                     <button class="btn btn-secundary site-tooltipTuto hide"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Reabrir el caso"
+                     type="button" name="Reabrir">Reabrir</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-secundary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Rechazar y detener el proceso"
+                     type="button" name="Rechazar">No Viable</button>
+                   </div>
+                 </div>
+               </div>
+             </div>
+             <!-- Tab Auditoria -->
+             <div role="tabpanel" class="tab-pane" id="cuestionarioAuditoria">
+               <div class="clearfix"><br></div>
+               <div class="row">
+                 <!--
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group dash_block">
+                   <label for="fechaInicioAud">Fecha Inicio</label>
+                   <input type="date" class="form-control" id="fechaInicioAud" columna="BU">
+                 </div>
+                 -->
+                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group">
+                   <label for="auditor">Auditor</label>
+                   <!--<input type="text" class="form-control" id="auditor"columna="BV" >-->
+                   <select class="form-control bbva02 selectpicker" name="auditor" id="auditor" columna="BV" contenido="asignado" area="Auditoria"></select>
+                 </div>
+                 <!--
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="enTiempoJ">Estatus</label>
+                   <select class="form-control bbva02 selectpicker" name="enTiempoJ" id="enTiempoJ" columna="BW" contenido="estatus"></select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group dash_block">
+                   <label for="fechaFinAud">Fecha Fin</label>
+                   <input type="date" class="form-control" id="fechaFinAud" columna="BX">
+                 </div>
+                 -->
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="folio_audie">Folio AUDIE</label>
+                   <input type="text" class="form-control" id="folio_audie" placeholder="Folio AUDIE" columna="CB">
+                 </div>
+                 <!--
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="nivel_servicio_seguridad">Nivel de Servicio</label>
+                   <div class="label-status lbl-warning site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title="Quedan 9 día para el término del proceso">No tan bueno</div>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="nivel_servicio_real_seguridad">Nivel de Servicio (Real)</label>
+                   <div class="label-status lbl-success site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title="Quedan 9 día para el término del proceso">Bueno</div>
+                 </div>
+                 -->
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="tiempo_seguridad">Nivel de servicio</label>
+                   <div class="label-status site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title="El proceso se encuentra fuera del tiempo establecido">Fuera de Tiempo</div>
+                 </div>
+                 <!-- ¿Ingresa al Circuito? -->
+                 <div class="col-lg-12 botoneraAuditoria">
+                   <div class="clearfix btn_borderTop"></div>
+                   <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 form-group"></div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Aprobar y avanzar el proceso"
+                     type="button" name="Aprobar">Aprobar</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Guardar las modificaciones realizadas al caso"
+                     type="button" name="Guardar">Guardar</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-secundary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Regresar al área anterior"
+                     type="button" name="Regresar">Regresar</button>
+                     <button class="btn btn-secundary site-tooltipTuto hide"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Reabrir el caso"
+                     type="button" name="Reabrir">Reabrir</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-secundary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Continua el flujo sin participación"
+                     type="button" name="sinParticipacion">Sin Participación</button>
+                   </div>
+                 </div>
+               </div>
+             </div>
+             <!-- Tab Penal -->
+             <div role="tabpanel" class="tab-pane" id="cuestionarioPenal">
+               <div class="clearfix"><br></div>
+               <div class="row">
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="fechaRecPruebasJ" style="">Recepción de Pruebas</label>
+                   <input type="date" class="form-control" id="fechaRecPruebasJ" columna="CC">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="fechaPresDenunciaJ" style="">Presentación Denuncia</label>
+                   <input type="date" class="form-control" id="fechaPresDenunciaJ" columna="CD">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="junicioPenalJ">Tipo de Juicio</label>
+                   <select class="form-control bbva02 selectpicker" name="junicioPenalJ" id="junicioPenalJ" columna="CH" contenido="tipo_juicio"></select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="estatusPenalJ">Estapa Procesal</label>
+                   <select class="form-control bbva02 selectpicker" name="estatusPenalJ" id="estatusPenalJ" columna="CI" contenido="etapa_procesal"></select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
+                   <label for="tiempo_seguridad">Nivel de servicio</label>
+                   <div class="label-status site-tooltipTuto"
+                   data-toggle="tooltip" aria-describedby="tooltip"
+                   data-original-title="El proceso se encuentra fuera del tiempo establecido">Fuera de Tiempo</div>
+                 </div>
+                 <!-- ¿Ingresa al Circuito? -->
+                 <div class="col-lg-12 botoneraPenal">
+                   <div class="clearfix btn_borderTop"></div>
+                   <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9 form-group"></div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <!--<button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Aprobar y avanzar el proceso"
+                     type="button" name="Aprobar">Aprobar</button>-->
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <button class="btn btn-primary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                     data-original-title="Actualiza las modificaciones realizadas al caso"
+                     type="button" name="Guardar">Actualizar</button>
+                   </div>
+                   <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 form-group">
+                     <!--<button class="btn btn-secundary site-tooltipTuto"
+                     data-toggle="tooltip" aria-describedby="tooltip"
+                       data-original-title="Rechazar y detener el proceso"
+                     type="button" name="Rechazar">Rechazar</button>-->
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div><!-- Fin Opciones Tab -->
+         </div>
+       </div> <!-- fin del col -->
+     </div> <!-- FIN DEL ROW -->
+   </div> <!-- FIN DEL PANEL BODY -->
+ </div> <!-- FIN DEL PANEL PRIMARY -->
+</div><!-- Fin del Super Panel -->
+<script>
+ FormularioJS.init();
+</script>

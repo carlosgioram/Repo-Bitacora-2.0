@@ -1,0 +1,45 @@
+<div class="wait_panel" style="text-align: center; margin-top: 15%;">
+    <div class="cargando"></div>
+    <br>
+    <label class="control-label bbva02 negrita" style="font-size: 20px;">CARGANDO...</label>
+</div>
+
+<div id="super_panel">
+    <div class="clearfix">
+        <br>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <img style="float: left; width: 10px; height: 60px;" class="img-responsive img_bancomer_rayas">
+                    <p style="font-weight: bold; color: #4F81BD; font-size: 24px; padding-left: 20px;">
+                        <span id="span_modulo_titulo"></span>
+                    </p>
+                    <p style="color: #4F81BD; padding-left: 20px;" id="p_modulo_descripcion"></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12" id="btnDescargables">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    MenuJS.openWaitMessage();
+    //(id_usuario, nb_modulo, nb_banca, nb_tipo, nb_subproducto, nb_nodo_final, fh_registro(Null, se calcula en el método))
+    setTimeout(function(){ $('.mm-page__blocker').click();},100);
+    DescargablesJS.init();
+</script>

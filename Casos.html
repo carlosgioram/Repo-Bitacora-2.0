@@ -1,0 +1,221 @@
+<div class="wait_panel" style="text-align: center; margin-top: 15%;">
+       <div class="cargando"></div>
+       <br>
+       <label class="control-label bbva02 negrita" style="font-size: 20px;">CARGANDO...</label>
+</div>
+<div id="super_panel">
+ <div class="clearfix">
+          <br>
+ </div>
+ <!-- Primer Panel contenedor de selectpicker y botones -->
+ <div class="panel panel-primary">
+   <div class="panel-body panel_body_auto">
+       <div class="row">
+         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+           <img style="float: left; width: 10px; height: 60px;" class="img-responsive img_bancomer_rayas">
+           <p style="font-weight: bold; color: #4F81BD; font-size: 24px; padding-left: 20px;">
+             <span id="span_modulo_titulo">Búsqueda de Casos</span>
+           </p>
+           <!--<p style="color: #4F81BD; padding-left: 20px;" id="p_modulo_descripcion">Descripción corta del reporte</p>-->
+         </div>
+       </div>
+       <div class="clearfix"></div>
+       <div class="container-fluid" style="padding-top: 10px; padding-bottom: 15PX;">
+           <div class="row">
+               <div class="" id="vistaFecha1" style="display:">
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="fecha_inicial_filtro">Fecha Inicial</label>
+                   <input type="date" class="form-control" id="fecha_inicial_filtro" placeholder="Fecha Inicial">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="fecha_final_filtro">Fecha Final</label>
+                   <input type="date" class="form-control" id="fecha_final_filtro" placeholder="Fecha Final">
+                 </div>
+               </div>
+           </div>
+           <div class="clearfix"></div>
+           <div class="row">
+               <div class="col-xs-12 col-sm-12 col-md-3">
+                   <label for="buscarPor"><p class="tituloCombo" style="color:#004481;">Búsqueda por:</p></label>
+                   <select title="Selecciona..." class="form-control bbva02 selectpicker" id="buscarPor" style="height: 21px !important; color: #121212 !important; visibility: hidden;" >
+                       <option value="vistaFolio">Número de Aclaración</option>
+                       <option value="vistaEjecutivo">Empleado</option>
+                       <option value="vistaClientes">Clientes</option>
+                       <option value="vistaProductos">Productos</option>
+                       <option value="vistaMonto">Monto</option>
+                       <!--option value="vistaFecha">Fecha</option-->
+                       <option value="vistaTipologia">Tipología</option>
+                       <option value="vistaDenuncias">Etapa Procesal</option>
+                       <option value="vistaServicio">Nivel de Servicio</option>
+                   </select>
+               </div>
+               <div class="col-xs-12 col-sm-12 col-md-9" id="vistaFolio" style="display: none;">
+                   <div class="col-xs-12 col-sm-12 col-md-4">
+                       <label for="nu_folio"><p class="tituloCombo" style="color:#004481;">Número de Aclaración:</p></label>
+                       <input type="text" maxlength="10" class="form-control" id="nu_folio" type="text" placeholder="Numero de Tarjeta..." style="padding-left: 15px; height: 29px;">
+                   </div>
+               </div>
+               <div class="col-xs-12 col-sm-12 col-md-9" id="vistaEjecutivo" style="display: none;">
+                   <div class="col-xs-12 col-sm-12 col-md-4">
+                       <label for="nameEjecutivo"><p class="tituloCombo" style="color:#004481;">Nombre de Empleado:</p></label>
+                       <input type="text" class="form-control" id="nameEjecutivo" type="text" placeholder="Nombre del Ejecutivo..." style="padding-left: 15px; height: 29px;">
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-4">
+                       <label for="mbEjecutivo"><p class="tituloCombo" tyle="color:#004481;">Registro:</p></label>
+                       <input class="form-control site-tooltipTuto"
+                          data-toggle="tooltip" aria-describedby="tooltip" data-original-title="MB del Empleado"
+                          id="mbEjecutivo" type="text" placeholder="MB..." style="padding-left: 15px; height: 29px;">
+                   </div>
+               </div>
+               <div class="col-xs-12 col-sm-12 col-md-9" id="vistaClientes" style="display: none;">
+                   <div class="col-xs-12 col-sm-12 col-md-3">
+                       <label for="nu_cliente"><p class="tituloCombo" style="color:#004481;">Número Cliente:</p></label>
+                       <input class="form-control" id="nu_cliente" type="number" placeholder="Nombre Cliente..." style="padding-left: 15px;height: 29px;">
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-3">
+                       <label for="nb_cliente"><p class="tituloCombo" style="color:#004481;">Nombre Cliente:</p></label>
+                       <input class="form-control" id="nb_cliente" type="text" placeholder="Nombre Cliente..." style="padding-left: 15px;height: 29px;">
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-3">
+                       <label for="nu_cuenta"><p class="tituloCombo" style="color:#004481;">Número de Cuenta:</p></label>
+                       <input class="form-control" id="nu_cuenta" type="number" placeholder="Número de Cuenta..." style="padding-left: 15px; height: 29px;">
+                   </div>
+                   <div class="col-xs-12 col-sm-12 col-md-3">
+                       <label for="nu_TarjetaC"><p class="tituloCombo" style="color:#004481;">Número de Tarjeta:</p></label>
+                       <input class="form-control" id="nu_tarjeta" type="number" placeholder="Número de Tarjeta..." style="padding-left: 15px; height: 29px;">
+                   </div>
+               </div>
+               <div class="col-xs-12 col-sm-12 col-md-9" id="vistaProductos" style="display: none;">
+                 <div class="col-xs-12 col-sm-12 col-md-4">
+                   <label for="productos"><p class="tituloCombo" style="color:#004481;">Productos:</p></label>
+                   <select title="Selecciona..." class="form-control bbva02 selectpicker" id="productos" style="height: 21px !important; color: #121212 !important; visibility: hidden;" >
+                       <option value="">-Seleccione-</option>
+                       <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                       <option value="Cuenta de Débito">Cuenta de Débito</option>
+                       <option value="Préstamo Hipotecario">Prestamo Hipotecario</option>
+                       <option value="Préstamo de Auto">Prestamo de Auto</option>
+                       <option value="Fondos de Inversión">Fondos de Inversion</option>
+                       <option value="Inversiones a Plazo">Inversiones a Plazo</option>
+                   </select>
+                 </div>
+               </div>
+               <div class="col-xs-12 col-sm-12 col-md-9" id="vistaMonto" style="display: none;">
+                 <div class="col-xs-12 col-sm-12 col-md-3">
+                   <label for="monto_minimo"><p class="tituloCombo" style="color:#004481;">Monto Mínimo:</p></label>
+                   <input type="number" class="form-control" id="monto_minimo" type="number" placeholder="Monto Mínimo..." style="padding-left: 15px; height: 29px;">
+                 </div>
+                 <div class="col-xs-12 col-sm-12 col-md-3">
+                   <label for="monto_maximo"><p class="tituloCombo" style="color:#004481;">Monto Máximo:</p></label>
+                   <input type="number" class="form-control" id="monto_maximo" type="number" placeholder="Monto Máximo ..." style="padding-left: 15px; height: 29px;">
+                 </div>
+               </div>
+               <div class="col-xs-12 col-sm-12 col-md-9" id="vistaFecha" style="display: none;">
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="fecha_inicial_filtro">Fecha Inicial</label>
+                   <input type="date" class="form-control" id="fecha_inicial_filtro" placeholder="Fecha Inicial">
+                 </div>
+                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="fecha_final_filtro">Fecha Final</label>
+                   <input type="date" class="form-control" id="fecha_final_filtro" placeholder="Fecha Final">
+                 </div>
+               </div>
+               <div class="col-xs-12 col-sm-12 col-md-9" id="vistaTipologia" style="display: none;">
+                 <div class="col-xs-12 col-sm-12 col-md-4">
+                   <label for="tipologia"><p class="tituloCombo" style="color:#004481;">Tipología:</p></label>
+                   <select title="Selecciona..." class="form-control bbva02 selectpicker" id="tipologia" style="height: 21px !important; color: #121212 !important; visibility: hidden;" ></select>
+                 </div>
+               </div>
+               <div class="col-xs-12 col-sm-12 col-md-9" id="vistaDenuncias" style="display: none;">
+                 <div class="col-xs-12 col-sm-12 col-md-4">
+                   <label for="denuncias"><p class="tituloCombo" style="color:#004481;">Etapa Procesal:</p></label>
+                   <select title="Selecciona..." class="form-control bbva02 selectpicker" id="denuncias" style="height: 21px !important; color: #121212 !important; visibility: hidden;" ></select>
+                 </div>
+               </div>
+               <div class="col-xs-12 col-sm-12 col-md-9" id="vistaServicio" style="display: none;">
+                 <div class="col-xs-12 col-sm-12 col-md-4">
+                   <label for="SLAs"><p class="tituloCombo" style="color:#004481;">Nivel de Servicio:</p></label>
+                   <select title="Selecciona..." class="form-control bbva02 selectpicker" id="SLAs" style="height: 21px !important; color: #121212 !important; visibility: hidden;" ></select>
+                 </div>
+               </div>
+           </div>
+       </div>
+       <div class="clearfix"></div>
+       <!-- Botones -->
+       <div class="container-fluid" style="padding-bottom: 10PX;">
+           <div class="row">
+               <div class="col-xs-12 col-sm-12 col-md-3" id="vistaEstatus">
+                   <label for="filtro_EstatusCasos"><p class="tituloCombo" style="color:#004481;">Filtrar por estatus:</p></label>
+                   <select title="Selecciona..." class="form-control bbva02 selectpicker" id="filtroEstatusCasos" style="height: 21px !important; color: #121212 !important; visibility: hidden;" >
+                       <option value="">-Seleccione-</option>
+                       <option value="Pendiente">Pendiente</option>
+                       <option value="En proceso">En proceso</option>
+                       <option value="Terminado">Terminado</option>
+                       <option value="Rechazado">Rechazado</option>
+                   </select>
+               </div>
+               <div class="col-xs-12 col-sm-12 col-md-3" id="vistaViable">
+                   <label for="filtro_VistaViable"><p class="tituloCombo" style="color:#004481;">Filtrar por viabilidad:</p></label>
+                   <select title="Selecciona..." class="form-control bbva02 selectpicker" id="filtroVistaViable" style="height: 21px !important; color: #121212 !important; visibility: hidden;" >
+                       <option value="">-Seleccione-</option>
+                       <option value="Aceptado">Viable</option>
+                       <option value="Rechazado">No Viable</option>
+                   </select>
+               </div>
+               <div class="col-xs-12 col-sm-12 col-md-3" id="vistaAreaAdmin" style="display: none;">
+                   <label for="filtro_EstatusCasos"><p class="tituloCombo" style="color:#004481;">Filtrar por Área:</p></label>
+                   <select title="Selecciona..." class="form-control bbva02 selectpicker" id="filtroArea" style="height: 21px !important; color: #121212 !important; visibility: hidden;" >
+                       <option value="">-Seleccione-</option>
+                       <option value="AFG">AFG</option>
+                       <option value="Seguridad">Seguridad</option>
+                       <option value="Viabilidad">Viabilidad / RRLL</option>
+                       <option value="RCI">RCI</option>
+                       <option value="Auditoria">Auditoría</option>
+                       <option value="Penal">Penal</option>
+                   </select>
+               </div>
+               <div class="col-xs-12 col-sm-4 col-md-2 padding_boton_limpiar">
+                   <button id="limpiarFiltros" class="btn btn-default btnNuevoDos glyphicon glyphicon-erase "><span style="color:#fff;"> Limpiar Filtros</span></button>
+               </div>
+               <div class="col-xs-6 col-sm-2 col-md-1 padding_botones_busqueda">
+                   <button id="buscarBtn" class="btn btn-default btnNuevoDos glyphicon glyphicon-search " ><span style="color:#fff;"> Buscar</span></button>
+               </div>
+               <!--<div class="col-xs-12 col-sm-4 col-md-2 padding_boton_limpiar">
+                 <button id="rotar" class="btn btn-default btnNuevoDos"><span style="color:#fff;">Rotar</span></button>
+               </div>-->
+           </div>
+       </div>
+     </div>
+   </div>
+   <div class="clearfix"></div>
+   <!-- Segundo Panel Contenedor de Tabla de Busqueda de Reportes -->
+   <div class="panel panel-primary">
+     <div class="panel-body panel_body_auto">
+       <div class="row">
+         <div class="col-xs-12 col-sm-12 col-md-12 tablaEstilo" id="tablaVistaFolio" style="display: none;">
+           <table id="table_busqueda_folio" name="TablaFolio" data-show-export="false" class="fix_column_rowspan" style="height: 30px;" width="100%" cellspacing="0" border="0" data-total-field="count" data-data-field="E"></table>
+         </div>
+       </div>
+     </div>
+   </div>
+   <!-- Fin de contenedor de tabla de busqueda -->
+<!--     <div class="panel panel-primary tarjeta">
+     <div class="panel-body panel_body_auto frente">
+       <div class="row">
+         <div class="col-xs-12 col-sm-12 col-md-12 tablaEstilo" id="tablaVistaFolio" style="display: none;">
+           <table id="table_busqueda_folio" name="TablaFolio" data-show-export="false" class="fix_column_rowspan" style="height: 30px;" width="100%" cellspacing="0" border="0"></table>
+         </div>
+       </div>
+     </div>
+     <div class="panel-body panel_body_auto atras">
+       <div class="row">
+         <div class="col-xs-12 col-sm-12 col-md-12 tablaEstilo" id="tablaVistaFolio" style="display: none;">
+           <h2>Atras</h2>
+         </div>
+       </div>
+     </div>
+   </div> -->
+   <!-- FIN -->
+</div>
+<script>
+   CasosJS.init();
+</script>

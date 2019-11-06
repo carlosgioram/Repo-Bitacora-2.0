@@ -1,0 +1,35 @@
+<script>
+var DescargablesJS= {
+  init: function(){
+    DescargablesJS.creandoBotones();
+    DescargablesJS.eventos();
+    MenuJS.closeWaitMessage();
+  },
+
+  /****Perfilamos y generamos botones****/
+  creandoBotones:function(){
+    var where = "";
+    if(sessionStorage.id_puesto != "1"){
+      where = ' WHERE id_puesto = '+sessionStorage.id_puesto +''
+    }
+
+    //Si eres admin el where vendrá vacio para que pueda pintar un boton por cada área
+    var res = alasql('SELECT * FROM puesto '+where+' ');
+
+    //Validamos el tamaño del boton
+    var numColumnas = res.length == 1 ? 6 : 3
+    $('#btnDescargables').html('');
+
+    //En la tabla de puesto se agrega una columna url_tutorial para agregar el hrf del boton
+    $.each(res, function (key, value) {
+      var html = '<div class="col-xs-12 col-sm-12 col-md-'+numColumnas+' text-center" style="padding-top: 20px;"><a href="'+value.url_tutorial+'" target="_blank" id="btn_'+value.nb_puesto+'" class=" col-md-12 btn btn-default btnNuevoDos "><span class="glyphicon glyphicon-download"></span> <span style="color:#fff;    line-height: 15px;"> '+value.nb_puesto+'</span></a></div>'
+      $('#btnDescargables').append(html);
+    });
+  },
+
+  eventos: function(){
+    $('#span_modulo_titulo').html('').html('Manuales');
+    $('#p_modulo_descripcion').html('').html('Bienvenido a la descarga de Manuales');
+  }
+}
+</script>

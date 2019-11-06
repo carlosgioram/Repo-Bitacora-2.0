@@ -1,0 +1,187 @@
+<script>
+
+var DescargaJS = {
+  tree: '',
+
+  ARCHIVOS: {
+    BD: {
+      OBTENER_TODOS: {
+        COLUMNAS_PRINCIPALES: ['archivo', 'url', 'id', 'name', 'downloadUrl', 'idFolderParent'],
+        BOOTSTRAPTABLE: {
+          serverSide: true,
+          deferRender: true,
+          striped: true,
+          pagination: true,
+          pageSize: 50,
+          pageList: [10, 25, 50, 100, 200],
+          search: false,
+          toolbarAlign: 'left',
+          formatShowingRows: function (pageFrom, pageTo, totalRows) {
+            return 'Mostrando ' + pageFrom + ' al ' + pageTo + ' de ' + totalRows + ' registros';
+          },
+          formatRecordsPerPage: function (pageNumber) {
+            return pageNumber + ' registros por página';
+          },
+          formatLoadingMessage: function () {
+            return 'Cargando, espere por favor...';
+          },
+          formatSearch: function () {
+            return 'Buscar';
+          },
+          formatNoMatches: function () {
+            return 'No se encontro información';
+          },
+
+          columns: [
+            {
+              field: 'para-editar-archivos',
+              align: 'center',
+              valign: 'middle',
+              width: '60px'
+            },
+            {
+              field: 'archivo',
+              title: 'Nombre Archivo',
+              sortable: false,
+              filterStrictSearch: true,
+              visible: true,
+              filterControlDiv: 'filtros-ArchivosEncontrados-1',
+              align: 'left',
+              valign: 'middle'
+            },
+            {
+              field: 'url',
+              title: 'Url',
+              sortable: false,
+              filterStrictSearch: true,
+              visible: false,
+              filterControlDiv: 'filtros-ArchivosEncontrados-2',
+              align: 'left',
+              valign: 'middle'
+            },
+            {
+              field: 'id',
+              title: 'Id',
+              sortable: false,
+              filterStrictSearch: true,
+              visible: false,
+              filterControlDiv: 'filtros-ArchivosEncontrados-3',
+              align: 'left',
+              valign: 'middle'
+            },
+            {
+              field: 'name',
+              title: 'Name',
+              sortable: false,
+              filterStrictSearch: true,
+              visible: false,
+              filterControlDiv: 'filtros-ArchivosEncontrados-4',
+              align: 'left',
+              valign: 'middle'
+            },
+            {
+              field: 'tipo',
+              title: 'Tipo',
+              sortable: false,
+              filterStrictSearch: true,
+              visible: false,
+              filterControlDiv: 'filtros-ArchivosEncontrados-5',
+              align: 'left',
+              valign: 'middle'
+            },
+            {
+              field: 'idFolderParent',
+              title: 'idFolderParent',
+              sortable: false,
+              filterStrictSearch: true,
+              visible: false,
+              filterControlDiv: 'filtros-ArchivosEncontrados-6',
+              align: 'left',
+              valign: 'middle'
+            }
+          ],
+          data: []
+        }
+      }
+    }
+  },
+
+  init: function () {
+    $('#textoArchivos').html('').html('<span><i>Selecciona una carpeta para ver sus archivos...</i></span>');
+    DescargaJS.crearTablaArchivos();
+    var objeto = {};
+    objeto.folderId = '10rjaN-JzEMSAAItqmpsIpVFKp0pZJzew';
+    objeto.listFiles = true;
+    objeto.searchDepthMax = 100;
+    google.script.run.withSuccessHandler(DescargaJS.procesarArchivos).withFailureHandler(JS_Base_Generic.setFailureModificado).getTree(objeto);
+    DescargaJS.eventos();
+  },
+
+
+  procesarArchivos: function (response) {
+    //console.log('en procesarArchivos: ' + response);
+    DescargaJS.tree = response;
+    DescargaJS.llenarTree(DescargaJS.tree);
+  },
+
+  llenarTree: function (objeto) {
+    //JS_Base_Generic.closeWaitMessage();
+    var $treeViewSearchable = $('#treeview-searchable');
+    var $searchableTree = $treeViewSearchable .treeview({
+      data: objeto,
+      levels: 1,
+    });
+    $treeViewSearchable .on('nodeSelected', function (event, data) {
+      DescargaJS.obtenerArchivosEncontrados(data);
+    });
+  },
+
+  obtenerArchivosEncontrados: function (objeto) {
+    //JS_Base_Generic.openWaitMessage();
+    google.script.run.withSuccessHandler(DescargaJS.procesarArchivosEncontrados).withFailureHandler(JS_Base_Generic.setFailureModificado).getFilesFolder(objeto.id);
+  },
+
+  procesarArchivosEncontrados: function (response) {
+    if (response.length === 0) {
+      $('#textoArchivos').html('').html('<span><i>La carpeta seleccionada no contiene archivos, selecciona otra carpeta...</i></span>');
+    } else {
+      $('#textoArchivos').html('').html('<span><i>La carpeta seleccionada contiene los siguientes archivos...</i></span>');
+    }
+    var $tablaArchivosEncontrados = $('#tabla_ArchivosEncontrados');
+    $tablaArchivosEncontrados.bootstrapTable('load', response);
+    DescargaJS.crearTablaArchivos($tablaArchivosEncontrados);
+    //JS_Base_Generic.closeWaitMessage();
+  },
+
+  crearTablaArchivos: function (datos) {
+    var $table = $('#tabla_ArchivosEncontrados');
+    var settings = DescargaJS.ARCHIVOS.BD.OBTENER_TODOS.BOOTSTRAPTABLE;
+    settings.columns[0].formatter = DescargaJS.operateFormatterIconos;
+    settings.data = datos;
+    $table.bootstrapTable(settings);
+    //JS_Base_Generic.closeWaitMessage();
+  },
+
+  mandaAlerta: function(){
+  alert("prueba");
+  },
+
+  generaDivisional: function(){
+  google.script.run.withSuccessHandler(DescargaJS.procesarArchivos).withFailureHandler(JS_Base_Generic.setFailureModificado).getTree(objeto);
+
+  },
+
+  operateFormatterIconos: function (value, row, index) {
+    var ahref = 'https://drive.google.com/a/bbva.com/uc?authuser=1&id=' + row.id + '&export=download';
+    return [
+      '<a class="descargarArchivo" href="' + ahref + '" title="Descargar">',
+      '<i class="glyphicon glyphicon-download"></i>',
+      '</a>&nbsp;'
+    ].join('');
+  },
+  eventos: function(){
+
+  }
+};
+
+</script>

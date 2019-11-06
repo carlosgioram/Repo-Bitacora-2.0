@@ -1,0 +1,260 @@
+<script>
+var CorreoJS = {
+  init:function () {
+  },
+
+  validarPuestos: function (idPuesto, tipo, area){
+  //tipo = Aprobado, Rechazado,
+    var arrayCorreos = [];
+    var puesto = alasql('SELECT * FROM puesto where id_puesto = '+idPuesto+' ');
+    var idPuestoTo = '';
+    var correos= '';
+    switch(tipo) {
+     case 'Alta':
+       idPuestoTo = 2;
+       break;
+     case 'Obtener':
+       idPuestoTo = idPuesto;
+       break;
+     case 'Aprobado':
+       idPuestoTo = idPuesto;
+       break;
+     default:
+       idPuestoTo = 2;
+       break;
+    }
+    correos = alasql('SELECT DISTINCT(email) as email FROM usuarios where id_puesto = ' + idPuestoTo + ' and titular = 1');
+    $.each(correos, function (k, v) {
+		arrayCorreos.push(v.email);
+	});
+    return arrayCorreos;
+  },
+
+  enviarCorreo: function(mensaje){
+  //Debe recibir dentro del objeto
+     //to(Array),
+     //cc(Array),
+     //bcc(Array),
+     //reply(no-reply)}
+     //subject (Asunto),
+       //mensajeHtml,
+    /*
+    mensaje.to = (objeto.to).join(', ');
+    mensaje.cc = (objeto.cc).join(', ');
+    mensaje.bcc = (objeto.bcc).join(', ');
+    mensaje.replyTo= objeto.reply;
+    mensaje.noReply = objeto.reply == 'no-reply'? true : false;
+    mensaje.subject = objeto.subject;
+    */
+    mensaje.htmlBody = '<div align="center" style="background-color:#004481;width:100%;height: 40px;padding-top: 15px;"><img width="25%" src="cid:bbvaLogo" /></div> <div align="center" style="width: 100%; min-height: 50%;line-height: 21px;font-family: Arial;"> <br><br><span style="color: #004481; font-size: 18px"><b>' +
+        mensaje.mensajeHtml+
+        '</b></span><br></div><img width="100%" src="cid:iconNaturaLogo" /> <div align="center" style="width:100%;height: 50px;background:#004481;vertical-align: middle;padding-top: 5px; color: #fff"> <p style="margin:0cm 0cm 0pt;line-height:19px"><b style="font-size:12.8px;line-height:normal"> <font color="green" face="Webdings" size="6"><span style="font-size:12pt">P</span></font> </b> <font color="#fff" style="font-size:11px;line-height:normal">&nbsp;</font> <font color="#fff" face="Arial" size="1" style="line-height:normal"><span style="font-size:8pt; font-family: Arial;">Antes de imprimir este e-mail piensa bien si es necesario hacerlo</span></font><br> </p> </div>'
+        console.dir(mensaje);
+     MenuJS.openLilWaitMessage();
+     google.script.run.withSuccessHandler(function(response){
+       bootbox.alert({
+          message: '<div class="alert alert-success">' + 'Se han enviado los correos!' + '</div>',
+          buttons: {
+            ok: {
+              label: 'Cerrar',
+              className: 'btn-danger'
+            }
+          }
+        });
+       MenuJS.closeLilWaitMessage();
+      $(window).scrollTop(0);
+     }).withUserObject().withFailureHandler(function(response1){
+       console.dir(response1);
+        bootbox.alert({
+          message: '<div class="alert alert-danger">' + '¡Ha ocurrido un error al enviar el correo!.' + '</div>',
+          buttons: {
+            ok: {
+              label: 'Cerrar',
+              className: 'btn-danger'
+            }
+          }
+        });
+     }).mandarCorreo(mensaje);
+
+  },
+  /*
+  eventos: function(){
+    $("#btnBuscarCorreo").on("click", function(){
+      MenuJS.openLilWaitMessage();
+      CorreoJS.obtenerUsuarios();
+      CorreoJS.obtenerSeleccionTodos();
+    });
+  },
+
+  obtenerSeleccionTodos: function() {
+    $('.puestos').empty();
+    var cont = 1;
+    $(".puestos").append('<input id="puesto'+cont+'" name="checkbox" type="checkbox" class="0"><label for="puesto'+cont+'">Todos</label>&nbsp;&nbsp;');
+    CorreoJS.adjuntarEvento();
+  },
+
+  obtenerUsuarios: function() {
+    var banca = $('#select_banca').val();
+    var division = $('#select_division').val();
+    var region = $('#select_region').val();
+    var cr = $('#select_cr').val();
+    var where = '';
+    if(banca != null && banca != '-1'){
+      where+= "bancas LIKE '%"+banca+"%' AND "
+    }
+    if(cr != null && cr != '-1'){
+      where+= 'cr = "'+cr+'" AND ';
+    }
+    if(division != null && division != '-1'){
+      where+= 'division = "'+division +'" AND ';
+    }
+    if(region != null && region != '-1'){
+      where+= 'region = "'+region +'" AND ';
+    }
+    where = where.substring(0, where.length - 5);
+    console.log(where);
+    var query = "ORM.UNIVERSAL.GET_ALL",
+        datos = "usuario_pk, bancas, nombre, m_usuario, correo, division, region, cr",
+        tabla = "TQAE003_EXP_USUARIO WHERE "+ where + " ORDER BY correo ASC";
+    google.script.run.withFailureHandler(JS_Base_Generic.setFailure).withSuccessHandler(CorreoJS.procesarUsuarios).getAll(query, datos, tabla);
+  },
+
+  procesarUsuarios: function (response) {
+    CorreoJS.catUsuarios = JS_Base_Generic.convertirArrayObjetos(response);
+    MenuJS.closeLilWaitMessage();
+    $('.usuarios').empty();
+    $.each(CorreoJS.catUsuarios, function(k,v){
+      $(".usuarios").append('<div class="pure-checkbox"><input id="usuario'+v.usuario_pk+'" name="checkbox" type="checkbox" class="0 "><label for="usuario'+v.usuario_pk+'">'+v.correo+'</label></div>');
+    });
+  },
+
+  adjuntarEvento: function(){
+    $('.puestos>input').unbind('click').bind('click',function () {
+      var puesto = $(this).attr('class');
+      if( !$(this).is(":checked")){
+        var index = CorreoJS.usuariosEstatus.indexOf(puesto);
+        CorreoJS.usuariosEstatus.splice(index,(index+1) );
+      } else{
+        CorreoJS.usuariosEstatus.push(puesto);
+      }
+      $(".usuarios .0").prop( "checked", false );
+      for(i=0; i < CorreoJS.usuariosEstatus.length;i++){
+        $(".usuarios ."+ CorreoJS.usuariosEstatus[i]).prop( "checked", true );
+      }
+    });
+  },*/
+
+
+  procesarEnvio:function(estatusEnvio){
+    MenuJS.closeLilWaitMessage();
+    $(window).scrollTop(0);
+    if(estatusEnvio > 0) {
+      bootbox.alert({
+        message: '<div class="alert alert-success">¡Se ha guardado el caso y se ha enviado un correo de notifiación!</div>',
+        buttons: {
+          ok: {
+            label: 'Cerrar',
+            className: 'btn-danger'
+          }
+        }
+      });
+      BaseGenericJS.getContent("Home");
+    } else{
+      bootbox.alert({
+        message: '<div class="alert alert-danger">' + '¡Ha ocurrido un error al enviar el correo!.' + '</div>',
+        buttons: {
+          ok: {
+            label: 'Cerrar',
+            className: 'btn-danger'
+          }
+        }
+      });
+    }
+  },
+/*
+  llenarSelect: function(response, idSelect, mensajeOpcionVacia, valor, label) {
+    var datos, $select = $("#" + idSelect);
+    $select.empty();
+    $select.append("<option value='-1'>" + mensajeOpcionVacia + "</option>");
+    if(response !== undefined) {
+      datos = JS_Base_Generic.convertirArrayObjetos(response);
+      $.each(datos, function(k, v) {
+        $select.append("<option value='" + v[valor] + "'>" + v[label] + "</option>");
+      });
+    }
+    $('.selectpicker').selectpicker('refresh');
+    MenuJS.closeLilWaitMessage();
+  },
+
+  procesarObtenerBanca: function(response){
+    'use strict';
+    CorreoJS.llenarSelect(response, 'select_banca', '--- Banca ---', 'banca_pk', 'nombre');
+  },
+
+  cargarFiltroBanca: function(){
+    'use strict';
+    var query = "ORM.UNIVERSAL.GET_ALL", datos = "banca_pk, nombre", tabla = "TQAE006_EXP_BANCA ORDER BY nombre ASC";
+    google.script.run.withSuccessHandler(CorreoJS.procesarObtenerBanca).withFailureHandler(JS_Base_Generic.setFailure).getAll(query, datos, tabla);
+  },
+
+  procesarObtenerDivision: function(response){
+    'use strict';
+    CorreoJS.llenarSelect(response, 'select_division', '--- División ---', 'division', 'division');
+  },
+
+  cargarFiltroDivision: function(){
+    'use strict';
+    var banca = $("#select_banca").val();
+    var query = "ORM.UNIVERSAL.GET_ALL", datos = "DISTINCT(UPPER(division)) AS division", tabla = "TQAE003_EXP_USUARIO WHERE bancas LIKE '%"+banca+"%' ORDER BY division ASC";
+    google.script.run.withSuccessHandler(CorreoJS.procesarObtenerDivision).withFailureHandler(JS_Base_Generic.setFailure).getAll(query, datos, tabla);
+  },
+
+  procesarObtenerRegion: function(response){
+    'use strict';
+    CorreoJS.llenarSelect(response, 'select_region', '--- Región ---', 'region', 'region');
+  },
+
+  cargarFiltroRegion: function(){
+    'use strict';
+    var banca = $("#select_banca").val(), division = $("#select_division").val();
+    var query = "ORM.UNIVERSAL.GET_ALL", datos = "DISTINCT(region) AS region", tabla = "TQAE003_EXP_USUARIO WHERE bancas LIKE '%"+banca+"%' AND division ='"+division+"' ORDER BY region ASC";
+    google.script.run.withSuccessHandler(CorreoJS.procesarObtenerRegion).withFailureHandler(JS_Base_Generic.setFailure).getAll(query, datos, tabla);
+  },
+
+  procesarObtenerCr: function(response){
+    'use strict';
+    CorreoJS.llenarSelect(response, 'select_cr', '--- CR ---', 'cr', 'cr');
+  },
+
+  cargarFiltroCr: function(){
+    'use strict';
+    var banca = $("#select_banca").val(), division = $("#select_division").val(), region = $("#select_region").val();
+    var query = "ORM.UNIVERSAL.GET_ALL", datos = "DISTINCT(cr) AS cr", tabla = "TQAE003_EXP_USUARIO WHERE bancas LIKE '%"+banca+"%' AND division ='"+division+"'AND region='"+region+"' ORDER BY cr ASC";
+    google.script.run.withSuccessHandler(CorreoJS.procesarObtenerCr).withFailureHandler(JS_Base_Generic.setFailure).getAll(query, datos, tabla);
+  },
+
+  cargarFiltrosCorreo: function(){
+    CorreoJS.cargarFiltroBanca();
+    $('#select_banca').change(function () {
+      MenuJS.openLilWaitMessage();
+      $('#select_region').empty();
+      $('#select_cr').empty();
+      CorreoJS.cargarFiltroDivision();
+      document.getElementById("btnBuscarCorreo").style.display = "block";
+      if($('#select_banca').val() == '-1'){
+        document.getElementById("btnBuscarCorreo").style.display = "none";
+      }
+    });
+    $('#select_division').change(function () {
+      MenuJS.openLilWaitMessage();
+      $('#select_cr').empty();
+      CorreoJS.cargarFiltroRegion();
+    });
+    $('#select_region').change(function () {
+      MenuJS.openLilWaitMessage();
+      CorreoJS.cargarFiltroCr();
+    });
+  },
+/////// FIN //////   */
+};
+</script>

@@ -1,0 +1,362 @@
+<script>
+  $(function () {
+      // Cargando los datos del spreadSheet
+      HomeJS.obtenerDatosDeSpread();
+      HomeJS.obtenerDatosDeSpread('Usuarios');
+      HomeJS.obtenerDatosDeSpread('Estatus');
+      HomeJS.obtenerDatosDeSpread('originales');
+  });
+  var HomeJS = {
+    init: function () {
+      //console.log('HOME INIT');
+      var coordinador = alasql('SELECT ROW titular FROM usuarios WHERE email = "' + sessionStorage.NB_CORREO + '"')[0] === 1 ? 'Coordinador' : 'Analista';
+      coordinador = sessionStorage.id_puesto === '8' || sessionStorage.id_puesto === '11' ? '' : coordinador;
+      $('#span_modulo_titulo').html(alasql('SELECT ROW nb_puesto FROM puesto WHERE id_puesto=' + sessionStorage.id_puesto)[0] + ' ' + coordinador + ' - Bitácora 2.0')
+      // $('#container_avisos').append('<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 aviso"><div class="panel panel-primary"><div class="panel-heading">'+'dato.titulo'+'</div><div class="panel-body"><p>'+'dato.descripcion'+'</p></div> </div></div>');
+      if (0 === 0) {
+        $('#container_avisos').hide();
+        $('#avisos_not_found').show();
+      } else {
+        $('#container_avisos').show();
+        $('#avisos_not_found').hide();
+      }
+      MenuJS.closeWaitMessage();
+      // Agregando el listado de opciones
+      FormularioJS.opciones.obtener();
+      // Botón de descarga de la base
+      if (sessionStorage.id_puesto === "1") {
+        $(".site-tooltipHome").tooltip({
+          //placement: "top",
+          trigger: "hover",
+          animation: true,
+          html: true
+        });
+        $('#btn_descargar_base').removeClass('hide')
+        /*$('#dwnld_xls, #dwnld_csv').on('click', function () {
+          var datos = alasql('SELECT * REMOVE indice FROM transformaciones');
+          var datosOK = [];
+          datos.forEach((dato) => {
+            var clientes = alasql('SELECT * REMOVE CK, indice FROM clientes WHERE G && CK="' + dato['CK'] + '"');
+            var empleados = alasql('SELECT * REMOVE CK, indice FROM clientes WHERE L && CK="' + dato['CK'] + '"');
+            clientes.forEach((cliente) => {
+              var paraCliente = Object.create(dato);
+              Object.keys(cliente).forEach((llave) => {
+                paraCliente[llave] = cliente[llave];
+              });
+              empleados.forEach((empleado) => {
+                var paraEmpleado = Object.create(paraCliente);
+                Object.keys(empleado).forEach((llave) => {
+                  paraEmpleado[llave] = empleado[llave];
+                });
+                datosOK.push(paraEmpleado);
+              });
+            });
+          });
+          GenericJS.exportarEnExcel(alasql('SELECT * FROM ?', [datosOK]), 'Bitacora2.0');
+        });*/
+        $('#dwnld_csv, #dwnld_xls').on('click', function () {
+          var datos = alasql('SELECT * REMOVE indice FROM transformaciones');
+          var datosOK = [];
+          datos.forEach((dato) => {
+            var clientes = alasql('SELECT * REMOVE CK, indice FROM clientes WHERE G && CK="' + dato['CK'] + '"');
+            var empleados = alasql('SELECT * REMOVE CK, indice FROM clientes WHERE L && CK="' + dato['CK'] + '"');
+            clientes.forEach((cliente) => {
+              var paraCliente = Object.create(dato);
+              Object.keys(cliente).forEach((llave) => {
+                paraCliente[llave] = cliente[llave];
+              });
+              empleados.forEach((empleado) => {
+                var paraEmpleado = Object.create(paraCliente);
+                Object.keys(empleado).forEach((llave) => {
+                  paraEmpleado[llave] = empleado[llave];
+                });
+                datosOK.push(paraEmpleado);
+              });
+            });
+          });
+          var base = alasql('SELECT A AS [Fecha Alta], B AS [Área que notifica el evento], C AS [Fecha del incidente], D AS [Monto ($MXN)], E AS [Producto], F AS [Número de cliente], \
+                     G AS [Nombre del cliente afectado], H AS [Número de producto relacionado], I AS [No. de cuenta], J AS [CR Afectado], K AS [M de Empleado Involucrado], \
+                     L AS [Nombre de Empleado Involucrado], M AS [Número de Aclaración del Cliente], N AS [Descripción], O AS [CR que notifica], P AS [Carta Reclamación], Q AS [Informe AFG], \
+                     R AS [Informe Seguridad], S AS [Informe RCI], T AS [Vacío], U AS [Vacío], V AS [Paquete contable], W AS [Logs], X AS [Videos / Fotogramas], Y AS [Quebranto], \
+                     Z AS [Constancia de entrevista], AA AS [Cédula de quebranto], AB AS [Evidencia externa], AC AS [Carta finiquito], AD AS [Informe Auditoría], AE AS [SIP], \
+                     AF AS [Fundamento de sospecha], AG AS [Acta de Hechos], AH AS [Vacío], AI AS [Vacío], AJ AS [Vacío], AL AS [Vacío], AM AS [Vacío], AN AS [Vacío], AO AS [Vacío], \
+                     AP AS [Caso relacionado], AQ AS [Alta por], AR AS [Tipología], [AS] AS [Modus operandi], AT AS [Prioridad], AU AS [Afectación], AV AS [Importe Quebranto], \
+                     AW AS [Importe Recuperación], AX AS [Fecha de inicio AFG], AY AS [Asignado AFG], AZ AS [Fecha término AFG], BA AS [Estatus AFG], BB AS [DG área 1], BC AS [DG área 2], \
+                     BD AS [DG área 3], BE AS [Fecha de inicio Seguridad], BF AS [Asignado Seguridad], BG AS [Fecha término Seguridad], BH AS [Estatus Seguridad], BI AS [Fecha de inicio RCI], \
+                     BJ AS [Status RCI], BK AS [Fecha final RCI], BL AS [Folio FARO], BM AS [Aplicación de Régimen Disciplinario], BN AS [Fecha de Régimen Disciplinario], BO AS [Estatus RRLL], \
+                     BP AS [Fecha Inicio Viabilidad], BQ AS [Fecha Final Viabilidad], BR AS [Viabilidad Penal], BS AS [Status Viabiliad], BT AS [Asignado RCI], BU AS [Fecha de inicio Auditoría], \
+                     BV AS [Auditor], BW AS [Estatus Auditoría], BX AS [Fecha Fin Auditoría], [BY] AS [Fecha Fin RRLL], BZ AS [Vacío], CA AS [Vacío], CB AS [FOLIO AUDIE], \
+                     CC AS [Fecha de recepción de pruebas (Jurídico)], CD AS [Fecha de presentación de Denuncia (Jurídico)], CE AS [Estatus Juridico], CF AS [deudor], CG AS [Vacío], \
+                     CH AS [Tipo de Juicio], CI AS [Etapa Procesal], CJ AS [Estatus general], CK AS [# Folio], CL AS [Origen], CM AS [Vacío], CN AS [Vacío], CO AS [Vacío], CP AS [sucursal], \
+                     CQ AS [division], "" AS [Area], "" AS [Estatus], "" AS [Fecha], "" AS [Observaciones], "" AS Usuario FROM ?', [datosOK]);
+          var extras = alasql('SELECT * FROM estatus WHERE Estatus = "Rechazado" OR Estatus = "Sin Participación" OR Estatus = "Viable" OR Estatus = "No viable"');
+          var resOK = alasql('SELECT * FROM ? LEFT JOIN ? AS Extras ON [# Folio] = Extras.[# Folio]', [base, extras]);
+          if ($(this).attr('id') === 'dwnld_csv') {
+            alasql('SELECT * INTO CSV("bitacora2.0.csv", {headers: true}) FROM ?', [resOK]);
+          } else {
+            alasql('SELECT * INTO XLS("bitacora2.0.xls", {headers: true}) FROM ?', [resOK]);
+          }
+        });
+      }
+      if (parametros !== '') {
+        if (visitado === false) {
+          MenuJS.openLilWaitMessage();
+        }
+      }
+    },
+    numAColumn: function (num) {
+      var s = '', t;
+
+      while (num > 0) {
+        t = (num - 1) % 26;
+        s = String.fromCharCode(65 + t) + s;
+        num = (num - t)/26 | 0;
+      }
+      return s || undefined;
+    },
+
+    obtenerDatosDeSpread: function(cual) {
+      cual = cual ? cual : 'Base';
+      //console.dir('obtenerDatosDeSpread: '+ cual);
+      var objeto = new Array;
+      switch (cual) {
+        case 'Base':
+        google.script.run.withSuccessHandler(function (response) {
+          // console.dir(response);
+          var datos = JSON.parse(response);
+
+          datos.forEach((dato, index) => {
+            objeto[index] = {};
+            dato.forEach((dat, inde) => {
+              var columna = HomeJS.numAColumn(inde + 1),
+                fechas = ['A', 'C', 'AX', 'AZ', 'BE', 'BG', 'BP', 'BQ', 'BU', 'BX', 'CC', 'CD'];
+              objeto[index][columna] = (columna === 'N')
+                ? unescape(dat)
+                : (fechas.includes(columna))
+                  ? dat.toString().split('T')[0]
+                : dat;
+            });
+            // console.log('Indice: ', objeto[index]['indice'])
+            objeto[index]['indice'] = (index + 2);
+          });
+
+          // Agregando los primeros usuarios
+          FormularioJS.sprdsheet.conFiltro('Clientes', 7, '').then(function (texto) {
+            //console.dir(texto);
+            objeto.forEach((obj) => {
+              var empleados = alasql('SELECT * REMOVE indice FROM clientes WHERE F AND CK ="' + obj['CK'] + '"')[0],
+                clientes = alasql('SELECT * REMOVE indice FROM clientes WHERE K AND CK ="' + obj['CK'] + '"')[0];
+              !empleados || !clientes ? console.log('No existen empleados para ' + obj['CK'] + ' en la tabla de clientes') : '';
+              Object.keys(empleados).forEach((empleado) => obj[empleado] = empleados[empleado]);
+              Object.keys(clientes).forEach((cliente) => obj[cliente] = clientes[cliente]);
+            });
+            alasql('DROP TABLE IF EXISTS transformaciones');
+            alasql('CREATE TABLE transformaciones');
+            // alasql.tables.NombreTabla.data = data;
+            alasql('INSERT INTO transformaciones SELECT * FROM ?', [objeto]);
+            // alasql('INSERT INTO objeto VALUES {"A": "20190202", "B": "cuatro"}')
+            // alasql('SELECT ROW B FROM transformaciones WHERE indice = 5')
+            //console.dir('obtenerDatosDeSpread: ' + cual + ' OK');
+
+            HomeJS.liga();
+
+            // Armando la tabla de niveles de servicio
+            var nivelesDeServicio = alasql('SELECT * FROM transformaciones').map((trans) => {
+              var casos = {
+                nivelServicio: '',
+                area: '',
+                folio: '',
+                diasTotales: '',
+                dias: ''
+              };
+              Object.keys(FormularioJS.columnas).forEach((flujo) => {
+                var columna = FormularioJS.columnas[flujo];
+                if (trans[columna[2]] !== undefined && trans[columna[2]] !== '' && trans.AR !== '') {
+                  var id_area = alasql('SELECT ROW id_area FROM area WHERE nb_area="' + flujo + '"')[0];
+                  var tiempo = alasql('SELECT ROW tmp_backlog FROM area_tmp WHERE id_area=' + id_area + ' AND tipologia="' + trans.AR + '"')[0];
+                  var fchInicio = trans[columna[0]],
+                    fchFin = trans[columna[1]] === '' ? moment().format('YYYY-MM-DD') : trans[columna[1]];
+                  var falta = MomentJS.obtenerDiferenciaFechas(fchInicio, fchFin).diasLaborales;
+                  // console.log(flujo, tiempo, falta);
+                  casos.folio = trans['CK'];
+                  casos.area = flujo;
+                  casos.diasTotales = tiempo;
+                  casos.dias = falta;
+                  if (falta < parseInt(tiempo - (tiempo * 0.2)) || tiempo === 0) {
+                    casos.nivelServicio = 'En tiempo';
+                  } else if (falta < tiempo) {
+                    casos.nivelServicio = 'Por vencer';
+                  } else {
+                    casos.nivelServicio = 'Fuera de tiempo';
+                  }
+                } else if (trans[columna[2]] !== undefined && trans[columna[2]] !== '') {
+                  casos.folio = trans['CK'];
+                  casos.area = flujo;
+                  casos.diasTotales = 0;
+                  casos.dias = 0;
+                  casos.nivelServicio = 'Sin Asignar';
+                }
+              });
+              return casos;
+            });
+            alasql('DROP TABLE IF EXISTS slas');
+            alasql('CREATE TABLE slas');
+            alasql('INSERT INTO slas SELECT * FROM ?', [nivelesDeServicio]);
+          });
+          //var res = alasql('SELECT * FROM transformaciones');
+          //console.table(res);
+        }).withFailureHandler(JS_Base_Generic.setFailure).tranformacionesGetSpreadSheet();
+        break;
+        case 'Usuarios':
+        google.script.run.withSuccessHandler(function (response) {
+          var datos = JSON.parse(response);
+          datos.forEach((dato, index) => {
+            objeto[index] = {};
+            dato.forEach((dat, inde) => {
+              var columna = datos[0][inde];
+              objeto[index][columna] = dat;
+            });
+            objeto[index]['id_usuario'] = index + 1;
+          });
+          objeto = objeto.slice(1);
+          alasql('DROP TABLE IF EXISTS usuarios');
+          alasql('CREATE TABLE usuarios');
+          alasql('INSERT INTO usuarios SELECT * FROM ?', [objeto])
+          //console.log(objeto);
+          HomeJS.obtenerDatosDeSpread('Perfilado');
+          //console.dir('obtenerDatosDeSpread: ' + cual + ' OK');
+        }).withFailureHandler(JS_Base_Generic.setFailure).tranformacionesGetSpreadSheet('Usuarios');
+        break;
+        case 'Estatus':
+        google.script.run.withSuccessHandler(function (response) {
+          var datos = JSON.parse(response);
+          datos.forEach((dato, index) => {
+            objeto[index] = {};
+            dato.forEach((dat, inde) => {
+              var columna = datos[0][inde];
+              objeto[index][columna] = dat;
+            });
+          });
+          objeto = objeto.slice(1);
+          alasql('DROP TABLE IF EXISTS estatus');
+          alasql('CREATE TABLE estatus');
+          alasql('INSERT INTO estatus SELECT * FROM ?', [objeto])
+          //console.log(objeto);
+          //console.dir('obtenerDatosDeSpread: ' + cual + ' OK');
+        }).withFailureHandler(JS_Base_Generic.setFailure).tranformacionesGetSpreadSheet('Estatus');
+        break;
+        case 'originales':
+        google.script.run.withSuccessHandler(function (response) {
+          var datos = JSON.parse(response);
+          datos.forEach((dato, index) => {
+            objeto[index] = {};
+            dato.forEach((dat, inde) => {
+              var columna = datos[0][inde];
+              objeto[index][columna] = dat;
+            });
+            objeto[index]['indice'] = index + 1;
+          });
+          objeto = objeto.slice(1);
+          alasql('DROP TABLE IF EXISTS originales');
+          alasql('CREATE TABLE originales');
+          alasql('INSERT INTO originales SELECT * FROM ?', [objeto])
+          //console.log(objeto);
+          //console.dir('obtenerDatosDeSpread: ' + cual + ' OK');
+        }).withFailureHandler(JS_Base_Generic.setFailure).tranformacionesGetSpreadSheet('originales');
+        break;
+        case 'Perfilado':
+        google.script.run.withSuccessHandler(function (response) {
+          var datos = JSON.parse(response);
+          // Nombre de las bases;
+          var separados = datos[0].filter((dato) => dato !== '');
+          datos = datos.slice(1);
+          var objeto = [], obj = {};
+          var indc = 0;
+          datos.forEach((dato, index) => {
+            indc = 0;
+            dato.forEach((dat, inde) => {
+             var columna = separados[indc];
+             dat !== '' ? objeto[indc] ? objeto[indc].push(dat) : objeto[indc] = [dat] : '';
+             indc += 1;
+            });
+          });
+          indc = 0;
+          var col = separados[0], indx = 0;
+          while (indc < objeto.length) {
+            col = separados[indx];
+            obj[col] ? '' : obj[col] = {};
+            if (objeto[indc]) {
+              var columna = objeto[indc][0];
+              obj[col][columna] ? obj[col][columna].push(objeto[indc].slice(1)) : obj[col][columna] = [objeto[indc].slice(1)];
+            } else {
+              indx += 1;
+            }
+            indc += 1;
+          }
+          var objetoOK = {}
+          Object.keys(obj).forEach((eto) => {
+            objetoOK[eto] = [];
+            Object.keys(obj[eto]).forEach((llave) => {
+              //console.log(llave)
+              Object.values(obj[eto][llave]).forEach((valor) => {
+                //console.log(valor);
+                valor.forEach((val, indice) => {
+                  objetoOK[eto][indice] ? '' : objetoOK[eto][indice] = {};
+                  objetoOK[eto][indice][llave] = val;
+                });
+              });
+            });
+          });
+          Object.keys(objetoOK).forEach((llave, indice) => {
+            alasql('DROP TABLE IF EXISTS ' + llave);
+            alasql('CREATE TABLE ' + llave);
+            alasql('INSERT INTO ' + llave + ' SELECT * FROM ?', [objetoOK[llave]])
+          });
+          //console.log(objeto, obj);
+          //console.log(objetoOK)
+          alasql('SELECT ROW * FROM usuarios WHERE email = "' + sessionStorage.NB_CORREO + '"') ? MenuJS.init() : $('#inner-content > div.wait_panel > label').html('').html("NO EXISTE EL USUARIO");
+          console.dir('obtenerDatosDeSpread: ' + cual + ' OK');
+        }).withFailureHandler(JS_Base_Generic.setFailure).tranformacionesGetSpreadSheet('Perfilado');
+        break;
+        default:
+          console.log('No se cargo ninguna Base');
+      }
+    },
+
+    liga: function () {
+      if (parametros !== '') {
+        if (visitado === false) {
+          MenuJS.openLilWaitMessage();
+          parametro= Number(parametros.replace('i=', ''));
+          setTimeout(function () {HomeJS.editarFormulario(parametro); visitado = true;}, 900);
+        }
+      }
+    },
+
+    editarFormulario: function (indice) {
+      FormularioJS.edit = true;
+      FormularioJS.active = indice;
+      FormularioJS.aGuardar = {};
+      BaseGenericJS.getContent("Formulario");
+      MenuJS.openLilWaitMessage();
+      setTimeout(function () {
+        $('.vista_editable div[id*="form"]').parent().addClass('hide');
+        $('.vista_editable div[id*="form"]:last').parent().removeClass('hide');
+        $('.vista_reporte').removeClass('hide');
+        FormularioJS.validar.areas();
+      }, 3000);
+    },
+
+    buscarCasos: function (tipo, data, params) {
+      //console.log(tipo)
+      if ((tipo === 'Denuncias' || tipo === 'EtapaProcesalVSTipologia') && (sessionStorage.id_puesto !== '7' && sessionStorage.id_puesto !== '1')) {
+        return;
+      }
+      BaseGenericJS.getContent("Casos");
+      MenuJS.openLilWaitMessage();
+      setTimeout(function () {
+        CasosJS.buscarPara(tipo, data, params);
+      }, 3000);
+    }
+  };
+</script>

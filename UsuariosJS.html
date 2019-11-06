@@ -1,0 +1,646 @@
+<script>
+var datosUsuariosMasivos = [];
+var UsuariosJS = {
+    init: function () {
+        MenuJS.closeWaitMessage();
+        UsuariosJS.eventos();
+        UsuariosJS.crearTabla('tabla_usuarios', UsuariosJS.arrayColumUsuarios(), true);
+        UsuariosJS.crearTablaConUsuarios(alasql('select * from (SELECT * FROM usuarios U  join puesto P on P.id_puesto = U.id_puesto) as T'));
+        UsuariosJS.validarUsuarioDatosInputs();
+    },
+
+    crearTablaConUsuarios: function (datos) {
+        $('#tabla_usuarios').bootstrapTable('load', datos);
+        $('#tabla_usuarios').removeClass('table-striped');
+    },
+
+    eventos: function () {
+        $('#span_modulo_titulo').html('').html('Administrador de Usuarios');
+        $('#p_modulo_descripcion').html('').html('Bienvenido al administrador de Usuarios');
+        //$('#buscarUsuario').prop('disabled', true);
+
+        //Llenando selects
+        GenericJS.llenarSelectsCualquier(alasql('select distinct nombre from (SELECT * FROM usuarios U  join puesto P on P.id_puesto = U.id_puesto) as T'), 'select_nombreUsuario', 'nombre', 'nombre', true);
+        GenericJS.llenarSelectsCualquier(alasql('select distinct email from (SELECT * FROM usuarios U  join puesto P on P.id_puesto = U.id_puesto) as T'), 'select_emailUsuario', 'email', 'email', true);
+        GenericJS.llenarSelectsCualquier(alasql('select distinct usuario_red_m from (SELECT * FROM usuarios U  join puesto P on P.id_puesto = U.id_puesto) as T'), 'select_usuarioRedUsuario', 'usuario_red_m', 'usuario_red_m', true);
+
+        GenericJS.llenarSelectsCualquier(alasql('select distinct nb_puesto, id_puesto from puesto'), 'select_puestoUsuario', 'id_puesto', 'nb_puesto', true);
+        GenericJS.llenarSelectsCualquier(alasql('select distinct nb_puesto, id_puesto from puesto'), 'puestoUsuarioModal', 'id_puesto', 'nb_puesto', true);
+
+
+        $('.selectpicker').selectpicker({
+            //size: 'auto',
+            showTick: true,
+            liveSearch: true,
+            style: 'form-control btn btn-2017',
+            size: 10,
+            actionsBox: true,
+            deselectAllText: 'Ninguno',
+            dropupAuto: true,
+            noneSelectedText: 'Seleccione',
+            selectAllText: 'Todos',
+        });
+        $("#cargaUsuariosMasivos").filestyle({
+            btnClass: "btn btnNuevoExamninar",
+            buttonBefore: true,
+            text: "Carga Masiva",
+            placeholder: "Únicamente archivo xlsx",
+            'onChange': function (files, event) {
+                UsuariosJS.validarArchivo(files, event);
+            }
+        });
+        $('#crearUsuario').unbind('click').bind('click', function () {
+            $('#TituloModalAdminUsuarios').html('').html('Alta de usuario');
+            $('#btnAgregarUsuarios > span').html('').html('Agregar');
+            $('#modal_adminUsuarios').modal('show');
+            $('.modal').css('padding-left', '0px');
+            $('.modal-open').css('padding-right', '0px');
+            $('#titularUsuarioModal').val(0).change().selectpicker("refresh");
+        });
+        $('#limpiarUsuario').unbind('click').bind('click', function () {
+            $('#select_nombreUsuario').val('').change();
+            $('#select_emailUsuario').val('').change();
+            $('#select_usuarioRedUsuario').val('').change();
+            $('#select_puestoUsuario').val('').change().selectpicker("refresh");
+            UsuariosJS.crearTablaConUsuarios(alasql('select * from (SELECT * FROM usuarios U  join puesto P on P.id_puesto = U.id_puesto) as T'));
+        });
+        $('#buscarUsuario').unbind('click').bind('click', function () {
+            var objeto = UsuariosJS.crearObjeto();
+            if (objeto.nombre != '' || objeto.email != '' || objeto.usuario != '' || objeto.puesto != '') {
+                UsuariosJS.buscarUsuario(objeto);
+            } else {
+                UsuariosJS.crearTablaConUsuarios(alasql('select * from (SELECT * FROM usuarios U  join puesto P on P.id_puesto = U.id_puesto) as T'));
+            }
+        });
+
+        $('#puestoUsuarioModal').change(function () {
+            UsuariosJS.llenarValidaciones();
+
+        });
+
+        $('#subirUsuario').unbind('click').bind('click', function () {
+            $('#cargaMasivaUsuarios').modal('show');
+            $('.modal').css('padding-left', '0px');
+        });
+
+        $('#validarInformacion').unbind("click").bind("click", function () {
+            $('#informacionPre').toggle();
+            $('#mostarOcultarValidacion').toggleClass('glyphicon glyphicon-minus glyphicon glyphicon-plus');
+            UsuariosJS.llenarValidaciones();
+        });
+    },
+
+    validarUsuarioDatosInputs: function () {
+
+        $('#nombreUsuarioModal').on('input', function () {
+            if ($(this).val() == '') {
+                $('#requeridedNombre').html('').html('Campo Requerido');
+            } else {
+                $('#requeridedNombre').html('');
+
+            }
+        });
+
+        $('#correoUsuarioModal').on('input', function () {
+            if ($(this).val() == '') {
+                $('#requeridedCorreo').html('').html('Campo Requerido');
+            } else {
+                if ($(this).val().split('@')[1] === "bbva.com") {
+                    $('#requeridedCorreo').html('');
+
+                } else {
+                    $('#requeridedCorreo').html('').html('El correo debe ser del dominio <i>bbva.com</i>');
+                }
+            }
+        });
+
+        $('#redUsuarioModal').on('input', function () {
+            if ($(this).val() == '') {
+                $('#requeridedUsuarioRed').html('').html('Campo Requerido');
+            } else {
+                $('#requeridedUsuarioRed').html('');
+
+            }
+        });
+
+        $('#puestoUsuarioModal').on('change', function () {
+            if ($(this).val() == '') {
+                $('#requeridedPuesto').html('').html('Campo Requerido');
+            } else {
+                $('#requeridedPuesto').html('');
+
+            }
+        });
+
+        $('#adminPuestoUsuarioModal').on('change', function () {
+            if ($(this).val() == '') {
+                $('#requeridedPuestoAdmin').html('').html('Campo Requerido');
+            } else {
+                $('#requeridedPuestoAdmin').html('');
+
+            }
+        });
+
+
+
+    },
+
+    validarUsuarioDatos: function () {
+        var contador = 0;
+        //$('#nombreUsuarioModal').on('input', function () {
+        if ($('#nombreUsuarioModal').val() == '') {
+            $('#requeridedNombre').html('').html('Campo Requerido');
+        } else {
+            $('#requeridedNombre').html('');
+            contador++;
+        }
+        //});
+
+        //$('#correoUsuarioModal').on('input', function () {
+        if ($('#correoUsuarioModal').val() == '') {
+            $('#requeridedCorreo').html('').html('Campo Requerido');
+        } else {
+            if ($('#correoUsuarioModal').val().split('@')[1] === "bbva.com") {
+                $('#requeridedCorreo').html('');
+                contador++;
+            } else {
+                $('#requeridedCorreo').html('').html('El correo debe ser del dominio <i>bbva.com</i>');
+            }
+        }
+        //});
+
+        //$('#redUsuarioModal').on('input', function () {
+        if ($('#redUsuarioModal').val() == '') {
+            $('#requeridedUsuarioRed').html('').html('Campo Requerido');
+        } else {
+            $('#requeridedUsuarioRed').html('');
+            contador++;
+        }
+        //});
+
+        //$('#puestoUsuarioModal').on('input', function () {
+        if ($('#puestoUsuarioModal').val() == '') {
+            $('#requeridedPuesto').html('').html('Campo Requerido');
+        } else {
+            $('#requeridedPuesto').html('');
+            contador++;
+        }
+
+        //});
+
+        return contador;
+    },
+
+    llenarValidaciones: function () {
+        var puesto = $('#puestoUsuarioModal').val();
+        $('#nombreValidar').html('').html($('#nombreUsuarioModal').val());
+        $('#correoValidar').html('').html($('#correoUsuarioModal').val());
+        $('#usuarioValidar').html('').html($('#redUsuarioModal').val());
+        $('#crValidar').html('').html($('#crPuestoUsuarios').val());
+        if ($('#puestoUsuarioModal').val() != '') {
+            var nb_puesto = alasql('select * from puesto where id_puesto = ' + $('#puestoUsuarioModal').val() + ' ');
+            $('#puestoValidar').html('').html(nb_puesto[0]['nb_puesto']);
+        } else {
+            $('#puestoValidar').html('');
+            $('#modulosValidar').html('');
+            $('#areasValidar').html('');
+        }
+
+
+        if ($('#puestoUsuarioModal').val() != '') {
+
+            var modulos = alasql('select * from (SELECT * FROM modulo_puesto MP join puesto P on MP.id_puesto = P.id_puesto join modulo M on MP.id_modulo = M.id_modulo ) as T where T.id_puesto = ' + puesto + ' order by orden ');
+
+
+            var areas = alasql('select * from (SELECT * FROM puesto_area PA join puesto P on PA.id_puesto = P.id_puesto join area A on PA.id_area = A.id_area ) as T where T.id_puesto = ' + puesto + ' ');
+
+
+            $('#modulosValidar').html('');
+            $.each(modulos, function (k, v) {
+                var espacios = ''
+                if (v.id_modulo_padre > 0) {
+                    for (var i = 0; i <= v.id_modulo_padre; i++) {
+                        espacios += '&nbsp;'
+                    }
+                }
+                $('#modulosValidar').append(espacios + v.nb_modulo + "<br>");
+            });
+
+            $('#areasValidar').html('');
+            $.each(areas, function (k, v) {
+                $('#areasValidar').append(v.nb_area + "<br>");
+            });
+        }
+    },
+
+    buscarUsuario: function (objeto) {
+        var query = [],
+            where = '';
+        if (objeto.nombre != '') {
+            query.push(' T.nombre = "' + objeto.nombre + '" ');
+        }
+        if (objeto.email != '') {
+            query.push(' T.email = "' + objeto.email + '" ');
+        }
+        if (objeto.usuario != '') {
+            query.push(' T.usuario_red_m = "' + objeto.usuario + '" ');
+        }
+        if (objeto.puesto != '') {
+            query.push(' T.id_puesto = ' + objeto.puesto + ' ');
+        }
+        if (query.length > 0) {
+            where = " WHERE " + query.join(' AND ');
+        }
+
+        UsuariosJS.crearTablaConUsuarios(alasql('select * from (SELECT * FROM usuarios U  join puesto P on P.id_puesto = U.id_puesto) as T ' + where + ' '));
+    },
+
+    validarArchivo: function (files, event) {
+        MenuJS.openLilWaitMessage();
+        var formatoFIle = files[0].name,
+            spliteando = formatoFIle.split('.'),
+            nameFormato = spliteando[spliteando.length - 1];
+        if (nameFormato === 'xlsx') {
+            var input = files[0];
+
+            var reader = new FileReader();
+
+            reader.readAsArrayBuffer(input);
+
+            reader.onload = function (e) {
+
+                /* convert data to binary string */
+                var data = new Uint8Array(reader.result);
+
+                var arr = new Array();
+                for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
+                var bstr = arr.join("");
+
+                /* Call XLSX */
+                var workbook = XLSX.read(bstr, {
+                    type: "binary"
+                });
+                /* DO SOMETHING WITH workbook HERE */
+                var first_sheet_name = workbook.SheetNames[0];
+                /* Get worksheet */
+                var worksheet = workbook.Sheets[first_sheet_name];
+
+                var arrayInicial = XLSX.utils.sheet_to_json(worksheet, {
+                    raw: false,
+                    header: 1
+                });
+                var fh = new Date();
+                var arrayFinal = [];
+
+                for (var i = 1; i < arrayInicial.length; i++) {
+                  if(arrayInicial[i][1] != undefined){
+                    arrayInicial[i][4] = arrayInicial[i][4] == undefined ? "" : arrayInicial[i][4];
+                    arrayInicial[i][5] = arrayInicial[i][5] == undefined ? "0" : arrayInicial[i][5];
+                    arrayInicial[i][6] = sessionStorage.NB_CORREO;
+                    arrayInicial[i][7] = fh.getDate() + '/' + (fh.getMonth() + 1) + '/' + fh.getFullYear();
+                    arrayFinal.push(arrayInicial[i]);
+                   }
+                }
+                //console.table(arrayFinal);
+                datosUsuariosMasivos = arrayFinal;
+                $("#cargaUsuarioBtn").removeAttr('disabled');
+                MenuJS.closeLilWaitMessage();
+
+            }
+
+        } else {
+            $('#informacionArchivoUsuarios').html('').html('<span style="color: red !important">El archivo: <b>' + formatoFIle + '</b> NO tiene el formato correcto: <b>' + nameFormato + '</b>. El archivo debe ser en formato CSV, separado por comas<span>');
+            $("#cargaUsuarioBtn").attr('disabled', 'disabled');
+            MenuJS.closeLilWaitMessage();
+        }
+
+        /*var valorArchivo = $('#cargaUsuariosMasivos').val();
+        console.info(valorArchivo);*/
+
+    },
+
+    cargarUsuariosBd: function () {
+        var registrosActuales = alasql('SELECT COUNT(*) as C FROM usuarios');
+        var limite = datosUsuariosMasivos.length;
+        var objeto = {}
+        var datos = datosUsuariosMasivos;
+        objeto.rango = "A" + (registrosActuales[0]['C'] + 2) + ':H' + ((registrosActuales[0]['C'] + 1) + limite);
+        objeto.hoja = "Usuarios";
+        objeto.accion = "Agregar" //actualizar, Agregar, eliminar
+
+        GenericJS.spreadSheetsAcciones(objeto, datos);
+        setTimeout(function () {
+            GenericJS.actualizandoTablaUsuarios();
+        }, 2500);
+    },
+
+    crearObjeto: function () {
+        var objeto = {};
+        objeto.nombre = $('#select_nombreUsuario').val() == null ? '' : $('#select_nombreUsuario').val();
+        objeto.email = $('#select_emailUsuario').val() == null ? '' : $('#select_emailUsuario').val();
+        objeto.usuario = $('#select_usuarioRedUsuario').val() == null ? '' : $('#select_usuarioRedUsuario').val();
+        objeto.puesto = $('#select_puestoUsuario').val() == null ? '' : $('#select_puestoUsuario').val();
+
+        return objeto;
+    },
+
+    crearObjetoModal: function () {
+        var objeto = {};
+        objeto.id = $('#idUsuarioModal').val();
+        objeto.crUsuario = $('#crPuestoUsuarios').val();
+        objeto.nombre = $('#nombreUsuarioModal').val();
+        objeto.email = $('#correoUsuarioModal').val();
+        objeto.usuario = $('#redUsuarioModal').val();
+        objeto.puesto = $('#puestoUsuarioModal').val() == null ? '' : $('#puestoUsuarioModal').val();
+        objeto.titular = $('#titularUsuarioModal').val() == null ? '' : $('#titularUsuarioModal').val();
+        objeto.usuarioCreador = sessionStorage.NB_CORREO;
+        var fh = new Date();
+        objeto.fecha = fh.getDate() + '/' + (fh.getMonth() + 1) + '/' + fh.getFullYear();
+        objeto.accion = $('#btnAgregarUsuarios > span').text();
+
+        return objeto;
+    },
+
+    cancelar: function () {
+        $('#idUsuarioModal').val('').change();
+        $('#nombreUsuarioModal').val('').change();
+        $('#redUsuarioModal').val('').change();
+        $('#crPuestoUsuarios').val('').change();
+        $('#correoUsuarioModal').val('').change();
+        $('#puestoUsuarioModal').val('').change().selectpicker("refresh");
+        $('#adminPuestoUsuarioModal').val('').change().selectpicker("refresh");
+        $('#titularUsuarioModal').val('').change().selectpicker("refresh");
+        $('#modal_adminUsuarios').modal('hide');
+
+        $('#nombreValidar').html('');
+        $('#correoValidar').html('');
+        $('#usuarioValidar').html('');
+        $('#puestoValidar').html('');
+        $('#crValidar').html('');
+        $('#modulosValidar').html('');
+        $('#areasValidar').html('');
+
+        $('#requeridedNombre').html('');
+        $('#requeridedCorreo').html('');
+        $('#requeridedUsuarioRed').html('');
+        $('#requeridedPuesto').html('');
+    },
+
+    crearEditarUsuarioQuery: function () {
+        var objetoDatos = UsuariosJS.crearObjetoModal(),
+            arrayDatos = [];
+
+        MenuJS.openLilWaitMessage();
+        if (UsuariosJS.validarUsuarioDatos() == 4) {
+            arrayDatos.push(objetoDatos.usuario);
+            arrayDatos.push(objetoDatos.email);
+            arrayDatos.push(objetoDatos.nombre);
+            arrayDatos.push(objetoDatos.puesto);
+            arrayDatos.push(objetoDatos.crUsuario);
+            arrayDatos.push(objetoDatos.titular);
+            arrayDatos.push(objetoDatos.usuarioCreador);
+            arrayDatos.push(objetoDatos.fecha);
+            var idObjeto = '';
+            if (objetoDatos.accion == 'Editar') {
+                idObjeto = parseInt(objetoDatos.id);
+            } else {
+                var registrosActuales = alasql('SELECT COUNT(*) as C FROM usuarios');
+                idObjeto = (registrosActuales[0]['C'] + 2);
+            }
+
+
+
+            //console.dir(objetoDatos);
+            var objeto = {};
+            var datos = [arrayDatos];
+
+            objeto.rango = "A" + (idObjeto) + ':H' + (idObjeto);
+            objeto.hoja = "Usuarios";
+            objeto.accion = objetoDatos.accion; //Editar, Agregar, Eliminar
+            GenericJS.spreadSheetsAcciones(objeto, datos);
+
+            setTimeout(function () {
+                GenericJS.actualizandoTablaUsuarios();
+
+            }, 2500);
+            UsuariosJS.cancelar();
+            //Funcionalidad de enviar mail
+            var mensaje = {};
+            //CorreoJS.validarPuestos(id de sesionstorage, "Aprobado o Rechazado")
+            //mensaje.to= CorreoJS.validarPuestos(parseInt(sessionStorage.id_puesto), "Aprobado").join(', ');
+            //mensaje.cc= CorreoJS.validarPuestos(parseInt(sessionStorage.id_puesto), "Aprobado").join(', ');
+            mensaje.to = datos[0][1];
+            mensaje.cc = datos[0][6];
+            mensaje.bcc = [].join(', ');
+            mensaje.reply = 'no-reply';
+            var estatus = objeto.accion == "Agregar" ? "Usuario Creado" : "Usuario Modificado";
+            var mensajes = objeto.accion == "Agregar" ? "Se ha dado de alta el usuario "+datos[0][1] : "Se ha Modificado el usuario "+datos[0][1];
+            mensaje.subject = '['+objeto.accion+' Usuario - SITE Bitácora 2.0]';
+            mensaje.mensajeHtml = mensajes + '<br>Favor de verificar en el Site.'+
+              '<br>'+
+                '<a href= "https://script.google.com/a/bbva.com/macros/s/AKfycbx5zc3p36pQHUJ0SlrdyH50t2_TbERLEDufKJgVemm9Q6Dl6z-E/exec">Bitacora 2.0</a>'+
+                '<br><br>Saludos,';
+
+            CorreoJS.enviarCorreo(mensaje);
+            //$('#modal_adminUsuarios').modal('hide');
+        } else {
+            MenuJS.closeLilWaitMessage();
+            bootbox.alert({
+                title: '<i class="glyphicon glyphicon-info-sign"></i>',
+                message: "<div class='row'><div class='col-md-12'>Es necesario tener todos los campos llenos</div>",
+            });
+        }
+    },
+
+
+
+    arrayColumUsuarios: function () {
+        var arrayColumns = [
+            {
+                field: 'para-opciones',
+                title: '',
+                align: 'center',
+                valign: 'middle',
+                width: '100px',
+                formatter: UsuariosJS.operateFormatterIconos,
+                events: eventosUsuariosJS,
+                    },
+            {
+                field: 'id_usuario',
+                title: 'id',
+                align: 'left',
+                valign: 'middle',
+                visible: false
+                    },
+            {
+                field: 'nombre',
+                title: 'Nombre',
+                align: 'left',
+                valign: 'middle'
+                    },
+            {
+                field: 'email',
+                title: 'Email',
+                align: 'center',
+                valign: 'middle'
+                    },
+            {
+                field: 'usuario_red_m',
+                title: 'Usuario Red',
+                align: 'center',
+                valign: 'middle'
+                    },
+            {
+                field: 'nb_puesto',
+                title: 'Puesto',
+                align: 'center',
+                valign: 'middle'
+                    },
+            {
+                field: 'id_puesto',
+                title: 'id_puesto',
+                align: 'center',
+                valign: 'middle',
+                visible: false,
+                    },
+            {
+                field: 'admin_puesto',
+                title: 'admin_puesto',
+                align: 'center',
+                valign: 'middle',
+                visible: false,
+                    },
+            {
+                field: 'cr',
+                title: 'CR',
+                align: 'center',
+                valign: 'middle',
+                visible: true,
+                    },
+            {
+                field: 'titular',
+                title: 'Coordinador',
+                align: 'center',
+                valign: 'middle',
+                visible: true,
+                formatter: function(value, row, index){
+                    return value == 0 ? '' : 'S'
+                },
+                    },
+          ];
+
+
+        return arrayColumns;
+    },
+
+     operateFormatterIconos: function () {
+        return [
+              '<a class="editarUsuario ml10 site-tooltipTuto" data-toggle="tooltip" aria-describedby="tooltip" data-original-title="Editar" href="javascript:void(0)" title="Editar">',
+              '<i class="glyphicon glyphicon-edit iSinMargin"></i>',
+              '</a>&nbsp;',
+              '<a class="borrarUsuario ml10 site-tooltipTuto" data-toggle="tooltip" aria-describedby="tooltip" data-original-title="Eliminar" href="javascript:void(0)"  title="Borrar Usuario">',
+              '<i class="glyphicon glyphicon-trash iSinMargin"></i>',
+              '</a>&nbsp;'
+          ].join('');
+    },
+
+    crearTabla: function (idTabla, arrayColumns, pagination) {
+        $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['es-MX']);
+        $.extend($.fn.bootstrapTable.defaults, {
+            toolbarAlign: 'left',
+            striped: true,
+            exportTypes: ['csv', 'excel'],
+            pagination: pagination,
+            pageSize: 50,
+            pageList: [10, 25, 50, 100, 200],
+            formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                return 'Mostrando ' + pageFrom + ' al ' + pageTo + ' de ' + totalRows + ' usuarios';
+            },
+            formatNoMatches: function () {
+                return '';
+            },
+        });
+        $('#' + idTabla).bootstrapTable({
+            columns: arrayColumns,
+            data: [],
+            onResetView: function () {
+                MenuJS.closeWaitMessage();
+                return false;
+            }
+        });
+    },
+
+    limpiarSubirArchivo: function () {
+        $("#cargaUsuariosMasivos").filestyle('clear');
+        $('#informacionArchivoUsuarios').html('');
+        //$('#cargaMasivaUsuarios').modal('hide');
+        $("#cargaUsuarioBtn").attr('disabled', 'disabled');
+        datosUsuariosMasivos = [];
+    },
+
+    editarUsuario: function (objeto) {
+        $('#TituloModalAdminUsuarios').html('').html('Editar usuario');
+        $('#btnAgregarUsuarios > span').html('').html('Editar');
+        $('#modal_adminUsuarios').modal('show');
+        $('.modal').css('padding-left', '0px');
+        $('.modal-open').css('padding-right', '0px');
+
+        $('#idUsuarioModal').val(objeto.id_usuario).change();
+        $('#nombreUsuarioModal').val(objeto.nombre).change();
+        $('#correoUsuarioModal').val(objeto.email).change();
+        $('#redUsuarioModal').val(objeto.usuario_red_m).change();
+        $('#crPuestoUsuarios').val(objeto.cr).change();
+        $('#puestoUsuarioModal').val(objeto.id_puesto).change().selectpicker("refresh");
+        $('#titularUsuarioModal').val(objeto.titular).change().selectpicker("refresh");
+        $('#adminPuestoUsuarioModal').val(objeto.admin_puesto).change().selectpicker("refresh");
+
+    },
+}
+
+
+window.eventosUsuariosJS = {
+    'click .editarUsuario': function (e, value, row, index) {
+        UsuariosJS.editarUsuario(row);
+    },
+
+    'click .borrarUsuario': function (e, value, row, index) {
+
+        bootbox.confirm({
+            title: '<i class="glyphicon glyphicon-info-sign"></i> Eliminar Usuario',
+            message: '<div class="borrarClientes">Será eliminado el usuario <b></b>. Este cambio no se puede deshacer.</div>',
+            buttons: {
+                cancel: {
+                    label: '<i class="glyphicon glyphicon-remove"></i> Cancelar'
+                },
+                confirm: {
+                    label: '<i class="glyphicon glyphicon-ok"></i> Confirmar'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    MenuJS.openLilWaitMessage();
+                    var objeto = {};
+                    objeto.rango = "A" + (row.id_usuario) + ':G' + (row.id_usuario);
+                    objeto.idEliminar = row.id_usuario
+                    objeto.hoja = "Usuarios";
+                    objeto.accion = 'Eliminar' //Editar, Agregar, Eliminar
+                    GenericJS.spreadSheetsAcciones(objeto, []);
+                    setTimeout(function () {
+                        GenericJS.actualizandoTablaUsuarios();
+                    }, 2500);
+                    /*var objeto = {}
+                        objeto.datos = [arrayDatos];
+                        objeto.rango = "B" + (objeto.id + 1) + ':G' + (objeto.id + 1);
+                        objeto.hoja = "Usuarios";
+                        objeto.accion = objeto.accion //Actualizar, Insertar, Eliminar
+                        console.dir(objeto);
+                        */
+                    //google.script.run.withSuccessHandler(AdminUsuariosJS.actualizarTablaUsuarios).withFailureHandler(JS_Base_Generic.setFailure).elimiarUsuarioTablas(row);
+                }
+            }
+        });
+    },
+    };
+
+
+</script>
