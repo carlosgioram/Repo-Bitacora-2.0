@@ -12,9 +12,12 @@ window.eventosCasosJS = {
 var dialog = "";
 
 function estatusDoctos(value, row, index){
+console.log('estatus documentos');
   if (row.indice) {
     var caso = alasql('SELECT * FROM ? WHERE indice = ' + row.indice + '', [busqueda])[0];
-    console.log('Caso', caso);
+    console.log('Estatus documentos', caso);
+    console.log('viabilidad  :',caso[FormularioJS.columnas['Viabilidad'][1]]);
+     console.log('auditoria  :',caso[FormularioJS.columnas['Auditoria'][0]] );
     if (caso[FormularioJS.columnas['Viabilidad'][1]] !== '' && caso[FormularioJS.columnas['Auditoria'][0]] === '') {
       return "En espera";
     } else if (caso[FormularioJS.columnas['Viabilidad'][1]] !== '' && caso[FormularioJS.columnas['Auditoria'][0]] !== '') {
@@ -88,8 +91,10 @@ var CasosJS = {
     exportTypes: ['excel'], //xml, csv, excel, txt, sql .. .
     exportOptions:{},
     pagination: true,
-    pageSize: 25,
-    pageList: [25,50,75,90,115],
+    //pageSize: 25,
+    //pageList: [25,50,75,90,115],
+    pageSize: 10,
+    pageList: [20,30,40,50,60],
     formatShowingRows: function(pageFrom, pageTo, totalRows) {
       'use strict';
       return 'Mostrando ' + pageFrom + ' al ' + pageTo + ' de ' + totalRows + ' registros';
@@ -242,7 +247,9 @@ var CasosJS = {
     MenuJS.closeWaitMessage();
     CasosJS.eventosInicial();
     CasosJS.crearTablas();
+    console.log('datosSpreadSheet')
     CasosJS.datosSpreadSheet=FormularioJS.alasql.obtener();
+    console.log('casos JS',CasosJS.datosSpreadSheet);
     CasosJS.perfiladoPuesto(sessionStorage);
     //$('#buscarBtn').trigger('click');
       CasosJS.obtenerDatosParaTablaConFiltros();
@@ -369,27 +376,30 @@ var CasosJS = {
 /*********Esta función nos permitirá realizar la búsqueda en el objeto para mostrar lo que se quiere ver**********/
     obtenerDatosParaTablaConFiltros: function(){
          var objetoToWhere = CasosJS.crearObjetoFiltros();
-
         var contador= 0;
+        console.log('objetoToWhere',objetoToWhere);
         $.each(objetoToWhere, function (key, value) {
             if(value!=""){
                 contador++;
             }
         });
-        var datosBuscar = ""
+        var datosBuscar = "";
         if(contador > 0){
             datosBuscar = sessionStorage.id_puesto == "1" || sessionStorage.titular == "1" ? busquedaTodo : busqueda
         }else{
             datosBuscar = busqueda
         }
-
+            console.log('datosBuscar',datosBuscar);
             var objetoToWhere = CasosJS.crearObjetoFiltros();
+            console.log('objetoToWhere',objetoToWhere);
             var whereWhere = CasosJS.crearWhere(objetoToWhere);
             var busqueda_todos = (alasql("SELECT indice, A, B, D, E, AQ, F, G, H,I, J, K, L, M, N, AR, CI, avance, area, estatus, carta_finiquito, AV, AW FROM ? "+whereWhere+" ", [datosBuscar]));
+             console.log('busqueda_todos ::::::',busqueda_todos);
              busqueda_todos.forEach((deCliente) => {
                deCliente['A']='<span onclick="HomeJS.editarFormulario('+deCliente['indice']+')">'+deCliente['A']+'</span>';
                deCliente['D'] = Number(deCliente['AV'] === '' ? 0 : deCliente['AV']) - Number(deCliente['AW'] === '' ? 0 : deCliente['AW']);
                deCliente['M']='<span onclick="HomeJS.editarFormulario('+deCliente['indice']+')">'+( deCliente['M'].length == 0 ? '000000000' : deCliente['M']) + '</span>';
+               console.log('deCliente',deCliente);
                return deCliente;
              });
 
@@ -402,6 +412,7 @@ var CasosJS = {
                 //console.log('Todo = ', busqueda_todos);
                 var busqueda_total = 0, porcentaje_Total = 0;
                 busqueda_todos.forEach((total) => {
+                console.log('total quebranto',total);
                   busqueda_total += Number(total['D']);
                   porcentaje_Total = porcentaje_Total === 0 ? Number(total['avance']) : (porcentaje_Total + Number(total['avance'])) / 2;
                 });
@@ -432,7 +443,7 @@ var CasosJS = {
 
                 if (sessionStorage.id_puesto === '8') {
                 }
-
+				console.log('refrescar tabla con los siguentes datos ::::::',busqueda_todos);
                 $('#table_busqueda_folio').bootstrapTable('refreshOptions', CasosJS.settingTablaBusquedaFolio);
                 $('#table_busqueda_folio').bootstrapTable('load', busqueda_todos);
                 $('#table_busqueda_folio').find('tbody tr:last td:last').html('');
@@ -560,11 +571,13 @@ var CasosJS = {
     },
     //Esta función creas la tabla de búsqueda con los settings indicados como parametros
   crearTablas: function () {
+  console.log('aqui6',CasosJS.settingTablaBusquedaFolio);
     $('#table_busqueda_folio').bootstrapTable(CasosJS.settingTablaBusquedaFolio);
   },
 
   perfiladoPuesto: function(sessionStorage){
-    //console.dir(sessionStorage);
+    console.log('573 casosjs : ',sessionStorage.id_puesto);
+    console.log('queries para obtener datos por perfil' );
       busquedaTodo = CasosJS.agregaCamposEstatusNumero();
       busquedaTodo = alasql('select * from ?', [busquedaTodo])
     switch (sessionStorage.id_puesto) {
@@ -593,7 +606,9 @@ var CasosJS = {
       break;
       case '10':
         busqueda=CasosJS.agregaCamposEstatusNumero();
-        busqueda=(alasql("SELECT * FROM ? where  (AR='Fraude Consumado > 100,000' || AR = 'Fraude Consumado > 3,000,000') AND (area ='Penal' or  area ='Viabilidad')  ",[busqueda]));
+        console.log('607 CasosJS busqueda para viable-penal',busqueda);
+        busqueda=(alasql("SELECT * FROM ? where  (AR='Fraude Consumado > 100,000' || AR = 'Fraude Consumado > 3,000,000'||AR='Fraude Consumado < 100,000') AND (area ='Penal' or  area ='Viabilidad')  ",[busqueda]));
+        console.log('610 CasosJS busqueda para viable-penal',busqueda);
       break;
       case '11':
         busqueda=CasosJS.agregaCamposEstatusNumero();
@@ -602,12 +617,30 @@ var CasosJS = {
       break;
       case '6':
         busqueda=CasosJS.agregaCamposEstatusNumero();
-        var puesto=(alasql("SELECT nb_puesto FROM puesto WHERE id_puesto="+sessionStorage.id_puesto));
-        busqueda=(alasql("SELECT * FROM ? WHERE area='"+puesto[0].nb_puesto+"' or AR='Fraude Consumado > 3,000,000' or AR='Fraude Consumado > 100,000'",[busqueda]));
-        busqueda= (alasql("SELECT * FROM ? WHERE area='Auditoria' AND (AR='Fraude Consumado > 3,000,000' OR  AR='Fraude Consumado > 100,000') and AC != '' AND P != ''  ",[busqueda]));
+        console.log('casosjs 617   ',busqueda);
+        busqueda= FormularioJS.obtener.validacionPorMonto(null,'busqueda','permisos para que auditoria vea todos los caso mayores a 3M',null,busqueda);
+        console.log('casosjs 619 respuesta de validacion auditoria mayor a 3M  ',busqueda);
+         if(busqueda==null){
+             busqueda=CasosJS.agregaCamposEstatusNumero();
+             var puesto=(alasql("SELECT nb_puesto FROM puesto WHERE id_puesto="+sessionStorage.id_puesto));
+             busqueda=(alasql("SELECT * FROM ? WHERE area='"+puesto[0].nb_puesto+"' or AR='Fraude Consumado > 3,000,000' or AR='Fraude Consumado > 100,000'",[busqueda]));
+             console.log('casosjs 620   ',busqueda, puesto);
+         // validacion para mostrar a auditoria el caso apartir de casos mayores a 3M
+             busqueda= (alasql("SELECT * FROM ? WHERE area='Auditoria' AND (AR='Fraude Consumado > 3,000,000' OR  AR='Fraude Consumado > 100,000') and AC != '' and P != ''  and AA!=''",[busqueda]));
+             console.log('casosjs 622  ',busqueda);
+         }
+      break;
+       case '12':
+        busqueda=CasosJS.agregaCamposEstatusNumero();
+        console.log('casosjs 624',busqueda);
+       // var puesto=(alasql("SELECT nb_puesto FROM puesto WHERE id_puesto="+sessionStorage.id_puesto));
+        busqueda=(alasql("SELECT * FROM ? WHERE area='Auditoria' or  AR='Fraude Consumado < 100,000'",[busqueda]));
+        console.log('casosjs 627',busqueda);
+        busqueda= (alasql("SELECT * FROM ? WHERE area='Auditoria' AND (AR='Fraude Consumado < 100,000') and AC != '' AND P != '' AND AA!=''  ",[busqueda]));
+        console.log('casosjs 629',busqueda);
       break;
     }
-  //  console.dir(busqueda);
+    console.log('busqueda',busqueda);
   },
 
   buscarBtnPor: function (opcion, estatus, area, viable) {
@@ -783,7 +816,7 @@ var CasosJS = {
       estatus: "",
       indice: ''
     });
-
+    console.log('aqui ');
     $('#table_busqueda_folio').bootstrapTable('refreshOptions', CasosJS.settingTablaBusquedaFolio);
     $('#table_busqueda_folio').bootstrapTable('load', busqueda_todos);
     $('#table_busqueda_folio').find('tbody tr:last td:last').html('');
@@ -841,7 +874,7 @@ var CasosJS = {
       indice: ''
     });
 
-
+    console.log('aqui2');
       $('#table_busqueda_folio').bootstrapTable('refreshOptions', CasosJS.settingTablaBusquedaFolio);
       $('#table_busqueda_folio').bootstrapTable('load', busqueda_todos);
       $('#tablaVistaFolio').show(1100);
@@ -1119,7 +1152,7 @@ var CasosJS = {
         estatus: "",
         indice: ''
       });
-
+       console.log('aqui3');
        $('#table_busqueda_folio').bootstrapTable('refreshOptions', CasosJS.settingTablaBusquedaFolio);
        $('#table_busqueda_folio').bootstrapTable('load', busqueda_filtros);
      }
@@ -1161,6 +1194,7 @@ var CasosJS = {
      $('#filtroVistaViable').val("").change();
 
       var busqueda_todos = (alasql("SELECT indice, A, B, D, E, AQ, F, G, H,I, J, K, L, M, N, AR, CI, avance, area, estatus, carta_finiquito FROM ? ", [datosBuscar]));
+       console.log('aqui4');
        $('#table_busqueda_folio').bootstrapTable('refreshOptions', CasosJS.settingTablaBusquedaFolio);
                 $('#table_busqueda_folio').bootstrapTable('load', busqueda_todos);
                 $('#table_busqueda_folio').find('tbody tr:last td:last').html('');
@@ -1170,22 +1204,25 @@ var CasosJS = {
 /***********  Funcion que agrega campos (area, avance, estatus) a la busqueda general ***********/
 
   agregaCamposEstatusNumero: function(){
+  console.log('casosJS 1191 function agregaCamposEstatusNumero "()" ',[CasosJS.datosSpreadSheet]);
     var busqueda_estatus = (alasql("SELECT * FROM ?", [CasosJS.datosSpreadSheet]));
-    //console.dir(busqueda_estatus);
-    //console.dir('Numero de registros regresados de la busqueda: '+busqueda_estatus.length);
     for(var i=0;i<busqueda_estatus.length;i++) {
       var estatus_casos=CasosJS.obtenerEstatusAclaraciones(busqueda_estatus[i].indice);
-      //console.dir(estatus_casos);
+      //console.log(estatus_casos);
         puesto = alasql('SELECT ROW nb_puesto FROM puesto WHERE id_puesto =' + sessionStorage.id_puesto)[0];
-        //console.dir(puesto);
-
+        console.log('casosJS 1197 puesto ',puesto);
+       console.log('busqueda_estatus indice :::',busqueda_estatus[i]);
+       console.log('[estatus_casos.area]',[estatus_casos.area]);
+       console.log('[estatus_casos.area][3]',[estatus_casos.area][3]);
+       //obtiene el correo de base  y lo compara con usuarios si coincide con alguien
       var reportadoPor = FormularioJS.columnas[estatus_casos.area][3] !== null ?
                         busqueda_estatus[i][FormularioJS.columnas[estatus_casos.area][3]] === '' ?
                         'Sin Asignar' :
                         alasql('SELECT ROW nombre FROM usuarios WHERE email = "' + busqueda_estatus[i][FormularioJS.columnas[estatus_casos.area][3]] + '"')[0] :
                         'Sin Asignar';
 
-      //console.dir(reportadoPor);
+          console.log('casosJS , reportador por ::',reportadoPor);
+          console.log('casosJS , estatus_casos  ::',estatus_casos);
       if (estatus_casos.area_paralela) {
         if (estatus_casos.area_paralela === puesto) {
           busqueda_estatus[i]['area']=estatus_casos.area_paralela;
@@ -1206,7 +1243,7 @@ var CasosJS = {
       }
       busqueda_estatus[i]['AQ'] = reportadoPor;
     }
-    //console.dir('busqueda_estatus*****');
+   console.log('busqueda_estatus*****',busqueda_estatus);
 
     return busqueda_estatus;
   },
@@ -1359,6 +1396,7 @@ var CasosJS = {
           //console.dir(objeto);
            MenuJS.openLilWaitMessage();
         google.script.run.withSuccessHandler(function (response) {
+        console.log('carta finiquito',response);
           CasosJS.idPdfGenerado = response.idArray;
           MenuJS.closeLilWaitMessage();
           if(tipo == "descargar"){
@@ -1389,6 +1427,7 @@ eliminarCopiayPdf: function(){
 /****************************** Funcion de muestra de avance del proceso de una aclaración ******************************/
 
   obtenerEstatusAclaraciones: function (indice_data) {
+  console.log ('Funcion de muestra de avance del proceso de una aclaracion',indice_data);
     var variables = ['AX', 'AZ', 'BA', 0],
       objeto_estatus= { area: 'AFG' },
       avance = 0;
@@ -1487,9 +1526,11 @@ eliminarCopiayPdf: function(){
       variables = ['BP', 'BQ', 'BS', avance];
     }
 
-    if (estatus_aclaraciones['BW'] !== '' && (sessionStorage.id_puesto === '6' || sessionStorage.id_puesto === '1')) {
+    if (estatus_aclaraciones['BW'] !== '' && (sessionStorage.id_puesto === '6' || sessionStorage.id_puesto === '1' ||sessionStorage.id_puesto === '12')) {
       // Es Auditoría
-      objeto_estatus.area = 'Auditoria'
+      // Aclaraciones Auditoria
+      //sessionStorage.id_puesto === '12'?objeto_estatus.area = 'Aclaraciones-Auditoria':objeto_estatus.area = 'Auditoria'
+      objeto_estatus.area = 'Auditoria';
       avance = estatus_aclaraciones['BJ'] === 'En proceso'
         ? 87
         : estatus_aclaraciones['BJ'] === 'Pendiente'

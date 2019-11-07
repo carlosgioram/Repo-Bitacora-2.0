@@ -5,8 +5,10 @@ var CorreoJS = {
 
   validarPuestos: function (idPuesto, tipo, area){
   //tipo = Aprobado, Rechazado,
+  console.log('validar Puestos (correojs) ::::',idPuesto, tipo, area)
     var arrayCorreos = [];
     var puesto = alasql('SELECT * FROM puesto where id_puesto = '+idPuesto+' ');
+    console.log('puesto', puesto)
     var idPuestoTo = '';
     var correos= '';
     switch(tipo) {
@@ -24,6 +26,7 @@ var CorreoJS = {
        break;
     }
     correos = alasql('SELECT DISTINCT(email) as email FROM usuarios where id_puesto = ' + idPuestoTo + ' and titular = 1');
+    console.log('correos', correos)
     $.each(correos, function (k, v) {
 		arrayCorreos.push(v.email);
 	});
@@ -49,7 +52,7 @@ var CorreoJS = {
     mensaje.htmlBody = '<div align="center" style="background-color:#004481;width:100%;height: 40px;padding-top: 15px;"><img width="25%" src="cid:bbvaLogo" /></div> <div align="center" style="width: 100%; min-height: 50%;line-height: 21px;font-family: Arial;"> <br><br><span style="color: #004481; font-size: 18px"><b>' +
         mensaje.mensajeHtml+
         '</b></span><br></div><img width="100%" src="cid:iconNaturaLogo" /> <div align="center" style="width:100%;height: 50px;background:#004481;vertical-align: middle;padding-top: 5px; color: #fff"> <p style="margin:0cm 0cm 0pt;line-height:19px"><b style="font-size:12.8px;line-height:normal"> <font color="green" face="Webdings" size="6"><span style="font-size:12pt">P</span></font> </b> <font color="#fff" style="font-size:11px;line-height:normal">&nbsp;</font> <font color="#fff" face="Arial" size="1" style="line-height:normal"><span style="font-size:8pt; font-family: Arial;">Antes de imprimir este e-mail piensa bien si es necesario hacerlo</span></font><br> </p> </div>'
-        console.dir(mensaje);
+       // console.dir(mensaje);
      MenuJS.openLilWaitMessage();
      google.script.run.withSuccessHandler(function(response){
        bootbox.alert({
@@ -64,7 +67,7 @@ var CorreoJS = {
        MenuJS.closeLilWaitMessage();
       $(window).scrollTop(0);
      }).withUserObject().withFailureHandler(function(response1){
-       console.dir(response1);
+       //console.dir(response1);
         bootbox.alert({
           message: '<div class="alert alert-danger">' + '¡Ha ocurrido un error al enviar el correo!.' + '</div>',
           buttons: {

@@ -16,7 +16,7 @@ var settingsGraficas = {
     tooltip: {
         trigger: 'axis',
         axisPointer: {
-            type: 'shadow' //line or shadow
+            type: 'shadow' //line or shadow    
         }
     },
     barWidth: '50%',
@@ -93,7 +93,7 @@ var KpisJS = {
         if (objeto.inicio !== '' && objeto.fin !== '') {
             where.push(' (' + fechaNombre + ' BETWEEN "' + objeto.inicio + '"  AND "' + objeto.final + '" )');
         }
-
+        
         if (objeto.viables) {
           if (objeto.viables !== 'Ambos') {
             if (objeto.viables === 'no_viables') {
@@ -135,7 +135,7 @@ var KpisJS = {
             case '10':
                 /*Viable - Penal*/
                 $('.selectpickerArea').val('').change().selectpicker('refresh');
-                //$('.selectpickerArea').val('Penal').change().prop('disabled', true).selectpicker('refresh');
+                //$('.selectpickerArea').val('Penal').change().prop('disabled', true).selectpicker('refresh'); 
                 KpisJS.crearGraficadenuncia0('buscar_denuncia', 0); //crearGraficadenuncia0
                 KpisJS.crearGraficadenuncia1('buscar_denuncia', 1); //crearGraficadenuncia1
                 KpisJS.crearGraficadenuncia2('buscar_denuncia', 2); //crearGraficadenuncia2
@@ -228,10 +228,10 @@ var KpisJS = {
         var res2 = alasql('SELECT ROUND((TOTAL/(SELECT TOTAL FROM ?))*100, 2) as [value], "Denuncias" as [title], 1 as [order] FROM ? ', [res, res1]);
 
         $('label[for="num_tot_casos"]').html(res[0].TOTAL);
-        $.each(res2, function (k, v) {
-                v.value = v.value == undefined ? 0 : v.value
+        $.each(res2, function (k, v) {               
+                v.value = v.value == undefined ? 0 : v.value            
         });
-
+        
         var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
         var myChart = echarts.init(document.getElementById(idGrafica), null, {
             renderer: 'canvas'
@@ -295,21 +295,21 @@ var KpisJS = {
     crearGraficadenuncia1: function (idBuscar, orden) {
         var objeto = KpisJS.crearObjeto(idBuscar);
         var where = KpisJS.crearWhere(objeto, 'A').join(' AND ');
-
+        
         var res = alasql('SELECT * FROM transformaciones WHERE ' + where + ' AND AR != "" ');
         var res2 = alasql('SELECT AR as [product], COUNT(*) AS [No_Viables], 0 AS [Viables] FROM ? WHERE BR = "Rechazado" AND ' + where + ' GROUP BY AR', [res]);
 
         var res3 = alasql('SELECT AR as [product],0 as [No_Viables], COUNT(*) AS [Viables] FROM ? WHERE  BR = "Aceptado" AND ' + where + ' GROUP BY AR', [res]);
 
         var res3ymedio = alasql('SELECT AR as [product],0 as [No_Viables], COUNT(*) AS [Viables] FROM ? WHERE ' + where + ' GROUP BY AR', [res]);
-
+        
         var res4 = alasql('SELECT [product], [No_Viables], [Viables] from ? UNION SELECT [product], [No_Viables], [Viables] from ? UNION SELECT [product], [No_Viables], [Viables] from ? ', [res2, res3, res3ymedio]);
 
         var res5 = alasql('SELECT product, sum(No_Viables) as [No Viables], sum(Viables) as [Viables] FROM ? where product != undefined group by product', [res4]);
-
-        $.each(res5, function (k, v) {
+        
+        $.each(res5, function (k, v) {   
             if(v.product != undefined){
-                v.product = (v.product).replace(/ /gi, "\n");
+                v.product = (v.product).replace(/ /gi, "\n");   
             }
         });
         var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
@@ -354,7 +354,7 @@ var KpisJS = {
             dataset: {
                 dimensions: ['product', 'Viables', 'No Viables'],
                 source: res5,
-
+                
             },
             series: [
                 {
@@ -388,7 +388,7 @@ var KpisJS = {
         });
 
     },
-
+    
     crearAreaVSCasuisticas: function (area, res, arrayCasuisticas, campoEstatus){
         var objeto= {};
 
@@ -408,18 +408,18 @@ var KpisJS = {
             ' UNION SELECT [product], [Fraude Consumado > 3,000,000], [Fraude Consumado > 100,000], [Fraude Consumado < 100,000], [Tentativa de Fraude], [Consultas injustificadas]  from ? ' +
             ' UNION SELECT [product], [Fraude Consumado > 3,000,000], [Fraude Consumado > 100,000], [Fraude Consumado < 100,000], [Tentativa de Fraude], [Consultas injustificadas]  from ? ';
 
-
+        
         objeto.res5 = alasql(queryUnion, [objeto.res0, objeto.res1, objeto.res2, objeto.res3, objeto.res4])
 
         objeto.res6 = alasql('SELECT [product], SUM([Fraude Consumado > 3,000,000]) as [Fraude Consumado > 3,000,000], SUM([Fraude Consumado > 100,000]) as [Fraude Consumado > 100,000], SUM([Fraude Consumado < 100,000]) as [Fraude Consumado < 100,000], SUM([Tentativa de Fraude]) as [Tentativa de Fraude], SUM([Consultas injustificadas]) as [Consultas injustificadas]  from ? where product != undefined group by product ', [objeto.res5]);
 
-        return objeto.res6
+        return objeto.res6 
     },
 
     crearGraficacasos1: function (idBuscar, orden) {
         var objeto = KpisJS.crearObjeto(idBuscar);
         var where = (KpisJS.crearWhere(objeto, ' A ')).join(' AND ');
-
+        
         var res = alasql('SELECT * FROM transformaciones WHERE ' + where + '  ');
         var arrayCasuisticas = ['Fraude Consumado > 3,000,000', 'Fraude Consumado > 100,000', 'Fraude Consumado < 100,000', 'Tentativa de Fraude', 'Consultas Injustificadas'];
         var objetoDatos = {
@@ -428,12 +428,12 @@ var KpisJS = {
             RRLL: KpisJS.crearAreaVSCasuisticas('RRLL', res, arrayCasuisticas, 'BO' ),
             Auditoria: KpisJS.crearAreaVSCasuisticas('Auditoría', res, arrayCasuisticas, 'BX' ),
             Penal: KpisJS.crearAreaVSCasuisticas('Penal', res, arrayCasuisticas, 'CE' )
-        }
+        } 
         var areasVScasuisticas = alasql('SELECT [product], [Consultas injustificadas], [Tentativa de Fraude], [Fraude Consumado < 100,000], [Fraude Consumado > 100,000], [Fraude Consumado > 3,000,000] FROM ?' +
                                  ' UNION SELECT [product], [Consultas injustificadas], [Tentativa de Fraude], [Fraude Consumado < 100,000], [Fraude Consumado > 100,000], [Fraude Consumado > 3,000,000] FROM ?' +
                                  ' UNION SELECT [product], [Consultas injustificadas], [Tentativa de Fraude], [Fraude Consumado < 100,000], [Fraude Consumado > 100,000], [Fraude Consumado > 3,000,000] FROM ?' +
                                  ' UNION SELECT [product], [Consultas injustificadas], [Tentativa de Fraude], [Fraude Consumado < 100,000], [Fraude Consumado > 100,000], [Fraude Consumado > 3,000,000] FROM ?' +
-                                 ' UNION SELECT [product], [Consultas injustificadas], [Tentativa de Fraude], [Fraude Consumado < 100,000], [Fraude Consumado > 100,000], [Fraude Consumado > 3,000,000] FROM ?',
+                                 ' UNION SELECT [product], [Consultas injustificadas], [Tentativa de Fraude], [Fraude Consumado < 100,000], [Fraude Consumado > 100,000], [Fraude Consumado > 3,000,000] FROM ?', 
                                  [objetoDatos['afg'], objetoDatos['Seguridad'], objetoDatos['RRLL'], objetoDatos['Auditoria'], objetoDatos['Penal']]);
 
         var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
@@ -508,7 +508,7 @@ var KpisJS = {
                    ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
                    ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
                    ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?' +
-                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?',
+                   ' UNION SELECT [product], [AFG], [Seguridad], [RRLL], [Auditoria], [Penal], [RCI], [Viabilidad] FROM ?', 
                    [res1, res2, res3, res4, res5, res12, res13, res14, res15, res16, res17, res18, res19, res20, res21, res22, res23, res24, res25, res26, res51, res52, res161, res162, res211, res212, res261, res262]);
 
          res7 = alasql('SELECT product, SUM(AFG) AS [AFG], SUM(Seguridad) AS [Seguridad], SUM(RRLL) AS [RRLL], SUM(RCI) AS [RCI], SUM(Viabilidad) AS [Viabilidad], SUM(Auditoria) AS [Auditoria], SUM(Penal) AS [Penal] FROM ? GROUP BY product',[res6]);
@@ -678,7 +678,7 @@ var KpisJS = {
           HomeJS.buscarCasos('AreasVSCasuisticas', res7, params);
         });
     },
-
+    
 sumaRes: function (res){
   //console.dir('sumaRes');
   //console.dir(res);
@@ -712,13 +712,13 @@ sumaRes: function (res){
     }
   }
 },
-
+    
 crearGraficadenuncia2: function (idBuscar, orden) {
         var objeto_res= {};
         var objeto = KpisJS.crearObjeto(idBuscar);
         var where = (KpisJS.crearWhere(objeto, 'A')).join(' AND ');
         var res = alasql('SELECT * FROM transformaciones WHERE ' + where + ' ');
-
+        
         var res1 = alasql('SELECT count(*) AS [value], "Presentación \\n de Denuncias" AS name FROM ? WHERE CI = "Presentación de Denuncias"', [res]);
         var res2 = alasql('SELECT count(*) AS [value], "Ratificación \\n de Denuncias" AS name FROM ? WHERE CI = "Ratificación de Denuncias"', [res]);
         var res3 = alasql('SELECT count(*) AS [value], "Audiencia Inicial \\n (judicialización)" AS name FROM ? WHERE CI = "Audiencia Inicial (judicialización)"', [res]);
@@ -727,7 +727,7 @@ crearGraficadenuncia2: function (idBuscar, orden) {
         var res6 = alasql('SELECT count(*) AS [value], "Sentencia" AS name FROM ? WHERE CI = "Sentencia"', [res]);
         var res7 = alasql('SELECT count(*) AS [value], "Juicio Oral" AS name FROM ? WHERE CI = "Juicio Oral"', [res]);
         var res8 = alasql('SELECT count(*) AS [value], "Ejecución de \\n la Sentencia" AS name FROM ? WHERE CI = "Ejecución de la Sentencia"', [res]);
-
+        
         var resOK = alasql('SELECT [value], [name] FROM ? ' +
           'UNION SELECT [value], [name] FROM ? ' +
           'UNION SELECT [value], [name] FROM ? ' +
@@ -741,7 +741,7 @@ crearGraficadenuncia2: function (idBuscar, orden) {
         var myChart = echarts.init(document.getElementById(idGrafica), null, {
             renderer: 'canvas'
         });
-
+        
         option =  {
     title: {
                 text: 'No. Casos (Etapa Procesal Vs Tipología)',
@@ -772,13 +772,13 @@ crearGraficadenuncia2: function (idBuscar, orden) {
         }
     ]
 }
-
+        
         myChart.clear();
         myChart.setOption(option);
         myChart.on('click', function (params) {
           HomeJS.buscarCasos('Etapa Procesal', resOK, params);
         });
-    },
+    },    
 
 
     crearGraficacasos0: function (idBuscar, orden) {
@@ -801,12 +801,12 @@ crearGraficadenuncia2: function (idBuscar, orden) {
 
         var res8 = alasql(query, [res1, res2, res3, res4, res5]);
         var res9 = alasql('SELECT product, SUM(AFG) as AFG, SUM(Seguridad) as Seguridad, SUM(RRLL) as RRLL, SUM(Auditoria) as Auditoria, SUM(Penal) as Penal from ? where product != undefined group by product', [res8]);
-
+ 
        console.log(res9);
        */
        console.log(where)
        var res = alasql('SELECT * FROM transformaciones WHERE' + where);
-
+       
        var resAll = alasql('SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
                           '(SELECT  "Pendiente" as [product], COUNT(*) AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, 0 as Penal FROM ? WHERE BA="Pendiente") ' +
                      'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
@@ -850,7 +850,7 @@ crearGraficadenuncia2: function (idBuscar, orden) {
                      'UNION SELECT product, AFG, Seguridad, RCI, RRLL, Viabilidad, Auditoria, Penal FROM ' +
                           '(SELECT  "Terminado" as [product], 0 AS [AFG], 0 as Seguridad, 0 AS RCI, 0 as RRLL, 0 AS [Viabilidad], 0 as Auditoria, COUNT(*) as Penal FROM ? WHERE CE="Terminado")',
                      [res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res, res]);
-
+                
        resOK = alasql('SELECT product, SUM([AFG]) as [AFG], SUM([Seguridad]) as [Seguridad], SUM([RCI]) as [RCI], SUM([RRLL]) AS [RRLL], SUM([Viabilidad]) AS [Viabilidad], SUM([Auditoria]) AS [Auditoria], SUM([Penal]) AS [Penal] from ? group by product', [resAll]);
        console.log(resOK)
 
@@ -1336,12 +1336,12 @@ crearGraficadenuncia2: function (idBuscar, orden) {
         var resOK = alasql('SELECT product, SUM([En tiempo]) as [En tiempo], SUM([Por vencer]) as [Por vencer], SUM([Fuera de tiempo]) as [Fuera de tiempo] from ? group by product', [nivelesDServicio]);
         // Obtenemos los productos en base a la última área en que ha avanzado
         // var resOK = alasql('SELECT area AS product, CASE WHEN nivelServicio="En tiempo" THEN COUNT(nivelServicio) ELSE 0 END AS [En tiempo], CASE WHEN nivelServicio="Por vencer" THEN COUNT(nivelServicio) ELSE 0 END AS [Por vencer], CASE WHEN nivelServicio="Fuera de tiempo" THEN COUNT(nivelServicio) ELSE 0 END AS [Fuera de tiempo] from slas GROUP BY nivelServicio, area');
-
+        
         var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
         var myChart = echarts.init(document.getElementById(idGrafica), null, {
             renderer: 'canvas'
         });
-
+        
         option = {
             title: {
               text: 'SLA (Retraso)',
@@ -1478,9 +1478,9 @@ crearGraficadenuncia2: function (idBuscar, orden) {
 
         var res = alasql('SELECT TOP 5 nivelServicio, folio, area, dias AS dias_proceso FROM slas JOIN transformaciones ON slas.folio = transformaciones.CK WHERE nivelServicio="Fuera de tiempo" ORDER BY dias DESC');
         //var res = alasql('SELECT TOP 5 nivelServicio, folio, area, dias AS dias_proceso FROM slas JOIN transformaciones ON slas.folio = transformaciones.CK WHERE nivelServicio="En tiempo" ORDER BY dias DESC');
-
+        
         var resOK = alasql('SELECT * FROM ? WHERE ' + where, [res]);
-
+        
         KpisJS.crearTabla(idGrafica, arrayColumns, false, res);
 
     },
@@ -1797,11 +1797,11 @@ crearGraficadenuncia2: function (idBuscar, orden) {
         var res = alasql('SELECT COUNT(*) AS TOTAL FROM transformaciones WHERE ' + where + ' ');
         var res1 = alasql('SELECT COUNT(*) AS TOTAL FROM transformaciones WHERE AC != "" AND  ' + where + ' ');
         var res2 = alasql('SELECT ROUND((TOTAL/(SELECT TOTAL FROM ?))*100, 2) as [value], "Cartas Firmadas" as [title], 1 as [order] FROM ? ', [res, res1]);
-
-        $.each(res2, function (k, v) {
-                v.value = v.value == undefined ? 0 : v.value
-        });
-
+        
+        $.each(res2, function (k, v) {               
+                v.value = v.value == undefined ? 0 : v.value            
+        });    
+    
         var idGrafica = idBuscar.replace('buscar_', 'grafica_') + '_admin' + orden;
         var myChart = echarts.init(document.getElementById(idGrafica), null, {
             renderer: 'canvas'
@@ -1918,7 +1918,7 @@ crearGraficasimul0: function (idBuscar, orden) {
         };
         myChart.clear();
         myChart.setOption(option);
-
+        
         myChart.on('click', function (params) {
           HomeJS.buscarCasos('NumSentencias', res2, params);
         });

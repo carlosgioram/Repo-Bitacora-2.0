@@ -1,443 +1,443 @@
-<div class="wait_panel" style="text-align: center; margin-top: 15%;">
-    <div class="cargando"></div>
-    <br>
-    <label class="control-label bbva02 negrita" style="font-size: 20px;">CARGANDO...</label>
-</div>
-<div id="super_panel">
-    <div class="clearfix">
-        <br>
-    </div>
-    <!-- Primer Panel contenedor de selectpicker y botones -->
-    <div class="panel panel-primary ">
-        <div class="panel-body panel_body_auto">
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                    <img style="float: left; width: 10px; height: 60px;" class="img-responsive img_bancomer_rayas">
-                    <p style="font-weight: bold; color: #4F81BD; font-size: 24px; padding-left: 20px;">
-                        <span id="span_modulo_titulo">KPI's</span>
-                    </p>
-                    <p style="color: #4F81BD; padding-left: 20px;" id="p_modulo_descripcion">Bienvenido a los KPI's</p>
-                </div>
-            </div>
-        </div>
-    </div>
+ <div class="wait_panel" style="text-align: center; margin-top: 15%;">
+     <div class="cargando"></div>
+     <br>
+     <label class="control-label bbva02 negrita" style="font-size: 20px;">CARGANDO...</label>
+ </div>
+ <div id="super_panel">
+     <div class="clearfix">
+         <br>
+     </div>
+     <!-- Primer Panel contenedor de selectpicker y botones -->
+     <div class="panel panel-primary ">
+         <div class="panel-body panel_body_auto">
+             <div class="row">
+                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                     <img style="float: left; width: 10px; height: 60px;" class="img-responsive img_bancomer_rayas">
+                     <p style="font-weight: bold; color: #4F81BD; font-size: 24px; padding-left: 20px;">
+                         <span id="span_modulo_titulo">KPI's</span>
+                     </p>
+                     <p style="color: #4F81BD; padding-left: 20px;" id="p_modulo_descripcion">Bienvenido a los KPI's</p>
+                 </div>
+             </div>
+         </div>
+     </div>
+     
+     <!-- Grafica Denuncias -->
+     <div class="panel panel-primary ">
+         <div class="panel-body panel_body_auto">
+             <div class="row tituloRow">
+                 <div class="col-xs-12 col-sm-12 col-md-12 text-center" id="graficaDenuncias">
+                     <p class="tituloGrafica">Denuncias</p>
+                 </div>
+             </div>
+             <div class="row ">
+                 <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 form-group" id="vistaFechaInicioDenuncias">
+                     <label for="buscar_denuncia_inicio">Fecha Inicial</label>
+                     <input class="form-control datepicker datepickerInicial " id="buscar_denuncia_inicio" placeholder="Fecha Inicial">
+                 </div>
+                 <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 form-group" id="vistaFechaFinalRew">
+                     <label for="buscar_denuncia_final">Fecha Final</label>
+                     <input class="form-control datepicker datepickerFinal " id="buscar_denuncia_final" placeholder="Fecha Final">
+                 </div>
+                 <div class="col-xs-6 col-sm-2 col-md-2" id="vistaViablesNOViables">
+                     <label for="buscar_denuncia_viables">Viabilidad:</label>
+                     <select class="form-control bbva02 selectpicker selectpickerArea" id="buscar_denuncia_viables" style="height: 21px !important; color: #121212 !important; ">
+                         <option value="Ambos">Todos</option>
+                         <option value="viables">Viables</option>
+                         <option value="no_viables">No viables</option>
+                     </select>
+                 </div>
+                 <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 form-group" id="">
+                     <label for="buscar_denuncia">&nbsp;</label>
+                     <button style="margin-top: 25px;" id="buscar_denuncia" class="btn btn-primary glyphicon glyphicon-search buscarGraficas" type="button" name="buscar_denuncia" graficas="3"></button>
+                 </div>
+             </div>
+             <!-- Grafica -->
+             <div class="col-md-12" style="padding-top: 35px">
+                 <div class="row">
+                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4  text-center">
+                         <div id="grafica_denuncia_admin1" class=" tamanioGraficas" style="width: 400px"></div>
+                     </div>
+                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
+                         <div id="grafica_denuncia_admin0" class=" tamanioGraficas" style="width: 400px"></div>
+                     </div>
+                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
+                         <div id="grafica_denuncia_admin2" class=" tamanioGraficas" style="width: 400px"></div>
+                     </div>                     
+                 </div>
+                 <div class="row">
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" style="margin-top: -41px;">
+                     <label>Total de Casos: </label>
+                     <label for="num_tot_casos"></label>
+                   </div>
+                 </div>                                  
+             </div>
+             <!-- Fin Grafica -->
+         </div>
+     </div>
 
-    <!-- Grafica Denuncias -->
-    <div class="panel panel-primary ">
-        <div class="panel-body panel_body_auto">
-            <div class="row tituloRow">
-                <div class="col-xs-12 col-sm-12 col-md-12 text-center" id="graficaDenuncias">
-                    <p class="tituloGrafica">Denuncias</p>
-                </div>
-            </div>
-            <div class="row ">
-                <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 form-group" id="vistaFechaInicioDenuncias">
-                    <label for="buscar_denuncia_inicio">Fecha Inicial</label>
-                    <input class="form-control datepicker datepickerInicial " id="buscar_denuncia_inicio" placeholder="Fecha Inicial">
-                </div>
-                <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 form-group" id="vistaFechaFinalRew">
-                    <label for="buscar_denuncia_final">Fecha Final</label>
-                    <input class="form-control datepicker datepickerFinal " id="buscar_denuncia_final" placeholder="Fecha Final">
-                </div>
-                <div class="col-xs-6 col-sm-2 col-md-2" id="vistaViablesNOViables">
-                    <label for="buscar_denuncia_viables">Viabilidad:</label>
-                    <select class="form-control bbva02 selectpicker selectpickerArea" id="buscar_denuncia_viables" style="height: 21px !important; color: #121212 !important; ">
-                        <option value="Ambos">Todos</option>
-                        <option value="viables">Viables</option>
-                        <option value="no_viables">No viables</option>
-                    </select>
-                </div>
-                <div class="col-xs-6 col-sm-2 col-md-2 col-lg-2 form-group" id="">
-                    <label for="buscar_denuncia">&nbsp;</label>
-                    <button style="margin-top: 25px;" id="buscar_denuncia" class="btn btn-primary glyphicon glyphicon-search buscarGraficas" type="button" name="buscar_denuncia" graficas="3"></button>
-                </div>
-            </div>
-            <!-- Grafica -->
-            <div class="col-md-12" style="padding-top: 35px">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4  text-center">
-                        <div id="grafica_denuncia_admin1" class=" tamanioGraficas" style="width: 400px"></div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
-                        <div id="grafica_denuncia_admin0" class=" tamanioGraficas" style="width: 400px"></div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
-                        <div id="grafica_denuncia_admin2" class=" tamanioGraficas" style="width: 400px"></div>
-                    </div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" style="margin-top: -41px;">
-                    <label>Total de Casos: </label>
-                    <label for="num_tot_casos"></label>
-                  </div>
-                </div>
-            </div>
-            <!-- Fin Grafica -->
-        </div>
-    </div>
+     <!-- Grafica Casos por área -->
+     <div class="panel panel-primary zonasGraficas">
+         <div class="panel-body panel_body_auto">
+             <div class="row tituloRow">
+                 <div class="col-xs-12 col-sm-12 col-md-12 text-center" id="graficaDenuncias">
+                     <p class="tituloGrafica">Casos</p>
+                 </div>
+             </div>
+             <div class="row">
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_casos_inicio">Fecha Inicial</label>
+                             <input class="form-control datepicker datepickerInicial" id="buscar_casos_inicio" placeholder="Fecha Inicial">
+                         </div>
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_casos_final">Fecha Final</label>
+                             <input class="form-control datepicker datepickerFinal" id="buscar_casos_final" placeholder="Fecha Final">
+                         </div>
+                         <!--
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_casos_area">Área:</label>
+                             <select title="Selecciona..." class="form-control bbva02 selectpicker selectpickerArea" id="buscar_casos_area" style="height: 21px !important; color: #121212 !important; ">
+                                 <option value="">Selecciona</option>
+                                 <option value="AFG">AFG</option>
+                                 <option value="Seguridad">Seguridad</option>
+                                 <option value="Viabilidad">Viabilidad</option>
+                                 <option value="Auditoria">Auditoría</option>
+                                 <option value="Penal">Penal</option>
+                             </select>
+                         </div>
+                         -->
+                         <div class="col-xs-6 col-sm-2 col-md-2">
+                           <label for="buscar_casos_viables">Viabilidad:</label>
+                           <select class="form-control bbva02 selectpicker selectpickerArea" id="buscar_casos_viables" style="height: 21px !important; color: #121212 !important; ">
+                             <option value="Ambos">Todos</option>
+                             <option value="viables">Viables</option>
+                             <option value="no_viables">No viables</option>
+                           </select>
+                         </div>
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_casos">&nbsp;</label>
+                             <button style="margin-top: 25px;" id="buscar_casos" class="btn btn-primary glyphicon glyphicon-search buscarGraficas" type="button" name="buscar_casos" graficas="2"></button>
+                         </div>
+               
+             </div>
+             <!-- Grafica -->
+             <div class="col-md-12" style="padding-top: 35px">
+                 <div class="row">
+                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
+                         <div id="grafica_casos_admin0" class=" tamanioGraficas" style="width: 550px"></div>
+                     </div>
+                     <!--<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
+                         <div id="grafica_casos_admin1" class=" tamanioGraficas" style="width: 550px"></div>
+                     </div>-->
+                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center"> 
+                         <div id="grafica_casos_admin1" class=" tamanioGraficas" style="width: 550px"></div>
+                     </div>                     
+                 </div>
+             </div>
+             <!-- Fin Grafica -->
+         </div>
+     </div>
 
-    <!-- Grafica Casos por área -->
-    <div class="panel panel-primary zonasGraficas">
-        <div class="panel-body panel_body_auto">
-            <div class="row tituloRow">
-                <div class="col-xs-12 col-sm-12 col-md-12 text-center" id="graficaDenuncias">
-                    <p class="tituloGrafica">Casos</p>
-                </div>
-            </div>
-            <div class="row">
+     <!-- Grafica Reworks -->
+     <div class="panel panel-primary zonasGraficas" style="display: none;">
+         <div class="panel-body panel_body_auto">
+             <div class="row tituloRow">
+                 <div class="col-xs-12 col-sm-12 col-md-12 text-center" id="graficaDenuncias">
+                     <p class="tituloGrafica">Reworks</p>
+                 </div>
+             </div>
+             <div class="row">
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_reworks_inicio">Fecha Inicial</label>
+                             <input class="form-control datepicker datepickerInicial" id="buscar_reworks_inicio" placeholder="Fecha Inicial">
+                         </div>
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_reworks_final">Fecha Final</label>
+                             <input class="form-control datepicker datepickerFinal" id="buscar_reworks_final" placeholder="Fecha Final">
+                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_casos_inicio">Fecha Inicial</label>
-                            <input class="form-control datepicker datepickerInicial" id="buscar_casos_inicio" placeholder="Fecha Inicial">
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_casos_final">Fecha Final</label>
-                            <input class="form-control datepicker datepickerFinal" id="buscar_casos_final" placeholder="Fecha Final">
-                        </div>
-                        <!--
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_casos_area">Área:</label>
-                            <select title="Selecciona..." class="form-control bbva02 selectpicker selectpickerArea" id="buscar_casos_area" style="height: 21px !important; color: #121212 !important; ">
-                                <option value="">Selecciona</option>
-                                <option value="AFG">AFG</option>
-                                <option value="Seguridad">Seguridad</option>
-                                <option value="Viabilidad">Viabilidad</option>
-                                <option value="Auditoria">Auditoría</option>
-                                <option value="Penal">Penal</option>
-                            </select>
-                        </div>
-                        -->
-                        <div class="col-xs-6 col-sm-2 col-md-2">
-                          <label for="buscar_casos_viables">Viabilidad:</label>
-                          <select class="form-control bbva02 selectpicker selectpickerArea" id="buscar_casos_viables" style="height: 21px !important; color: #121212 !important; ">
-                            <option value="Ambos">Todos</option>
-                            <option value="viables">Viables</option>
-                            <option value="no_viables">No viables</option>
-                          </select>
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_casos">&nbsp;</label>
-                            <button style="margin-top: 25px;" id="buscar_casos" class="btn btn-primary glyphicon glyphicon-search buscarGraficas" type="button" name="buscar_casos" graficas="2"></button>
-                        </div>
+                             <label for="buscar_reworks_area">Área:</label>
+                             <select title="Selecciona..." class="form-control bbva02 selectpicker selectpickerArea" id="buscar_reworks_area" style="height: 21px !important; color: #121212 !important; ">
+                                 <option value="">Selecciona</option>
+                                 <option value="AFG">AFG</option>
+                                 <option value="Seguridad">Seguridad</option>
+                                 <option value="Viabilidad">Viabilidad</option>
+                                 <option value="Auditoria">Auditoría</option>
+                                 <option value="Penal">Penal</option>
+                             </select>
+                         </div>
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_reworks">&nbsp;</label>
+                             <button style="margin-top: 25px;" id="buscar_reworks" class="btn btn-primary glyphicon glyphicon-search buscarGraficas" type="button" name="buscar_reworks" graficas="2"></button>
+                         </div>
+             </div>
+             <!-- Grafica -->
+             <div class="col-md-12" style="padding-top: 35px">
+                 <div class="row">
+                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
+                         <div id="grafica_reworks_admin0" class=" tamanioGraficas" style="width: 550px"></div>
+                     </div>
+                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
+                         <div id="grafica_reworks_admin2" class=" tamanioGraficas" style="width: 550px"></div>
+                     </div>
+                 </div>
+                 <div class="row" style="padding-top: 15px">
+                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center top5Titulo" >
+                         <strong>Top 5 de casos con más rechazos</strong>
+                     </div>
+                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center  tablaEstilo subtablaEstilo" id="tablaReworks">
+                         <table id="grafica_reworks_admin1" name="Tabla Reworks" data-show-export="false" class=" sinBordesleftAndRight tablePaddingCinco"  width="100%" cellspacing="0" border="0"></table>
+                     </div>
+                 </div>
+             </div>
+             <!-- Fin Grafica -->
+         </div>
+     </div>
+     
+     
+     <!-- Cumplimiento de SLA's -->
+     <div class="panel panel-primary zonasGraficas" >
+         <div class="panel-body panel_body_auto">
+             <div class="row tituloRow">
+                 <div class="col-xs-12 col-sm-12 col-md-12 text-center" id="graficaDenuncias">
+                     <p class="tituloGrafica">Cumplimiento de SLA's</p>
+                 </div>
+             </div>
+             <div class="row">
+                 
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_sla_inicio">Fecha Inicial</label>
+                             <input class="form-control datepicker datepickerInicial" id="buscar_sla_inicio" placeholder="Fecha Inicial">
+                         </div>
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_sla_final">Fecha Final</label>
+                             <input class="form-control datepicker datepickerFinal" id="buscar_sla_final" placeholder="Fecha Final">
+                         </div>
+                         <!--
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_sla_area">Área:</label>
+                             <select title="Selecciona..." class="form-control bbva02 selectpicker selectpickerArea" id="buscar_sla_area" style="height: 21px !important; color: #121212 !important; ">
+                                 <option value="">Selecciona</option>
+                                 <option value="AFG">AFG</option>
+                                 <option value="Seguridad">Seguridad</option>
+                                 <option value="Viabilidad">Viabilidad</option>
+                                 <option value="Auditoria">Auditoría</option>
+                                 <option value="Penal">Penal</option>
+                             </select>
+                         </div>
+                         -->
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_sla">&nbsp;</label>
+                             <button style="margin-top: 25px;" id="buscar_sla" class="btn btn-primary glyphicon glyphicon-search buscarGraficas" type="button" name="buscar_sla" graficas="3"></button>
+                         </div>
+             </div>
+             <!-- Grafica -->
+             <div class="col-md-12" style="padding-top: 35px">
+                 <div class="row">
+                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
+                         <div id="grafica_sla_admin0" class=" tamanioGraficas" style="width: 550px"></div>
+                     </div>
+                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
+                         <div id="grafica_sla_admin1" class=" tamanioGraficas" style="width: 550px"></div>
+                     </div>
+                 </div>
+                 <div class="row" style="padding-top: 15px">
+                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center top5Titulo" >
+                         <strong>Top 5 de casos con más tiempo fuera del permitido</strong>
+                     </div>
+                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center  tablaEstilo subtablaEstilo" id="tablaReworks">
+                         <table id="grafica_sla_admin2" name="Tabla Reworks" data-show-export="false" class=" sinBordesleftAndRight tablePaddingCinco"  width="100%" cellspacing="0" border="0"></table>
+                     </div>
+                 </div>
+             </div>
+             <!-- Fin Grafica -->
+         </div>
+     </div>
+     
+     
+     <!-- Reduccion Mensual de Backlog -->
+     <div class="panel panel-primary zonasGraficas" style="display: none;">
+         <div class="panel-body panel_body_auto">
+             <div class="row tituloRow">
+                 <div class="col-xs-12 col-sm-12 col-md-12 text-center" id="graficaDenuncias">
+                     <p class="tituloGrafica">Reduccion Mensual de Backlog</p>
+                 </div>
+             </div>
+             <div class="row">
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_backlog_inicio">Fecha Inicial</label>
+                             <input class="form-control datepicker datepickerInicial" id="buscar_backlog_inicio" placeholder="Fecha Inicial">
+                         </div>
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_backlog_final">Fecha Final</label>
+                             <input class="form-control datepicker datepickerFinal" id="buscar_backlog_final" placeholder="Fecha Final">
+                         </div>
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_backlog_area">Área:</label>
+                             <select title="Selecciona..." class="form-control bbva02 selectpicker selectpickerArea" id="buscar_backlog_area" style="height: 21px !important; color: #121212 !important; ">
+                                 <option value="">Selecciona</option>
+                                 <option value="AFG">AFG</option>
+                                 <option value="Seguridad">Seguridad</option>
+                                 <option value="Viabilidad">Viabilidad</option>
+                                 <option value="Auditoria">Auditoría</option>
+                                 <option value="Penal">Penal</option>
+                             </select>
+                         </div>
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_backlog">&nbsp;</label>
+                             <button style="margin-top: 25px;" id="buscar_backlog" class="btn btn-primary glyphicon glyphicon-search buscarGraficas" type="button" name="buscar_backlog"  graficas="3"></button>
+                         </div>
+                     
+             </div>
+             <!-- Grafica -->
+             <div class="col-md-12" style="padding-top: 35px">
+                 <div class="row">
+                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
+                         <div id="grafica_backlog_admin0" class=" tamanioGraficas" style="width: 400px"></div>
+                     </div>
+                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
+                         <div id="grafica_backlog_admin1" class=" tamanioGraficas" style="width: 400px"></div>
+                     </div>
+                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
+                         <div id="grafica_backlog_admin2" class=" tamanioGraficas" style="width: 400px"></div>
+                     </div>
+                 </div>
+             </div>
+             <!-- Fin Grafica -->
+         </div>
+     </div>
+     
+     <!-- Numero de Casos Simultaneos -->
+     <div class="panel panel-primary zonasGraficas" >
+         <div class="panel-body panel_body_auto">
+             <div class="row tituloRow">
+                 <div class="col-xs-12 col-sm-12 col-md-12 text-center" id="graficaDenuncias">
+                     <!--<p class="tituloGrafica">Casos Simultaneos | Reabiertos | Cartas finiquito Firmadas</p>-->
+                     <p class="tituloGrafica">Sentencias Obtenidas | Cartas Finiquito Firmadas</p>
+                 </div>
+             </div>
+             <div class="row">
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_simul_inicio">Fecha Inicial</label>
+                             <input class="form-control datepicker datepickerInicial" id="buscar_simul_inicio" placeholder="Fecha Inicial">
+                         </div>
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_simul_final">Fecha Final</label>
+                             <input class="form-control datepicker datepickerFinal" id="buscar_simul_final" placeholder="Fecha Final">
+                         </div>
+                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
+                             <label for="buscar_simul">&nbsp;</label>
+                             <button style="margin-top: 25px;" id="buscar_simul" class="btn btn-primary glyphicon glyphicon-search buscarGraficas" type="button" name="buscar_simul" graficas="2"></button>
+                         </div>
+                     
+             </div>
+             <!-- Grafica -->
+             <div class="col-md-12" style="padding-top: 35px">
+                 <div class="row">
+                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
+                         <div id="grafica_simul_admin0" class=" tamanioGraficas" style="width: 550px"></div>
+                     </div>
+                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
+                         <div id="grafica_simul_admin1" class=" tamanioGraficas" style="width: 550px"></div>
+                     </div>
+                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center" style="display: none;">
+                         <div id="grafica_simul_admin2" class=" tamanioGraficas" style="width: 400px"></div>
+                     </div>
+                 </div>
+                 <div class="row">
+                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" style="margin-top: -41px;">
+                     <label>Total de Casos: </label>
+                     <label for="num_tot_casos"></label>
+                   </div>
+                 </div>                                                   
+             </div>
+             <!-- Fin Grafica -->
+         </div>
+     </div>
+     
+     <!-- Encuesta de Satisfacción -->
+     <div class="panel panel-primary zonasGraficas" style="display: none">
+         <div class="panel-body panel_body_auto">
+             <div class="row">
+                 <div class="col-xs-2 col-sm-2 col-md-2"></div>
+                 <div class="col-xs-6 col-sm-6 col-md-6" id="graficaReworks">
+                     <label for="graficReworks">
+                         <p class="label_font"> Encuesta de Satisfacción (Contacto con el Cliente) ¿?</p>
+                     </label>
+                 </div>
+             </div>
+             <div class="row">
+                 <div class="col-xs-2 col-sm-2 col-md-2" id="vistaAdminSatis">
+                     <label for="filtroPorArea">
+                         <p class="tituloCombo" style="color:#004481;">Área:</p>
+                     </label>
+                     <select title="Selecciona..." class="form-control bbva02 selectpicker" id="filtroPorArea_satis" style="height: 21px !important; color: #121212 !important; ">
+                         <option value="AFG">AFG</option>
+                         <option value="Seguridad">Seguridad</option>
+                         <option value="Viabilidad">Viabilidad</option>
+                         <option value="Auditoria">Auditoría</option>
+                         <option value="Penal">Penal</option>
+                     </select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group" id="vistaFechaInicioSatis">
+                     <label for="fecha_inicial_filtro">Fecha Inicial</label>
+                     <input type="date" class="form-control" id="fecha_inicial_satis" placeholder="Fecha Inicial">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group" id="vistaFechaFinalSatis">
+                     <label for="fecha_final_filtro">Fecha Final</label>
+                     <input type="date" class="form-control" id="fecha_final_satis" placeholder="Fecha Final">
+                 </div>
+             </div>
+             <!-- Grafica -->
+             <div class="row">
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group" id="grafica_satis_admin"></div>
+             </div>
+             <!-- Fin Grafica -->
+         </div>
+     </div>
+     
+     <!-- Semaforo -->
+     <div class="panel panel-primary zonasGraficas" style="display: none">
+         <div class="panel-body panel_body_auto">
+             <div class="row">
+                 <div class="col-xs-2 col-sm-2 col-md-2"></div>
+                 <div class="col-xs-5 col-sm-5 col-md-5" id="graficaReworks">
+                     <label for="graficReworks">
+                         <p class="label_font"> Semáforo ¿? </p>
+                     </label>
+                 </div>
+             </div>
+             <div class="row">
+                 <div class="col-xs-2 col-sm-2 col-md-2" id="vistaAdminSemaforo">
+                     <label for="filtroPorArea">
+                         <p class="tituloCombo" style="color:#004481;">Área:</p>
+                     </label>
+                     <select title="Selecciona..." class="form-control bbva02 selectpicker" id="filtroPorArea_semaforo" style="height: 21px !important; color: #121212 !important; ">
+                         <option value="AFG">AFG</option>
+                         <option value="Seguridad">Seguridad</option>
+                         <option value="Viabilidad">Viabilidad</option>
+                         <option value="Auditoria">Auditoría</option>
+                         <option value="Penal">Penal</option>
+                     </select>
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group" id="vistaFechaInicioSemaforo">
+                     <label for="fecha_inicial_filtro">Fecha Inicial</label>
+                     <input type="date" class="form-control" id="fecha_inicial_semaforo" placeholder="Fecha Inicial">
+                 </div>
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group" id="vistaFechaFinalSemaforo">
+                     <label for="fecha_final_filtro">Fecha Final</label>
+                     <input type="date" class="form-control" id="fecha_final_semaforo" placeholder="Fecha Final">
+                 </div>
+             </div>
+             <!-- Grafica -->
+             <div class="row">
+                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group" id="grafica_semaforo_admin"></div>
+             </div>
+             <!-- Fin Grafica -->
+         </div>
+     </div>
+ </div>
+ <script>
+     KpisJS.init();
 
-            </div>
-            <!-- Grafica -->
-            <div class="col-md-12" style="padding-top: 35px">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
-                        <div id="grafica_casos_admin0" class=" tamanioGraficas" style="width: 550px"></div>
-                    </div>
-                    <!--<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
-                        <div id="grafica_casos_admin1" class=" tamanioGraficas" style="width: 550px"></div>
-                    </div>-->
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
-                        <div id="grafica_casos_admin1" class=" tamanioGraficas" style="width: 550px"></div>
-                    </div>
-                </div>
-            </div>
-            <!-- Fin Grafica -->
-        </div>
-    </div>
-
-    <!-- Grafica Reworks -->
-    <div class="panel panel-primary zonasGraficas" style="display: none;">
-        <div class="panel-body panel_body_auto">
-            <div class="row tituloRow">
-                <div class="col-xs-12 col-sm-12 col-md-12 text-center" id="graficaDenuncias">
-                    <p class="tituloGrafica">Reworks</p>
-                </div>
-            </div>
-            <div class="row">
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_reworks_inicio">Fecha Inicial</label>
-                            <input class="form-control datepicker datepickerInicial" id="buscar_reworks_inicio" placeholder="Fecha Inicial">
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_reworks_final">Fecha Final</label>
-                            <input class="form-control datepicker datepickerFinal" id="buscar_reworks_final" placeholder="Fecha Final">
-                        </div>
-                       <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_reworks_area">Área:</label>
-                            <select title="Selecciona..." class="form-control bbva02 selectpicker selectpickerArea" id="buscar_reworks_area" style="height: 21px !important; color: #121212 !important; ">
-                                <option value="">Selecciona</option>
-                                <option value="AFG">AFG</option>
-                                <option value="Seguridad">Seguridad</option>
-                                <option value="Viabilidad">Viabilidad</option>
-                                <option value="Auditoria">Auditoría</option>
-                                <option value="Penal">Penal</option>
-                            </select>
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_reworks">&nbsp;</label>
-                            <button style="margin-top: 25px;" id="buscar_reworks" class="btn btn-primary glyphicon glyphicon-search buscarGraficas" type="button" name="buscar_reworks" graficas="2"></button>
-                        </div>
-            </div>
-            <!-- Grafica -->
-            <div class="col-md-12" style="padding-top: 35px">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
-                        <div id="grafica_reworks_admin0" class=" tamanioGraficas" style="width: 550px"></div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
-                        <div id="grafica_reworks_admin2" class=" tamanioGraficas" style="width: 550px"></div>
-                    </div>
-                </div>
-                <div class="row" style="padding-top: 15px">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center top5Titulo" >
-                        <strong>Top 5 de casos con más rechazos</strong>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center  tablaEstilo subtablaEstilo" id="tablaReworks">
-                        <table id="grafica_reworks_admin1" name="Tabla Reworks" data-show-export="false" class=" sinBordesleftAndRight tablePaddingCinco"  width="100%" cellspacing="0" border="0"></table>
-                    </div>
-                </div>
-            </div>
-            <!-- Fin Grafica -->
-        </div>
-    </div>
-
-
-    <!-- Cumplimiento de SLA's -->
-    <div class="panel panel-primary zonasGraficas" >
-        <div class="panel-body panel_body_auto">
-            <div class="row tituloRow">
-                <div class="col-xs-12 col-sm-12 col-md-12 text-center" id="graficaDenuncias">
-                    <p class="tituloGrafica">Cumplimiento de SLA's</p>
-                </div>
-            </div>
-            <div class="row">
-
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_sla_inicio">Fecha Inicial</label>
-                            <input class="form-control datepicker datepickerInicial" id="buscar_sla_inicio" placeholder="Fecha Inicial">
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_sla_final">Fecha Final</label>
-                            <input class="form-control datepicker datepickerFinal" id="buscar_sla_final" placeholder="Fecha Final">
-                        </div>
-                        <!--
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_sla_area">Área:</label>
-                            <select title="Selecciona..." class="form-control bbva02 selectpicker selectpickerArea" id="buscar_sla_area" style="height: 21px !important; color: #121212 !important; ">
-                                <option value="">Selecciona</option>
-                                <option value="AFG">AFG</option>
-                                <option value="Seguridad">Seguridad</option>
-                                <option value="Viabilidad">Viabilidad</option>
-                                <option value="Auditoria">Auditoría</option>
-                                <option value="Penal">Penal</option>
-                            </select>
-                        </div>
-                        -->
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_sla">&nbsp;</label>
-                            <button style="margin-top: 25px;" id="buscar_sla" class="btn btn-primary glyphicon glyphicon-search buscarGraficas" type="button" name="buscar_sla" graficas="3"></button>
-                        </div>
-            </div>
-            <!-- Grafica -->
-            <div class="col-md-12" style="padding-top: 35px">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
-                        <div id="grafica_sla_admin0" class=" tamanioGraficas" style="width: 550px"></div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
-                        <div id="grafica_sla_admin1" class=" tamanioGraficas" style="width: 550px"></div>
-                    </div>
-                </div>
-                <div class="row" style="padding-top: 15px">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center top5Titulo" >
-                        <strong>Top 5 de casos con más tiempo fuera del permitido</strong>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center  tablaEstilo subtablaEstilo" id="tablaReworks">
-                        <table id="grafica_sla_admin2" name="Tabla Reworks" data-show-export="false" class=" sinBordesleftAndRight tablePaddingCinco"  width="100%" cellspacing="0" border="0"></table>
-                    </div>
-                </div>
-            </div>
-            <!-- Fin Grafica -->
-        </div>
-    </div>
-
-
-    <!-- Reduccion Mensual de Backlog -->
-    <div class="panel panel-primary zonasGraficas" style="display: none;">
-        <div class="panel-body panel_body_auto">
-            <div class="row tituloRow">
-                <div class="col-xs-12 col-sm-12 col-md-12 text-center" id="graficaDenuncias">
-                    <p class="tituloGrafica">Reduccion Mensual de Backlog</p>
-                </div>
-            </div>
-            <div class="row">
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_backlog_inicio">Fecha Inicial</label>
-                            <input class="form-control datepicker datepickerInicial" id="buscar_backlog_inicio" placeholder="Fecha Inicial">
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_backlog_final">Fecha Final</label>
-                            <input class="form-control datepicker datepickerFinal" id="buscar_backlog_final" placeholder="Fecha Final">
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_backlog_area">Área:</label>
-                            <select title="Selecciona..." class="form-control bbva02 selectpicker selectpickerArea" id="buscar_backlog_area" style="height: 21px !important; color: #121212 !important; ">
-                                <option value="">Selecciona</option>
-                                <option value="AFG">AFG</option>
-                                <option value="Seguridad">Seguridad</option>
-                                <option value="Viabilidad">Viabilidad</option>
-                                <option value="Auditoria">Auditoría</option>
-                                <option value="Penal">Penal</option>
-                            </select>
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_backlog">&nbsp;</label>
-                            <button style="margin-top: 25px;" id="buscar_backlog" class="btn btn-primary glyphicon glyphicon-search buscarGraficas" type="button" name="buscar_backlog"  graficas="3"></button>
-                        </div>
-
-            </div>
-            <!-- Grafica -->
-            <div class="col-md-12" style="padding-top: 35px">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
-                        <div id="grafica_backlog_admin0" class=" tamanioGraficas" style="width: 400px"></div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
-                        <div id="grafica_backlog_admin1" class=" tamanioGraficas" style="width: 400px"></div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center">
-                        <div id="grafica_backlog_admin2" class=" tamanioGraficas" style="width: 400px"></div>
-                    </div>
-                </div>
-            </div>
-            <!-- Fin Grafica -->
-        </div>
-    </div>
-
-    <!-- Numero de Casos Simultaneos -->
-    <div class="panel panel-primary zonasGraficas" >
-        <div class="panel-body panel_body_auto">
-            <div class="row tituloRow">
-                <div class="col-xs-12 col-sm-12 col-md-12 text-center" id="graficaDenuncias">
-                    <!--<p class="tituloGrafica">Casos Simultaneos | Reabiertos | Cartas finiquito Firmadas</p>-->
-                    <p class="tituloGrafica">Sentencias Obtenidas | Cartas Finiquito Firmadas</p>
-                </div>
-            </div>
-            <div class="row">
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_simul_inicio">Fecha Inicial</label>
-                            <input class="form-control datepicker datepickerInicial" id="buscar_simul_inicio" placeholder="Fecha Inicial">
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_simul_final">Fecha Final</label>
-                            <input class="form-control datepicker datepickerFinal" id="buscar_simul_final" placeholder="Fecha Final">
-                        </div>
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 " >
-                            <label for="buscar_simul">&nbsp;</label>
-                            <button style="margin-top: 25px;" id="buscar_simul" class="btn btn-primary glyphicon glyphicon-search buscarGraficas" type="button" name="buscar_simul" graficas="2"></button>
-                        </div>
-
-            </div>
-            <!-- Grafica -->
-            <div class="col-md-12" style="padding-top: 35px">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
-                        <div id="grafica_simul_admin0" class=" tamanioGraficas" style="width: 550px"></div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 text-center">
-                        <div id="grafica_simul_admin1" class=" tamanioGraficas" style="width: 550px"></div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 text-center" style="display: none;">
-                        <div id="grafica_simul_admin2" class=" tamanioGraficas" style="width: 400px"></div>
-                    </div>
-                </div>
-                <div class="row">
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" style="margin-top: -41px;">
-                    <label>Total de Casos: </label>
-                    <label for="num_tot_casos"></label>
-                  </div>
-                </div>
-            </div>
-            <!-- Fin Grafica -->
-        </div>
-    </div>
-
-    <!-- Encuesta de Satisfacción -->
-    <div class="panel panel-primary zonasGraficas" style="display: none">
-        <div class="panel-body panel_body_auto">
-            <div class="row">
-                <div class="col-xs-2 col-sm-2 col-md-2"></div>
-                <div class="col-xs-6 col-sm-6 col-md-6" id="graficaReworks">
-                    <label for="graficReworks">
-                        <p class="label_font"> Encuesta de Satisfacción (Contacto con el Cliente) ¿?</p>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-2 col-sm-2 col-md-2" id="vistaAdminSatis">
-                    <label for="filtroPorArea">
-                        <p class="tituloCombo" style="color:#004481;">Área:</p>
-                    </label>
-                    <select title="Selecciona..." class="form-control bbva02 selectpicker" id="filtroPorArea_satis" style="height: 21px !important; color: #121212 !important; ">
-                        <option value="AFG">AFG</option>
-                        <option value="Seguridad">Seguridad</option>
-                        <option value="Viabilidad">Viabilidad</option>
-                        <option value="Auditoria">Auditoría</option>
-                        <option value="Penal">Penal</option>
-                    </select>
-                </div>
-                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group" id="vistaFechaInicioSatis">
-                    <label for="fecha_inicial_filtro">Fecha Inicial</label>
-                    <input type="date" class="form-control" id="fecha_inicial_satis" placeholder="Fecha Inicial">
-                </div>
-                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group" id="vistaFechaFinalSatis">
-                    <label for="fecha_final_filtro">Fecha Final</label>
-                    <input type="date" class="form-control" id="fecha_final_satis" placeholder="Fecha Final">
-                </div>
-            </div>
-            <!-- Grafica -->
-            <div class="row">
-                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group" id="grafica_satis_admin"></div>
-            </div>
-            <!-- Fin Grafica -->
-        </div>
-    </div>
-
-    <!-- Semaforo -->
-    <div class="panel panel-primary zonasGraficas" style="display: none">
-        <div class="panel-body panel_body_auto">
-            <div class="row">
-                <div class="col-xs-2 col-sm-2 col-md-2"></div>
-                <div class="col-xs-5 col-sm-5 col-md-5" id="graficaReworks">
-                    <label for="graficReworks">
-                        <p class="label_font"> Semáforo ¿? </p>
-                    </label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-2 col-sm-2 col-md-2" id="vistaAdminSemaforo">
-                    <label for="filtroPorArea">
-                        <p class="tituloCombo" style="color:#004481;">Área:</p>
-                    </label>
-                    <select title="Selecciona..." class="form-control bbva02 selectpicker" id="filtroPorArea_semaforo" style="height: 21px !important; color: #121212 !important; ">
-                        <option value="AFG">AFG</option>
-                        <option value="Seguridad">Seguridad</option>
-                        <option value="Viabilidad">Viabilidad</option>
-                        <option value="Auditoria">Auditoría</option>
-                        <option value="Penal">Penal</option>
-                    </select>
-                </div>
-                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group" id="vistaFechaInicioSemaforo">
-                    <label for="fecha_inicial_filtro">Fecha Inicial</label>
-                    <input type="date" class="form-control" id="fecha_inicial_semaforo" placeholder="Fecha Inicial">
-                </div>
-                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group" id="vistaFechaFinalSemaforo">
-                    <label for="fecha_final_filtro">Fecha Final</label>
-                    <input type="date" class="form-control" id="fecha_final_semaforo" placeholder="Fecha Final">
-                </div>
-            </div>
-            <!-- Grafica -->
-            <div class="row">
-                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group" id="grafica_semaforo_admin"></div>
-            </div>
-            <!-- Fin Grafica -->
-        </div>
-    </div>
-</div>
-<script>
-    KpisJS.init();
-
-</script>
+ </script>

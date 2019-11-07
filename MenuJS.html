@@ -9,7 +9,7 @@ var MenuJS = {
 
   init : function() {
 
-   //console.log("Constructor MenuJS");
+   console.log("Constructor MenuJS");
     $('#my-head > span.mh-btns-right').html('');
     //GestionFaltantesJS.error("EL USUSARIO NO EXISTE");
    /*google.script.run.withSuccessHandler(MenuJS.procesarDatosUsuario).
@@ -24,6 +24,8 @@ var MenuJS = {
     // AGREGAMOS EL MENU
     var modulosN1 = alasql('SELECT * FROM (SELECT * FROM usuarios JOIN modulo_puesto USING id_puesto JOIN modulo USING id_modulo) WHERE email = "' + sessionStorage.NB_CORREO + '" AND Activo=1 AND nivel=1'),
       modulosN2 = alasql('SELECT * FROM (SELECT * FROM usuarios JOIN modulo_puesto USING id_puesto JOIN modulo USING id_modulo) WHERE email = "' + sessionStorage.NB_CORREO + '" AND Activo=1 AND nivel=2');
+      console.log('modulosN1',modulosN1);
+      console.log('modulosN2',modulosN2);
     var modulos = {
       "1": '{"nombreMenu": "Búsqueda de casos", "nombreComponente": "Casos", "href": "xxx", "icono": "icono_bbva_azul_1_ticket_icon"}',
       "2": '{"nombreMenu": "Nuevo Caso", "nombreComponente": "Formulario", "href": "xxx", "icono": "icono_bbva_azul_3_document_icon"}',
@@ -40,14 +42,14 @@ var MenuJS = {
   },
 
     menuByJson: function(tipos){
-        // console.dir('holaaaaa');
+        console.dir('menuByJson', tipos);
         var jsonInicial = '{"objetoMenu": [{"nombreMenu": "Inicio","nombreComponente": "Home","link": "","id-link": "li-avisos","icono": "icono_bbva_h_azul_3_home_icon"},'
         var comaIntermedia = "";
         var jsonFinal = ']}';
 
 
         var superJSON = jsonInicial + tipos + comaIntermedia + jsonFinal;
-        //console.dir(superJSON);
+        console.dir('superJSON',superJSON);
         var obj =  JSON.parse(superJSON);
         // console.dir(obj);
         BaseGenericJS.recorridoPrincipal(obj);

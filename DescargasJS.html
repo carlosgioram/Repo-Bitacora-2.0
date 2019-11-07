@@ -109,7 +109,7 @@ var DescargaJS = {
   init: function () {
     $('#textoArchivos').html('').html('<span><i>Selecciona una carpeta para ver sus archivos...</i></span>');
     DescargaJS.crearTablaArchivos();
-    var objeto = {};
+    var objeto = {}; 
     objeto.folderId = '10rjaN-JzEMSAAItqmpsIpVFKp0pZJzew';
     objeto.listFiles = true;
     objeto.searchDepthMax = 100;
@@ -161,11 +161,11 @@ var DescargaJS = {
     $table.bootstrapTable(settings);
     //JS_Base_Generic.closeWaitMessage();
   },
-
+  
   mandaAlerta: function(){
   alert("prueba");
   },
-
+  
   generaDivisional: function(){
   google.script.run.withSuccessHandler(DescargaJS.procesarArchivos).withFailureHandler(JS_Base_Generic.setFailureModificado).getTree(objeto);
 
@@ -180,7 +180,7 @@ var DescargaJS = {
     ].join('');
   },
   eventos: function(){
-
+    
   }
 };
 

@@ -317,7 +317,7 @@
                  </div>
                  <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
                    <label for="numCliente_">Número de cliente</label>
-                   <input type="text" class="form-control" id="numCliente_" columna="_F" pattern="([0-9]*)(.*), $1">
+                   <input type="text" class="form-control" id="numCliente_" columna="_F" pattern="([A-Z0-9]*)(.*), $1" maxlength="8">
                  </div>
                  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group hide">
                    <label for="nombreCliente">Nombre del cliente</label>
@@ -404,7 +404,7 @@
                    <input type="text" class="form-control" style="resize: none;"  id="descripcion" columna="N">
                  </div>
                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
-                 <textarea type="text" class="form-control desc" style="resize: none;"  id="descripcion1" rows="10" maxlength="1500"  columna="_N" onkeyup="$('#conteo_caracteres').find('span').html($(this).val().length)"></textarea>
+                 <textarea type="text" class="form-control desc" style="resize: none;"  id="descripcion1" rows="10" maxlength="1500"  columna="_N" onkeyup="$('#conteo_caracteres').find('span').html($(this).val().length)" ></textarea>
                  <div id="conteo_caracteres"><span>0</span> / 1500</div>
                  </div>
                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
