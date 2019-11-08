@@ -117,6 +117,14 @@ var CasosJS = {
     },
     columns: [
       [{
+          field: 'CK',
+          title: 'Folio Bitácora',
+          align: 'center',
+          valign: 'middle',
+          sortable: true,
+          class: 'cursor_row',
+        },
+      {
           field: 'A',
           title: 'Fecha de Alta',
           align: 'center',
@@ -418,6 +426,7 @@ var CasosJS = {
                 });
 
                busqueda_todos.push({
+                  CK:"",
                   A: "",
                   B: "",
                   D: busqueda_total,
@@ -440,10 +449,7 @@ var CasosJS = {
                   estatus: "",
                   indice: ''
                 });
-
-                if (sessionStorage.id_puesto === '8') {
-                }
-				console.log('refrescar tabla con los siguentes datos ::::::',busqueda_todos);
+		            console.log('refrescar tabla con los siguentes datos ::::::',busqueda_todos);
                 $('#table_busqueda_folio').bootstrapTable('refreshOptions', CasosJS.settingTablaBusquedaFolio);
                 $('#table_busqueda_folio').bootstrapTable('load', busqueda_todos);
                 $('#table_busqueda_folio').find('tbody tr:last td:last').html('');
@@ -591,7 +597,6 @@ var CasosJS = {
       busqueda=(alasql("SELECT * FROM ? WHERE area='"+puesto[0].nb_puesto+"' || AR='Consultas Injustificadas'",[busqueda]));
       break;
       case '2':
-      case '3':
       case '4':
       case '5':
       case '7':
@@ -639,6 +644,11 @@ var CasosJS = {
         busqueda= (alasql("SELECT * FROM ? WHERE area='Auditoria' AND (AR='Fraude Consumado < 100,000') and AC != '' AND P != '' AND AA!=''  ",[busqueda]));
         console.log('casosjs 629',busqueda);
       break;
+       case '3':
+       busqueda=CasosJS.agregaCamposEstatusNumero();
+       var puesto=(alasql("SELECT nb_puesto FROM puesto WHERE id_puesto="+sessionStorage.id_puesto));
+       busqueda=(alasql("SELECT * FROM ? WHERE area='"+puesto[0].nb_puesto+"'|| AR='Consultas Injustificadas'",[busqueda]));
+       break;
     }
     console.log('busqueda',busqueda);
   },
