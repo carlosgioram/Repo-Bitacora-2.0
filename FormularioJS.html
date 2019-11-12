@@ -259,8 +259,6 @@
                            indc += 1;
                         }
                      });
-
-
                      alasql('DROP TABLE IF EXISTS ' + nombreTabla);
                      alasql('CREATE TABLE ' + nombreTabla);
                      // alasql.tables.NombreTabla.data = data;
@@ -2244,6 +2242,16 @@
                        FormularioJS.alasql.modificar(coordenada, valoresExcel[coordenada]);
                        })
                   }
+                  else if(sessionStorage.id_puesto=='1'){
+                       var coordenadas=FormularioJS.documentosCoordenadas;
+                       for(x in coordenadas){
+                            console.log(coordenadas[x]);
+                            coordenadas[x].forEach(function(coordenada ,value){
+                            valoresExcel[coordenada]=valoresSesion[coordenada];
+                            FormularioJS.alasql.modificar(coordenada, valoresExcel[coordenada]);
+                            })
+                        }
+                  }
                    deferred.resolve('ok');
                }).catch(function(error){
                console.log('error',error);
@@ -2252,4 +2260,5 @@
        }
      }
    }
+   
     </script>
