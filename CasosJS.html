@@ -121,8 +121,7 @@ var CasosJS = {
           title: 'Folio Bitácora',
           align: 'center',
           valign: 'middle',
-          sortable: true,
-          class: 'cursor_row',
+          sortable: false,
         },
       {
           field: 'A',
@@ -401,7 +400,7 @@ var CasosJS = {
             var objetoToWhere = CasosJS.crearObjetoFiltros();
             console.log('objetoToWhere',objetoToWhere);
             var whereWhere = CasosJS.crearWhere(objetoToWhere);
-            var busqueda_todos = (alasql("SELECT indice, A, B, D, E, AQ, F, G, H,I, J, K, L, M, N, AR, CI, avance, area, estatus, carta_finiquito, AV, AW FROM ? "+whereWhere+" ", [datosBuscar]));
+            var busqueda_todos = (alasql("SELECT indice, A, B, D, E, AQ, F, G, H,I, J, K, L, M, N, AR, CI, avance, area, estatus, carta_finiquito, AV, AW,CK FROM ? "+whereWhere+" ", [datosBuscar]));
              console.log('busqueda_todos ::::::',busqueda_todos);
              busqueda_todos.forEach((deCliente) => {
                deCliente['A']='<span onclick="HomeJS.editarFormulario('+deCliente['indice']+')">'+deCliente['A']+'</span>';
@@ -1671,12 +1670,5 @@ eliminarCopiayPdf: function(){
     $('#tablaVistaFolio').show(1100);
     */
   },
-
-
-
-
 }
-
-
-
 </script>
