@@ -311,6 +311,14 @@
                  <button id="btn_subir_cliente" class="btn btn-primary glyphicon glyphicon-upload" type="button" style="margin-right: 10px; margin-top: -7px;"></button>
                </div>
                <div class="collapse panel-body" id="form_cliente">
+
+                <!-- Persona moral  Checkbox ||: Isaac Marquina Moctezuma -->
+                <div class="checkbox-inline col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                 <label  class="form-check-label" for="customSwitch1" style="text-align:right;padding-right: 80px;" >Persona Fisica / Moral</label>
+                 <input type="checkbox" name="nombreclient" class="form-check-input custom-control-input" id="switchfm">
+                 </div>
+                 <!-- Termina ||Persona moral  Checkbox ||: Isaac Marquina Moctezuma -->
+
                  <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group hide">
                    <label for="numCliente">Número de cliente</label>
                    <input type="text" class="form-control" id="numCliente" columna="F" pattern="([A-Z0-9]*)(.*), $1" maxlength="8">
@@ -323,18 +331,28 @@
                    <label for="nombreCliente">Nombre del cliente</label>
                    <input type="text" class="form-control" id="nombreCliente" columna="G" pattern="([A-Za-zñÑ\s]+)*(.*), $1">
                  </div>
-                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                 <!-- cliente moral/isaac marquina -->
+                <div id="personaf1" class="personaf col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
                    <label for="nombreCliente_AP">Apellido Paterno del cliente</label>
-                   <input type="text" class="form-control text-uppercase" id="nombreCliente_AP" columna="_G" pattern="([A-Za-zñÑ\s]+)*(.*), $1">
+                   <input type="text" class="nombreClienteInputF form-control text-uppercase" id="nombreCliente_AP"  columna="_G" pattern="([A-Za-zñÑ\s]+)*(.*), $1" maxlength="20">
                  </div>
-                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
-                   <label for="nombreCliente_AM">Apellido Materno del cliente</label>
-                   <input type="text" class="form-control text-uppercase" id="nombreCliente_AM" columna="_G" pattern="([A-Za-zñÑ\s]+)*(.*), $1">
+                 <div id="personaf2" class="personaf col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label  for="nombreCliente_AM">Apellido Materno del cliente</label>
+                   <input type="text" class="nombreClienteInputF form-control text-uppercase" id="nombreCliente_AM"  columna="_G" pattern="([A-Za-zñÑ\s]+)*(.*), $1" maxlength="20">
                  </div>
-                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
-                   <label for="nombreCliente_NM">Nombre(s) del cliente</label>
-                   <input type="text" class="form-control text-uppercase" id="nombreCliente_NM" columna="_G" pattern="([A-Za-zñÑ\s]+)*(.*), $1">
+
+                 <div id="personaf3" class="personaf col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label  for="nombreCliente_NM">Nombre(s) del cliente</label>
+                   <input type="text" class="nombreClienteInputF form-control text-uppercase" id="nombreCliente_NM" name="nombreclient" columna="_G" pattern="[A-Z]" maxlength="20">
                  </div>
+
+                 <!-- cliente moral/isaac marquina -->
+                  <div id="personam1" style="display: none" id="moral_" class="personam col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group">
+                   <label for="nombreCliente_PM">Nombre Persona Moral</label>
+                   <input type="text" class="nombreClienteInputM form-control text-uppercase" id="nombreCliente_PM" columna="_G" pattern="[A-Z]" maxlength="40" >
+                   <div id="conteo_Moral_P"><span>0</span> / 40</div>
+                 </div>
+                 <!-- cliente moral/isaac marquina  termina-->
                  <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 form-group hide">
                    <label for="cuentaCliente">Número de Cuenta del Cliente</label>
                    <input type="text" class="form-control" id="cuentaCliente" columna="I" pattern="([0-9]*)(.*), $1" maxlength="10">
@@ -647,10 +665,10 @@
              <div role="tabpanel" class="tab-pane" id="cuestionarioRCI"> <!-- class="active" -->
                <div class="clearfix"><br></div>
                <div class="row">
-                 <!--<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group">
+                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 form-group">
                    <label for="asignado_rci">Asignado</label>
                    <select class="form-control bbva02 selectpicker" name="asignado_rci" id="asignado_rci" columna="BT" contenido="asignado" area="RCI"></select>
-                 </div>-->
+                 </div>
                  <!-- INDICADORES -->
                  <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 form-group">
                    <label for="tiempo_rci">Nivel de servicio</label>
