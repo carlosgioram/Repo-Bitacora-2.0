@@ -2,10 +2,12 @@
   $(function () {
       // Cargando los datos del spreadSheet
       try{
-            HomeJS.obtenerDatosDeSpread();
-            HomeJS.obtenerDatosDeSpread('Usuarios');
-            HomeJS.obtenerDatosDeSpread('Estatus');
-            HomeJS.obtenerDatosDeSpread('originales');
+            // HomeJS.obtenerDatosDeSpread();
+            // HomeJS.obtenerDatosDeSpread('Usuarios');
+            // HomeJS.obtenerDatosDeSpread('Estatus');
+            // HomeJS.obtenerDatosDeSpread('originales');
+            //isaac marquina | asincrono
+            $.then(HomeJS.obtenerDatosDeSpread('Usuarios'),HomeJS.obtenerDatosDeSpread('Estatus'),HomeJS.obtenerDatosDeSpread('originales') ).then(MenuJS.closeWaitMessage());
       }catch(e){console.log(e)}
   });
   var HomeJS = {
@@ -23,7 +25,8 @@
         $('#container_avisos').show();
         $('#avisos_not_found').hide();
       }
-       MenuJS.closeWaitMessage();
+      //cierra mensaje de espera 
+      //MenuJS.closeWaitMessage();
       // Agregando el listado de opciones
        FormularioJS.opciones.obtener();
       // Botón de descarga de la base
