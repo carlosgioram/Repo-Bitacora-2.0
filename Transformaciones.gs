@@ -12,20 +12,20 @@ function tranformacionesGetSpreadSheet(cual) {
     ssHoja = cual;
   }
   try{
-    var ss = SpreadsheetApp.openById('1UXW1L_eiuji52w9JwWjT967W4pnsrttxKuyzjvSQJcI');
+    var ss = SpreadsheetApp.openById('1vaPwWGvWSOrpP4qfWkJef_0_KYcI-z2noRmPWouX4-E');
     var sheet = ss.getSheetByName(ssHoja);
-
     //obteniendo la última Fila de registro que tengamos y también columna (esta última no es necesaria)
     var lastRow = sheet.getLastRow();
     var lasColumn = sheet.getLastColumn();
-    Logger.log(lastRow);
-    Logger.log(lasColumn);
+  //  Logger.log(lastRow);
+   // Logger.log(lasColumn);
 
     var range = ssHoja === 'Base' ? sheet.getRange(2,1, lastRow, lasColumn) : sheet.getRange(1,1,lastRow,lasColumn);
     //var range = sheet.getRange('A2:CI'+lastRow);
     var values = range.getValues();
+    //Logger.log(values)
     var valuesSinBlancos = ssHoja === 'Base' || ssHoja === 'Usuarios' ? values.filter(function (value) { return value[0] !== ''}) : values;
-    Logger.log(valuesSinBlancos)
+  //  Logger.log(valuesSinBlancos)
 
     //JSON.stringify(
     return JSON.stringify(valuesSinBlancos);
@@ -54,12 +54,12 @@ function transformacionesSaveSpreadSheet(rango, data, cual) {
   // data = [['uno'],['dos']];
   if (data.indexOf('{') === -1 ) {
     data = [data.split(',')];
-    Logger.log('Solo lo divide')
+   // Logger.log('Solo lo divide')
   } else {
     data = JSON.parse(data);
     // Este porque esta??
-    Logger.log(data);
-    Logger.log(Object.getOwnPropertyNames(data).length);
+   // Logger.log('esto es la data que se va a guardar  : ',data);
+   // Logger.log(Object.getOwnPropertyNames(data).length);
     if (data['A'] || data['G'] || data['CK']) {
       data = [data].map(function (dato) { return Object.keys(dato).map(function (dat) { return dato[dat] }) });
     } else {
@@ -68,18 +68,18 @@ function transformacionesSaveSpreadSheet(rango, data, cual) {
   }
   rango = rango ? rango.toString() : '';
 
-  Logger.log(rango)
-  Logger.log(data);
+  //Logger.log(rango)
+  //Logger.log(data);
   try {
-    var ss = SpreadsheetApp.openById('1UXW1L_eiuji52w9JwWjT967W4pnsrttxKuyzjvSQJcI');
+    var ss = SpreadsheetApp.openById('1vaPwWGvWSOrpP4qfWkJef_0_KYcI-z2noRmPWouX4-E');
     var sheet = ss.getSheetByName(ssHoja);
     if (rango === '') {
       sheet.appendRow(data[0]);
     } else if (rango === 'buscar') {
-      Logger.log('Buasjdfñlajsdñfa')
+     // Logger.log('Buasjdfñlajsdñfa')
       var lastRow = sheet.getLastRow();
       var ranguito = 'A' + (lastRow + 1) + ':' + 'G' + (lastRow + data.length);
-      Logger.log(ranguito);
+     // Logger.log(ranguito);
       var range = sheet.getRange(ranguito);
       range.setValues(data);
     } else {
@@ -104,7 +104,7 @@ function spreadSheetsAcciones(objeto, datos){
     var lock = LockService.getPublicLock();
     lock.waitLock(30000);
   try{
-    var ss = SpreadsheetApp.openById('1UXW1L_eiuji52w9JwWjT967W4pnsrttxKuyzjvSQJcI');
+    var ss = SpreadsheetApp.openById('1vaPwWGvWSOrpP4qfWkJef_0_KYcI-z2noRmPWouX4-E');
     var sheet = ss.getSheetByName(objeto.hoja);
     var range = sheet.getRange(objeto.rango);
     //Logger.log(range.getValues());
@@ -129,11 +129,12 @@ function spreadSheetsAcciones(objeto, datos){
 }
 
 function subirArchivo (name, bolb, tipo, caso) {
-  var folderId = DriveApp.getFolderById('1lyIHpY9I6UdPu9Xh_IwhC8gZgxFNExtp');
+ // Logger.log('subir archivo .......................' ,name, bolb, tipo, caso);
+  var folderId = DriveApp.getFolderById('1ed8sJIp71oOVNytCMBcH3ZvGiuV7ohVq');
   var folder = folderId.getFoldersByName(caso);
   var folderExiste = folder.hasNext() ?
     folder.next() : folderId.createFolder(caso);
-
+   Logger.severe('folder existe   ', folder);
   var archivo = folderExiste.getFilesByName(name);
   while (archivo.hasNext()) {
     var file = archivo.next();
@@ -143,7 +144,7 @@ function subirArchivo (name, bolb, tipo, caso) {
   var decoded = Utilities.base64Decode(bolb);
   var blob = Utilities.newBlob(decoded, tipo, name);
   archivo = folderExiste.createFile(blob);
-  //Logger.log(archivo);
+  Logger.log(archivo.getUrl());
   return archivo.getUrl();
 }
 
@@ -167,14 +168,14 @@ function tranformacionesGetFilteredSpreadSheet(cual, colFiltro, filtros) {
   if (!filtros) { filtros = '' }
   var filtro = SpreadsheetApp.newFilterCriteria().whenTextEqualTo(filtros);
   try{
-    var ss = SpreadsheetApp.openById('1UXW1L_eiuji52w9JwWjT967W4pnsrttxKuyzjvSQJcI');
+    var ss = SpreadsheetApp.openById('1vaPwWGvWSOrpP4qfWkJef_0_KYcI-z2noRmPWouX4-E');
     var sheet = ss.getSheetByName(ssHoja);
 
     //obteniendo la última Fila de registro que tengamos y también columna (esta última no es necesaria)
     var lastRow = sheet.getLastRow();
     var lasColumn = sheet.getLastColumn();
-    Logger.log(lastRow);
-    Logger.log(lasColumn);
+   // Logger.log(lastRow);
+    //Logger.log(lasColumn);
 
     var range = sheet.getRange(1,1,lastRow,lasColumn);
     //var range = sheet.getRange('A2:CI'+lastRow);
@@ -223,7 +224,7 @@ function tranformacionesSaveFilteredSpreadSheet(cual, rows) {
   }
   if (!rows) { return; } else {rows = rows.split(',')};
   try{
-    var ss = SpreadsheetApp.openById('1UXW1L_eiuji52w9JwWjT967W4pnsrttxKuyzjvSQJcI');
+    var ss = SpreadsheetApp.openById('1vaPwWGvWSOrpP4qfWkJef_0_KYcI-z2noRmPWouX4-E');
     var sheet = ss.getSheetByName(ssHoja);
     rows.forEach(function (row) {
       sheet.deleteRow(row);
@@ -234,4 +235,13 @@ function tranformacionesSaveFilteredSpreadSheet(cual, rows) {
     Logger.log(e);
     throw e;
   }
+}
+function deteleFolder(name){
+   var folderId = DriveApp.getFolderById('1ed8sJIp71oOVNytCMBcH3ZvGiuV7ohVq');
+  var folder = folderId.getFoldersByName(name);
+  while (folder.hasNext()) {
+    folder.next().setTrashed(true);
+  // folder.next().setName('SEG00012')
+  }
+
 }

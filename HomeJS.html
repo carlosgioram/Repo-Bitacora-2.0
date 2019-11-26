@@ -2,10 +2,15 @@
   $(function () {
       // Cargando los datos del spreadSheet
       try{
-            HomeJS.obtenerDatosDeSpread();
-            HomeJS.obtenerDatosDeSpread('Usuarios');
-            HomeJS.obtenerDatosDeSpread('Estatus');
-            HomeJS.obtenerDatosDeSpread('originales');
+          MenuJS.openLilWaitMessage();
+          $.when(
+          HomeJS.obtenerDatosDeSpread(),
+          HomeJS.obtenerDatosDeSpread('Usuarios'),
+          HomeJS.obtenerDatosDeSpread('Estatus'),
+          HomeJS.obtenerDatosDeSpread('originales')).then(()=>{
+          console.log('cerrar el loading');
+          MenuJS.closeLilWaitMessage();
+          });
       }catch(e){console.log(e)}
   });
   var HomeJS = {
@@ -23,10 +28,13 @@
         $('#container_avisos').show();
         $('#avisos_not_found').hide();
       }
-       MenuJS.closeWaitMessage();
+      MenuJS.closeWaitMessage();
       // Agregando el listado de opciones
        FormularioJS.opciones.obtener();
-      // Botón de descarga de la base
+      // Botón de descarga de la base para administrado y para coordinador
+      if(sessionStorage.titular==='1' && (sessionStorage.id_puesto !== "1")){
+           $('#btn_descargar_base').removeClass('hide')
+      }
       if (sessionStorage.id_puesto === "1") {
         $(".site-tooltipHome").tooltip({
           //placement: "top",
@@ -232,6 +240,7 @@
           //console.log(objeto);
           HomeJS.obtenerDatosDeSpread('Perfilado');
           //console.dir('obtenerDatosDeSpread: ' + cual + ' OK');
+            deferred.resolve('ok');
         }).withFailureHandler(JS_Base_Generic.setFailure).tranformacionesGetSpreadSheet('Usuarios');
         break;
         case 'Estatus':
@@ -250,6 +259,7 @@
           alasql('INSERT INTO estatus SELECT * FROM ?', [objeto])
           //console.log(objeto);
           //console.dir('obtenerDatosDeSpread: ' + cual + ' OK');
+            deferred.resolve('ok');
         }).withFailureHandler(JS_Base_Generic.setFailure).tranformacionesGetSpreadSheet('Estatus');
         break;
         case 'originales':
@@ -269,6 +279,7 @@
           alasql('INSERT INTO originales SELECT * FROM ?', [objeto])
           //console.log(objeto);
           //console.dir('obtenerDatosDeSpread: ' + cual + ' OK');
+            deferred.resolve('ok');
         }).withFailureHandler(JS_Base_Generic.setFailure).tranformacionesGetSpreadSheet('originales');
         break;
         case 'Perfilado':
@@ -321,10 +332,12 @@
           });
           alasql('SELECT ROW * FROM usuarios WHERE email = "' + sessionStorage.NB_CORREO + '"') ? MenuJS.init() : $('#inner-content > div.wait_panel > label').html('').html("NO EXISTE EL USUARIO");
           console.dir('obtenerDatosDeSpread: ' + cual + ' OK');
+          deferred.resolve('ok');
         }).withFailureHandler(JS_Base_Generic.setFailure).tranformacionesGetSpreadSheet('Perfilado');
         break;
         default:
           console.log('No se cargo ninguna Base');
+          deferred.resolve('ok');
       }
       console.log('termino en deferred');
       return  deferred.promise();

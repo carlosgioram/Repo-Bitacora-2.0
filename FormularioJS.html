@@ -62,12 +62,13 @@
                html: true
             });
             // Creando nuevo
-            //console.log('FormularioJS.edit',FormularioJS.edit);
             // por default edit false
+            console.log(`flujo para saber si el formulario se rellena ${FormularioJS.edit} ,${FormularioJS.active}`);
             if (FormularioJS.edit) {
                FormularioJS.rellenar(FormularioJS.active);
             } else {
-               //obtine la fila maxima del caso y se suma 1 en caso de tener registros y si no empieza por la columna 2
+            //@ giovani ramirez
+              //obtine la fila maxima del caso y se suma 1 en caso de tener registros y si no empieza por la columna 2
                FormularioJS.active = alasql('SELECT ROW MAX(indice) FROM transformaciones')[0] ? alasql('SELECT ROW MAX(indice) FROM transformaciones')[0] + 1 : 2;
                FormularioJS.aGuardar = FormularioJS.nuevoExcelRow();
                // genera  folio nuevos
@@ -83,8 +84,9 @@
                // Botón de guardar en alta de caso, por cualquier area que suba casos
                $('#btn_datos_generales').click(function () {
                   //valida todos los campos del formulario
+                   MenuJS.openLilWaitMessage();
                   FormularioJS.validar.btnGuardar().then(function (status) {
-                     // Guardando en el excel
+                    // Guardando en el excel
                      FormularioJS.alasql.agregar(FormularioJS.aGuardar);
                      // Pasando a la siguiente fase
                      // seteando el valor de fecha de alta AFG
@@ -119,7 +121,6 @@
                            "6": sta["M"]
                         }
                      });
-                     //console.table(JSON.stringify(stringJson));
                      FormularioJS.sprdsheet.guardar('buscar', JSON.stringify(stringJson), 'Clientes');
                      FormularioJS.sprdsheet.guardar(null, JSON.stringify({
                         A: data['CK'],
@@ -164,35 +165,12 @@
                $('#fechaAlta').val(fecha.getFullYear() + '-' + ("0" + (fecha.getMonth() + 1)).slice(-2) + '-' + ("0" + fecha.getDate()).slice(-2));
                // Ocultando las pestañas de áreas
                FormularioJS.validar.areas();
-               // Contador de caracteres
-               /*$('#descripcion1').on("keyup", function (e) {
-                 valor = $(this).val();
-                 $('#conteo_caracteres').find('span').html(valor.length);
-               });*/
             }
-            // Evitar que se copie y pegue
-            //$('body').bind('copy',function(e) { e.preventDefault(); return false; });
-            /*  $('textarea.desc').bind("paste",function(e) {
-              console.log('evitar el pegado en textarea')
-                //e.stopPropagation()
-                e.preventDefault();
-               // console.log(e.originalEvent.clipboardData.getData('text'), e.originalEvent.clipboardData.getData('text').toString().length > 1500);
-                if (e.originalEvent.clipboardData.getData('text').length > 1500) {
-                  bootbox.alert({
-                    message: '<div class="alert alert-danger">SE HA CORTADO LA DESCRIPCIÓN. <br />La descripción debe ser mínimo de 200 y máximo de 1500 caracteres</div>',
-                    buttons: { ok: { label: 'Cerrar', className: 'btn-danger'} }
-                  });
-                  $(this).val(e.originalEvent.clipboardData.getData('text').toString().substring(0, 1500));
-                } else {
-                  $(this).val(e.originalEvent.clipboardData.getData('text').toString());
-                }
-              });*/
             //funcion para que evite pegar, @gio
             $('#descripcion1').bind("paste", function (e) {
                e.preventDefault();
             })
          },
-
          alasql: {
             borrar: function (indice) {
                if (!indice) {
@@ -228,7 +206,6 @@
                return alasql('SELECT ROW * FROM transformaciones WHERE indice=' + indice);
             }
          },
-
          sprdsheet: {
             guardar: function (rango, data, cual) {
                    google.script.run.withSuccessHandler(function (response) {
@@ -529,8 +506,9 @@
                console.log('tipologia : ', data['tipologia']);
                if (areas.length == 0 && (area === 'AFG' || area === 'Seguridad')) {
                   if (data['tipologia'] === 'Consultas Injustificadas') {
-                     //siguiente = ['RCI'];
-                     aLaPar = ['RCI'];
+                  // @ giovani ramirez cambaio para que entre primero seguridad y despues RCi en consulta injustificada
+                     siguiente = ['RCI'];
+                    // aLaPar = ['RCI'];
                   } else if (data['tipologia'] === 'Tentativa de Fraude') {
                      siguiente = ['RRLL'];
                   } else {
@@ -1504,6 +1482,7 @@
                }
             },
             archivos: function () {
+            //carga de documentos
                var archivos = FormularioJS.edit === true ? alasql('SELECT * FROM transformaciones WHERE indice=' + FormularioJS.active)[0] : FormularioJS.aGuardar,
                   etapa = FormularioJS.edit === true ? sessionStorage.id_puesto !== "7" ? CasosJS.obtenerEstatusAclaraciones(FormularioJS.active) : {
                      area: 'Alta',
@@ -1574,8 +1553,9 @@
                   .children('div:not(.hide)')
                   .children('div.btn')
                   .on("click", (e) => {
+                  console.log('evento para subir el archivo ');
                      var nombreArchivo = $(e.target).parent().find('label').html() + '_' + $(e.target).parent().find('label').attr('columna');
-                     FormularioJS.archivos.subir(nombreArchivo);
+                         FormularioJS.archivos.subir(nombreArchivo);
                   });
                $('#form_documentos')
                   .children('div:not(.hide)')
@@ -1586,6 +1566,11 @@
                      if (FormularioJS.edit) {
                         FormularioJS.alasql.modificar(columna, '');
                      } else {
+                     //borrar carpeta que se creo
+                     //@ giovani ramirez
+                       google.script.run.withSuccessHandler(function (response) {
+                       console.log(`se elimino la carpeta ${FormularioJS.folio.obtener()} del drive`);
+                       }).deteleFolder(FormularioJS.folio.obtener());
                         FormularioJS.aGuardar[columna] = '';
                      }
                      FormularioJS.validar.archivos();
@@ -1657,7 +1642,6 @@
                 $('#conteo_Moral_P').find('span').html($(this).val().length);
                }else {
                // desactivando validacion "insitu" de inputs especificos
-
                   e.stopPropagation();
                   if (!$(this).attr('pattern') && !$(this).attr('maxlength') && $(this).val() !== '') {
                      return 0;
@@ -1966,32 +1950,67 @@
                               }
                            });
                            console.log('continuar ', continuar);
+                           console.log('nombre del archivo a subir en el drive ', nombreArchivo);
                            if (continuar === false) {
                               return false;
                            }
-                           $.each($('#carga_Archivo')[0].files, (indx, input) => {
-                              var reader = new FileReader();
-                              reader.onloadend = function () {
-                                 // console.log(reader.result);
-                                 var contenido = reader.result.split(',');
-                                 var content = contenido[1],
-                                    type = contenido[0].split(':')[1].split(';')[0];
-                                 google.script.run.withSuccessHandler(function (response) {
-                                    console.dir('Archivo Guardado', response);
-                                    //bootbox.hideAll();
-                                    MenuJS.closeLilWaitMessage();
-                                   // debugger;
-                                    if (FormularioJS.edit) {
-                                       FormularioJS.alasql.modificar(nombreArchivo.split('_')[1], response);
-                                    } else {
-                                       FormularioJS.aGuardar[nombreArchivo.split('_')[1]] = response;
-                                    }
-                                    FormularioJS.validar.archivos();
-                                 }).withFailureHandler(GenericJS.setFailure).subirArchivo(nombreArchivo + '_' + indx, content, type, FormularioJS.folio.obtener());
-                              }
-                              reader.readAsDataURL(input);
-                              MenuJS.openLilWaitMessage();
-                           });
+                            $.each($('#carga_Archivo')[0].files, (indx, input) => {
+                                   var reader = new FileReader();
+                                   reader.onloadend = function () {
+                                        var contenido = reader.result.split(',');
+                                        var content = contenido[1],
+                                        type = contenido[0].split(':')[1].split(';')[0];
+                                        //actualizar el active cuando sea un nuevo caso
+                                        //@ giovani ramirez  crear solucion a la sobreescritura en el alta de un caso
+                                        var datosAGuardar= FormularioJS.aGuardar ;
+                                        // solo se enctra cuando es alta de un caso
+                                        console.log('FormularioJS.edit',FormularioJS.edit);
+                                        if(!FormularioJS.edit){
+                                        // crear un listener para eliminar la carperta de drive si el usuario elimina el archivo
+
+                                              MenuJS.openLilWaitMessage();
+                                              //acutaliza los datos de sesion con lo mas actular del spread
+                                              $.when(HomeJS.obtenerDatosDeSpread(),
+                                                     HomeJS.obtenerDatosDeSpread('Estatus'),
+                                                     HomeJS.obtenerDatosDeSpread('originales')).
+                                               then(()=>{
+                                               // crearmos el nuevo folio
+                                                     FormularioJS.active = alasql('SELECT ROW MAX(indice) FROM transformaciones')[0] ? alasql('SELECT ROW MAX(indice) FROM transformaciones')[0] + 1 : 2;
+                                                     FormularioJS.aGuardar = FormularioJS.nuevoExcelRow();
+                                                     FormularioJS.aGuardar=datosAGuardar;
+                                                     // guardamos el folio en sesion
+                                                     FormularioJS.aGuardar['CK'] = FormularioJS.folio.generar();
+                                                    // FormularioJS.aGuardar['CK'] =`${FormularioJS.folio.generar()}_${sessionStorage.m_usuario}`;
+                                                     console.log('nuevo folio ', FormularioJS.aGuardar['CK'] );
+                                                     google.script.run.withSuccessHandler(function (response) {
+                                                        console.log('script run .....');
+                                                         if (FormularioJS.edit) {
+                                                              FormularioJS.alasql.modificar(nombreArchivo.split('_')[1], response);
+                                                          } else {
+                                                             FormularioJS.aGuardar[nombreArchivo.split('_')[1]] = response;
+                                                          }
+                                                         FormularioJS.validar.archivos();
+                                                         MenuJS.closeLilWaitMessage();
+                                                     }).withFailureHandler(function (){
+                                                     GenericJS.setFailure;
+                                                     deteleFolder(FormularioJS.folio.obtener());
+                                                     }).subirArchivo(nombreArchivo + '_' + indx, content, type, FormularioJS.folio.obtener());
+                                                  });
+                                        }else{
+                                          google.script.run.withSuccessHandler(function (response) {
+                                            MenuJS.closeLilWaitMessage();
+                                            if (FormularioJS.edit) {
+                                              FormularioJS.alasql.modificar(nombreArchivo.split('_')[1], response);
+                                            } else {
+                                               FormularioJS.aGuardar[nombreArchivo.split('_')[1]] = response;
+                                            }
+                                             FormularioJS.validar.archivos();
+                                         }).withFailureHandler(GenericJS.setFailure).subirArchivo(nombreArchivo + '_' + indx, content, type, FormularioJS.folio.obtener());
+                                        }
+                                     }
+                                 reader.readAsDataURL(input);
+                                 MenuJS.openLilWaitMessage();
+                            });
                         }
                      }
                   }
