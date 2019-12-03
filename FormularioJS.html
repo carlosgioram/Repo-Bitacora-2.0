@@ -87,6 +87,7 @@
                    MenuJS.openLilWaitMessage();
                   FormularioJS.validar.btnGuardar().then(function (status) {
                     // Guardando en el excel
+                    MenuJS.closeLilWaitMessage();
                      FormularioJS.alasql.agregar(FormularioJS.aGuardar);
                      // Pasando a la siguiente fase
                      // seteando el valor de fecha de alta AFG
@@ -107,8 +108,8 @@
                      // FormularioJS.sprdsheet.guardar('buscar', JSON.stringify(status[1]), 'Clientes');
                      // Guardar la persona que lo subió
                      FormularioJS.alasql.modificar('AQ', sessionStorage.NB_CORREO);
-                     // Guardando
-                     var area = alasql('SELECT ROW nb_puesto FROM puesto WHERE id_puesto =' + sessionStorage.id_puesto + '')[0];
+                     // Guardando                     
+                     var area = alasql('SELECT ROW nb_puesto FROM puesto WHERE id_puesto =' + sessionStorage.id_puesto + '')[0];                    
                      FormularioJS.sprdsheet.guardar(rango, JSON.stringify(data), 'Transformaciones');
                      var stringJson = status[1].map((sta) => {
                         return {
@@ -147,10 +148,18 @@
                      FormularioJS.correos('Alta', data, 'Alta');
                      BaseGenericJS.getContent("Home");
                   }).catch(function (status) {
-                     console.dir(status);
+                     console.log('validacion de campos ',status);
+                      MenuJS.closeLilWaitMessage();
+                     //@ Giovani ramirez se agrega validacion para errores
+                     if(status!==undefined){
                      var archivos = status[1].length !== 0 ? '<div class="alert alert-danger">Documentos obligatorios: ' + status[1].join('<br />') + '</div>' : '';
+                    archivos += $('textarea').val().length <199 ? '<div class="alert alert-danger">La descripción debe ser mínimo de 200 y máximo de 1500 caracteres</div>':'';
+                     $('textarea').addClass('has-error');
+                     }else{
+                     var archivos =$('textarea').val().length <199 ? '<div class="alert alert-danger">La descripción debe ser mínimo de 200 y máximo de 1500 caracteres</div>':'';
+                     }
                      bootbox.alert({
-                        message: '<div class="alert alert-danger">Todos los campos son obligatorios</div><div class="alert alert-danger">La descripción debe ser mínimo de 200 y máximo de 1500 caracteres</div>' + archivos,
+                        message: '<div class="alert alert-danger">Todos los campos son obligatorios</div>' + archivos,
                         buttons: {
                            ok: {
                               label: 'Cerrar',
@@ -208,9 +217,11 @@
          },
          sprdsheet: {
             guardar: function (rango, data, cual) {
+                    console.log('guardado de base ',rango, data, cual);
                    google.script.run.withSuccessHandler(function (response) {
                    console.log('SpreadSheet Guardado');
-                   }).withFailureHandler(GenericJS.setFailure).transformacionesSaveSpreadSheet(rango, data, cual);
+                   }).withFailureHandler(
+                   GenericJS.setFailure).transformacionesSaveSpreadSheet(rango, data, cual);
             },
             conFiltro: function (base, columna, filtro) {
                return new Promise(function (resolve, reject) {
@@ -545,6 +556,7 @@
             },
             btnGuardar: function () {
                return new Promise(function (resolve, reject) {
+                try{
                   var validacion = true;
                   // Validar Campos Generales
                   var campos = $('#form_general input, #form_general select, #form_cliente input, #form_cliente select, #form_empleado input, #form_empleado select, #form_descripcion input');
@@ -556,7 +568,7 @@
                   }
                   //isaac marquina | agregar exclusiones
 
-                  if(($("#nombreCliente_NM").val().length === 0) && ($("#nombreCliente_AP").val().length === 0)  && ($("#nombreCliente_AM").val().length === 0) ) {
+                  /*if(($("#nombreCliente_NM").val().length === 0) && ($("#nombreCliente_AP").val().length === 0)  && ($("#nombreCliente_AM").val().length === 0) ) {
                      excluidos.push('tarjetaCliente_');
                      excluidos.push('nombreCliente_AP');
                      excluidos.push('nombreCliente_AM');
@@ -567,20 +579,27 @@
                      excluidos.push('nombreCliente_PM');
                      //excluidos.push('tarjetaCliente_');
 
+                  }*/
+                  if($('input[type="checkbox"]').prop( "checked" )){ 
+                     excluidos.push('tarjetaCliente_');
+                     excluidos.push('nombreCliente_AP');
+                     excluidos.push('nombreCliente_AM');
+                     excluidos.push('nombreCliente_NM');
+                  }else{
+                      excluidos.push('nombreCliente_PM');
                   }
                   //termina cambio | isaac marquina
                   campos.each((indx, campo) => {
                      var columna = $(campo).attr('columna'),
                         valor = $(campo).val().trim();
-                     console.log('excluidos', excluidos);
                      if (columna && !excluidos.includes($(campo).attr('id'))) {
                         /*if ($(campo).attr('id') === '#tarjetaCliente_' || $(campo).attr('id') === '#tarjetaCliente_') {
                           $('#tarjetaCliente_').val().length === 10 || $('#tarjetaCliente_').val().length === 16);
                         }*/
-                        console.log('valor de los campos ::::: ', valor, '::::campos :::::', columna);
-                        if (valor === '') {
+                        if (valor === '' ||valor ===undefined) {
                            validacion = false;
                            $(campo).parent().addClass('has-error');
+                           console.log('validacion de campo ... ' ,campo);
                         } else {
                            $(campo).parent().removeClass('has-error');
                            // No guardar los campos de empleado y cliente
@@ -643,6 +662,11 @@
                   // Validación
                   descripcion === true ? FormularioJS.aGuardar['N'] = escape($('#form_descripcion #descripcion').val().trim()) : '';
                   validacion === true ? resolve(["Formulario Validado", clientEmpleado]) : reject(["Formulario Incorrecto", obligados]);
+                }catch(e){
+                  console.log(`error en la validacion de campos ${e}`);
+                  reject();
+                }
+
                })
             },
             areas: function (area) {
@@ -1334,6 +1358,7 @@
                             }
                             console.log('valida areas', active);
                             FormularioJS.validar.areas(active);
+                             MenuJS.closeLilWaitMessage();
                             //console.log('data de session :::::',alasql('SELECT * REMOVE indice, undefined FROM transformaciones WHERE indice=' + FormularioJS.active)[0]);
                             var data = alasql('SELECT * REMOVE indice, undefined FROM transformaciones WHERE indice=' + FormularioJS.active)[0];
                             console.log('data despues de de mofiicar documentos' ,data);
@@ -1635,7 +1660,7 @@
             },
             caracteres: function () {
                $('input').unbind();
-               $('input').on("input", function (e) {
+                $('input').on("input", function (e) {
                //desactivo verificador y activo contador | isaac marquina
                if($(this).attr('id') === 'nombreCliente_PM'){
                 //$('input').unbind();
@@ -1643,18 +1668,26 @@
                }else {
                // desactivando validacion "insitu" de inputs especificos
                   e.stopPropagation();
-                  if (!$(this).attr('pattern') && !$(this).attr('maxlength') && $(this).val() !== '') {
-                     return 0;
+                  //@giovani ramirez
+                  //quitar el borrar
+                  // validaciones por medio de java script
+                  var inputPattern=e.target.getAttribute('pattern');
+                  if(inputPattern==undefined ||inputPattern==null ||inputPattern==''){
+                  return 0;
+                  }else{
+                   var inputId= e.target.getAttribute('id');
+                   var inputValue=document.getElementById(inputId).value;
+                   // tomamos el ultimo caracter ingresado y lo comparamos con el patron de la expresion regular
+                   inputPattern=new RegExp(inputPattern.split(', ')[0]);
+                   var valueFinal =inputPattern.exec(inputValue);
+                   if(valueFinal[1]==undefined||valueFinal[1]==""||valueFinal[1]=="undefined"){
+                     document.getElementById(inputId).value =null;
+                   }else{
+                     document.getElementById(inputId).value = valueFinal[1];
+                   }
                   }
-                  var regex = $(this).attr('pattern') ? $(this).attr('pattern').split(', ')[0] : "/(.*)/g",
-                     replaces = $(this).attr('pattern') ? $(this).attr('pattern').split(', ')[1] : '$1',
-                     maxlength = $(this).attr('maxlength') ? $(this).attr('maxlength') : $(this).val().length,
-                     valor = $(this).val();
-                  valor = valor.replace(new RegExp(regex), replaces);
-                  valor = valor.slice(0, maxlength)
-                  $(this).val(valor);
                   }
-               });
+				  });
                // Isaac marquina | evento switch moral/fisico
                //$('#personam1').toggleClass("hide");
                $('input[type="checkbox"]').click(function(){
@@ -1778,7 +1811,6 @@
                case 'Terminado':
                case 'Alta':
                   console.log('El Terminado');
-                  //debugger;
                   var correoCircuito = [];
                   // console.log(FormularioJS.validar.circuito(active), active);
                   FormularioJS.validar.circuito(active).forEach((circuito) => {
@@ -2254,7 +2286,6 @@
             var valoresSesion=alasql('SELECT * FROM transformaciones WHERE indice ='+ FormularioJS.active)[0];
             $.when(HomeJS.obtenerDatosDeSpread('Base'))
               .then(function(resultado ) {
-              //debugger;
                  var valoresExcel = alasql('SELECT * FROM transformaciones WHERE indice ='+ FormularioJS.active)[0];
                  console.log('valoresExcel  : ',valoresExcel);
                  console.log('valoresSesion  : ',valoresSesion);

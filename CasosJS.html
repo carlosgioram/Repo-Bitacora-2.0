@@ -122,6 +122,7 @@ var CasosJS = {
           align: 'center',
           valign: 'middle',
           sortable: false,
+           class: 'cursor_row',
         },
       {
           field: 'A',
@@ -406,6 +407,8 @@ var CasosJS = {
                deCliente['A']='<span onclick="HomeJS.editarFormulario('+deCliente['indice']+')">'+deCliente['A']+'</span>';
                deCliente['D'] = Number(deCliente['AV'] === '' ? 0 : deCliente['AV']) - Number(deCliente['AW'] === '' ? 0 : deCliente['AW']);
                deCliente['M']='<span onclick="HomeJS.editarFormulario('+deCliente['indice']+')">'+( deCliente['M'].length == 0 ? '000000000' : deCliente['M']) + '</span>';
+               //@ Giovani ramirez agregar hipervinculo para editar el caso 
+               deCliente['CK']='<span onclick="HomeJS.editarFormulario('+deCliente['indice']+')">'+deCliente['CK']+'</span>';
                console.log('deCliente',deCliente);
                return deCliente;
              });
@@ -593,9 +596,10 @@ var CasosJS = {
       case '9':
       busqueda=CasosJS.agregaCamposEstatusNumero();
       var puesto= alasql("SELECT nb_puesto FROM puesto WHERE id_puesto="+sessionStorage.id_puesto);
-      busqueda=(alasql("SELECT * FROM ? WHERE area='"+puesto[0].nb_puesto+"' || AR='Consultas Injustificadas'",[busqueda]));
+      busqueda=(alasql("SELECT * FROM ? WHERE area='"+puesto[0].nb_puesto+"'",[busqueda]));
       break;
       case '2':
+      case '3':
       case '4':
       case '5':
       case '7':
@@ -643,11 +647,12 @@ var CasosJS = {
         busqueda= (alasql("SELECT * FROM ? WHERE area='Auditoria' AND (AR='Fraude Consumado < 100,000') and AC != '' AND P != '' AND AA!=''  ",[busqueda]));
         console.log('casosjs 629',busqueda);
       break;
-       case '3':
+      // @ giovani ramirez cambaio para que entre primero seguridad y despues RCi en consulta injustificada
+      /* case '3':
        busqueda=CasosJS.agregaCamposEstatusNumero();
        var puesto=(alasql("SELECT nb_puesto FROM puesto WHERE id_puesto="+sessionStorage.id_puesto));
        busqueda=(alasql("SELECT * FROM ? WHERE area='"+puesto[0].nb_puesto+"'|| AR='Consultas Injustificadas'",[busqueda]));
-       break;
+       break;*/ 
     }
     console.log('busqueda',busqueda);
   },
