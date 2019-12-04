@@ -108,8 +108,8 @@
                      // FormularioJS.sprdsheet.guardar('buscar', JSON.stringify(status[1]), 'Clientes');
                      // Guardar la persona que lo subió
                      FormularioJS.alasql.modificar('AQ', sessionStorage.NB_CORREO);
-                     // Guardando                     
-                     var area = alasql('SELECT ROW nb_puesto FROM puesto WHERE id_puesto =' + sessionStorage.id_puesto + '')[0];                    
+                     // Guardando
+                     var area = alasql('SELECT ROW nb_puesto FROM puesto WHERE id_puesto =' + sessionStorage.id_puesto + '')[0];
                      FormularioJS.sprdsheet.guardar(rango, JSON.stringify(data), 'Transformaciones');
                      var stringJson = status[1].map((sta) => {
                         return {
@@ -220,8 +220,7 @@
                     console.log('guardado de base ',rango, data, cual);
                    google.script.run.withSuccessHandler(function (response) {
                    console.log('SpreadSheet Guardado');
-                   }).withFailureHandler(
-                   GenericJS.setFailure).transformacionesSaveSpreadSheet(rango, data, cual);
+                   }).withFailureHandler(GenericJS.setFailure).transformacionesSaveSpreadSheet(rango, data, cual);
             },
             conFiltro: function (base, columna, filtro) {
                return new Promise(function (resolve, reject) {
@@ -440,7 +439,8 @@
                   siguiente = [],
                   regresa = [];
                //obtine los estatus de las diferentes area para determinar el circuito
-               var data = alasql('SELECT BA AS [AFG], BH AS [Seguridad], BJ AS [RCI], BO AS [RRLL], BS AS [Viabilidad], BW AS [Auditoria], P AS [cartaReclamacion], AC AS [cartaFiniquito], AA AS [cedulaQuebranto], CE AS [Penal], AR AS [tipologia] FROM transformaciones WHERE indice=' + FormularioJS.active)[0];
+               //isaac marquina | flujo para Altas, modificacion alasql
+               var data = alasql('SELECT BA AS [AFG], BH AS [Seguridad], BJ AS [RCI], BO AS [RRLL], BS AS [Viabilidad], BW AS [Auditoria], P AS [cartaReclamacion], AC AS [cartaFiniquito], AA AS [cedulaQuebranto], CE AS [Penal], AR AS [tipologia], AT AS [prioridad] FROM transformaciones WHERE indice=' + FormularioJS.active)[0];
                //var monto = alasql('SELECT D AS [monto] FROM transformaciones WHERE indice=' + FormularioJS.active)[0];
                // Para conocer que área sigue de al actual
                switch (area) {
@@ -516,11 +516,11 @@
                console.log('areas : ', areas);
                console.log('tipologia : ', data['tipologia']);
                if (areas.length == 0 && (area === 'AFG' || area === 'Seguridad')) {
-                  if (data['tipologia'] === 'Consultas Injustificadas') {
+                  if (data['tipologia'] === 'Consultas Injustificadas' && data['prioridad']!=='Alta') {
                   // @ giovani ramirez cambaio para que entre primero seguridad y despues RCi en consulta injustificada
-                     siguiente = ['RCI'];
-                    // aLaPar = ['RCI'];
-                  } else if (data['tipologia'] === 'Tentativa de Fraude') {
+                    // siguiente = ['RCI'];
+                    aLaPar.push('RCI');
+                  } else if (data['tipologia'] === 'Tentativa de Fraude' || (data['tipologia'] === 'Consultas Injustificadas' && data['prioridad']=='Alta')) {
                      siguiente = ['RRLL'];
                   } else {
                      siguiente = ['RRLL', 'Viabilidad'];
@@ -568,19 +568,7 @@
                   }
                   //isaac marquina | agregar exclusiones
 
-                  /*if(($("#nombreCliente_NM").val().length === 0) && ($("#nombreCliente_AP").val().length === 0)  && ($("#nombreCliente_AM").val().length === 0) ) {
-                     excluidos.push('tarjetaCliente_');
-                     excluidos.push('nombreCliente_AP');
-                     excluidos.push('nombreCliente_AM');
-                     excluidos.push('nombreCliente_NM');
-                  }
-                  if($("#nombreCliente_PM").val().length === 0 ) {
-
-                     excluidos.push('nombreCliente_PM');
-                     //excluidos.push('tarjetaCliente_');
-
-                  }*/
-                  if($('input[type="checkbox"]').prop( "checked" )){ 
+                  if($('input[type="checkbox"]').prop( "checked" )){
                      excluidos.push('tarjetaCliente_');
                      excluidos.push('nombreCliente_AP');
                      excluidos.push('nombreCliente_AM');
@@ -592,6 +580,7 @@
                   campos.each((indx, campo) => {
                      var columna = $(campo).attr('columna'),
                         valor = $(campo).val().trim();
+                     console.log('excluidos', excluidos);
                      if (columna && !excluidos.includes($(campo).attr('id'))) {
                         /*if ($(campo).attr('id') === '#tarjetaCliente_' || $(campo).attr('id') === '#tarjetaCliente_') {
                           $('#tarjetaCliente_').val().length === 10 || $('#tarjetaCliente_').val().length === 16);
@@ -788,7 +777,7 @@
                               }
                            } else {
                               // analista asignado al caso
-                              console.log('678');
+                              // si es titular y el correo del usuario es igual al que vien del excel celda
                               if (titular === 0 && datos[FormularioJS.columnas[active][3]] === sessionStorage.NB_CORREO) {
                                  console.log('680')
                                  $('#cuestionario' + active)
@@ -810,16 +799,15 @@
                                     .removeClass('hide');
                                  $('.botonera' + active).find('button[name="Aprobar"]').toggleClass('hide');
                                  $('.selectpicker').selectpicker('refresh');
-                                 /*      var fraude = datos['D'] = 0
-                                         ? 'Consultas Injustificadas'
-                                         : datos['D'] > 3000000
-                                           ? 'Fraude Consumado > 3 000,000'
-                                           : datos['D'] > 100000
-                                             ? 'Fraude Consumado > 100,000'
-                                             : datos['D'] < 100000
-                                               ? 'Fraude Consumado < 100,000'
-                                               : 'Consultas Injustificadas'; */
-                                 //$('#cuestionario' + active).find('select[contenido="tipologia"]').val(fraude).selectpicker('refresh');
+                                //@Giovani ramirez se muestra la pantalla de afg quebranto desde que entre alcircuito
+                              } else if(sessionStorage.id_puesto === '11'){
+                                 console.log('818')
+                                 console.log('Puesto de AFG qubranto ,para cedula');
+                                 $('#tabs' + active).parent().addClass('hide');
+                                 $('#cuestionario' + active + ' div.row').children('div').addClass('hide');
+                                 $('.botonera' + active).removeClass('hide');
+                                 $('.botonera' + active).find('button').addClass('hide');
+                                 $('.botonera' + active).find('button[name="Guardar"]').removeClass('hide');
                               } else {
                                  console.log('711');
                                  if (titular === 0) {
@@ -1528,12 +1516,15 @@
 
                var originales = original === undefined ? [] : alasql('SELECT nb_archivo FROM archivo AS files JOIN ? AS original ON files.id_archivo = original.[1]', [original]).map((file) => file.nb_archivo);
 
-               if (archivos['AR'] === 'Consultas Injustificadas') {
+               /* if (archivos['AR'] === 'Consultas Injustificadas') {
                   permisoArchivos = permisoArchivos.filter((archivo) => archivo !== 'Informe Seguridad');
                   obligatorio = obligatorio.filter((archivo) => archivo !== 'Informe Seguridad');
                } else {
                   permisoArchivos = permisoArchivos.filter((archivo) => archivo !== 'Informe RCI');
-               }
+               } */
+                if (archivos['AR'] !== 'Consultas Injustificadas'){
+                  permisoArchivos = permisoArchivos.filter((archivo) => archivo !== 'Informe RCI');
+                }
 
                if (sessionStorage.id_puesto === '11') { // Para el perfil de AFG - quebranto
                   permisoArchivos = ['Cédula de quebranto', 'Carta finiquito'];
