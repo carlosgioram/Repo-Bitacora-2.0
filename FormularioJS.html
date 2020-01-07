@@ -28,7 +28,7 @@
             Viabilidad: [],
             Auditoria: ['AD','AF'],
             Penal: [],
-            AFG2:['Y']
+            AFG2:['AA']
          },
 
          ajustes: function () {
@@ -66,6 +66,7 @@
             console.log(`flujo para saber si el formulario se rellena ${FormularioJS.edit} ,${FormularioJS.active}`);
             if (FormularioJS.edit) {
                FormularioJS.rellenar(FormularioJS.active);
+              //FormularioJS.obtener.agregarCombo(sessionStorage.id_puesto);
             } else {
             //@ giovani ramirez
               //obtine la fila maxima del caso y se suma 1 en caso de tener registros y si no empieza por la columna 2
@@ -215,6 +216,7 @@
                return alasql('SELECT ROW * FROM transformaciones WHERE indice=' + indice);
             }
          },
+
          sprdsheet: {
             guardar: function (rango, data, cual) {
                     console.log('guardado de base ',rango, data, cual);
@@ -277,7 +279,6 @@
                      if ($(elegido).attr('contenido')) {
                         var opciones = alasql('SELECT ROW ' + $(elegido).attr('contenido') + ' FROM opciones')[0];
                         if ($(elegido).attr('contenido') === 'asignado' && $(elegido).attr('area')) {
-                           console.log('validacion de selects ', $(elegido).attr('area'));
                            var area = alasql('SELECT ROW id_puesto FROM puesto WHERE nb_puesto="' + $(elegido).attr('area') + '"').join('');
                            console.log('formularios js 249 area para la opciones', area);
                            //validacion para area de aclaraciones- auditoria refresh de select y options
@@ -285,7 +286,20 @@
                               console.log('validacion para auditoria aclaraciones');
                               area = FormularioJS.obtener.validacionPorMonto(100000, 'area', 'refrescar slects cuando es perfil es aclaraciones -auditoria ', '6');
                            }
+                           //se cargan los combos con el nombre de los analistas
                            var datos = alasql('SELECT email, nombre FROM usuarios WHERE titular=0 && id_puesto=' + area).map((item) => '<option value="' + item.email + '">' + item.nombre + '</option>');
+                           if (area == '9'){
+                               var divisionUsuario= alasql(`select divisiones_RCI from usuarios where usuario_red_m= "${sessionStorage.m_usuario}"`)[0];
+                               if(divisionUsuario.divisiones_RCI!=='' ){
+                                 datos=  alasql('SELECT email, nombre FROM usuarios JOIN divisiones_RCI ON usuarios.divisiones_RCI=divisiones_RCI.id_division  WHERE titular=0 && divisiones_RCI='+divisionUsuario.divisiones_RCI).map((item) => '<option value="' + item.email + '">' + item.nombre + '</option>');
+                               }
+                           }
+                          /* if(area =='10') {
+                              var divisionUsuario= alasql(`select divisiones_RCI from usuarios where usuario_red_m= "${sessionStorage.m_usuario}"`)[0];
+                              if(divisionUsuario.divisiones_RCI!=='' ){
+                                datos=  alasql('SELECT email, nombre FROM usuarios JOIN divisiones_RCI ON usuarios.divisiones_RCI=divisiones_RCI.id_division  WHERE titular=0 && divisiones_RCI='+divisionUsuario.divisiones_RCI).map((item) => '<option value="' + item.email + '">' + item.nombre + '</option>');
+                               }
+                           } */
                            $(elegido).html(datos);
                            console.log('258', $(elegido).html(datos));
                         } else if (opciones) {
@@ -2178,6 +2192,8 @@
                } catch (error) {
                   console.log('select no se auctualizo');
                }
+               //@ giovani ramirez se agregatr funcionalidad para las divisones de rci , afg coordinador decida la division a asignar el caso
+               FormularioJS.obtener.agregarCombo(sessionStorage.id_puesto);
             });
          },
 
@@ -2338,6 +2354,29 @@
                console.log('error',error);
                })  ;
          return  deferred.promise();
+       },
+       agregarCombo:function(area){
+         switch (area){
+           case '2':
+           var disparador =document.getElementById('tipologia');
+           var disparador2 =document.getElementById('prioridad');
+           var divDivisiones = document.getElementById('division_rci_div') ;
+           var selectDivisiones = document.getElementById("division_rci");
+           var catDivisionesRCI=alasql(`select nombre_divsion, id_division from divisiones_RCI`).map((item) => '<option value="' + item.nombre_divsion + '">' + item.nombre_divsion + '</option>');;
+           $(selectDivisiones).html(catDivisionesRCI);
+           $(selectDivisiones).change().selectpicker('refresh');
+           $("#tipologia,#prioridad").change(function(){
+            //disparador.addEventListener("change",function(){
+              console.log('se activa el change')
+              if(disparador.value =='Consultas Injustificadas' && disparador2.value!=='Alta'){
+                 //eliminar la clase hide del div divDivisiones
+                 divDivisiones.classList.remove('hide');
+                 divDivisiones.style.display = "inline";
+              }else{
+                 divDivisiones.style.display = "none";
+              }
+           });
+         }
        }
      }
    }
